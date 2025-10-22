@@ -1,8 +1,10 @@
-export default function ONas(){
+import Link from 'next/link';
+export default function Page() {
   return (
-    <div className="card">
+    <>
       <h1>O nás</h1>
-      <p>Statická stránka jako ukázka. Tady může být text o PINDOO.</p>
-    </div>
+      <p>Dočasný obsah — O nás. Sem později doplníme skutečné bloky.</p>
+      <p><Link href="/">← Zpět na úvod</Link></p>
+    </>
   );
 }

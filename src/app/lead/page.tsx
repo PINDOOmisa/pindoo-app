@@ -1,21 +1,10 @@
-"use client";
-import { useState } from "react";
-
-export default function LeadPage(){
-  const [ok,setOk]=useState(false);
-  function submit(e:React.FormEvent<HTMLFormElement>){
-    e.preventDefault();
-    setOk(true);
-  }
-  if(ok) return <div className="card"><h2>Hotovo! ✅</h2><p>Tady bude naše success karta.</p></div>;
+import Link from 'next/link';
+export default function Page() {
   return (
-    <form onSubmit={submit} className="card">
-      <h1>Poptávka (placeholder)</h1>
-      <label>Kategorie</label>
-      <select><option>Úklid</option><option>Hlídání psů</option></select>
-      <label>Poznámka</label>
-      <textarea rows={5} placeholder="Stručně co potřebuješ..." />
-      <div style={{marginTop:12}}><button type="submit">Odeslat</button></div>
-    </form>
+    <>
+      <h1>Lead</h1>
+      <p>Dočasný obsah — Lead. Sem později doplníme skutečné bloky.</p>
+      <p><Link href="/">← Zpět na úvod</Link></p>
+    </>
   );
 }

@@ -1,8 +1,10 @@
-export default function Zpravy(){
+import Link from 'next/link';
+export default function Page() {
   return (
-    <div className="card">
-      <h1>Zprávy (placeholder)</h1>
-      <p>Interní messaging se objeví tady.</p>
-    </div>
+    <>
+      <h1>Zprávy</h1>
+      <p>Dočasný obsah — Zprávy. Sem později doplníme skutečné bloky.</p>
+      <p><Link href="/">← Zpět na úvod</Link></p>
+    </>
   );
 }
