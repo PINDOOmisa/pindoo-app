@@ -8,16 +8,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="header">
           <div className="container" style={{display:'flex',gap:16,alignItems:'center',justifyContent:'space-between',padding:'12px 16px'}}>
             <Link href="/" className="logo" style={{color:'#fff',textDecoration:'none'}}>PINDOO</Link>
-            <nav className="nav">
-              <Link href="/jak-funguje">Jak funguje</Link>
-              <Link href="/top-poskytovatel">TOP poskytovatel</Link>
-              <Link href="/vytvoreni-poptavky">Vytvoření poptávky</Link>
-              <Link href="/provider">Pro poskytovatele</Link>
-              <Link href="/o-nas">O nás</Link>
-              <Link href="/faq">FAQ</Link>
-              <Link href="/zpravy">Zprávy</Link>
-              <Link href="/lead">Lead</Link>
+            <nav className="nav" style={{flex:1, justifyContent:'center', display:'flex', gap:18}}>
+              <Link href="/jak-funguje">Jak to funguje?</Link>
+              <Link href="/napoveda">Centrum nápovědy</Link>
+              <Link href="/registrace">Registrace</Link>
+              <Link href="/prihlaseni">Přihlášení</Link>
             </nav>
+            <div style={{display:'flex',gap:10}}>
+              <Link href="/provider" className="btn btn-accent" style={{textDecoration:'none'}}>Vložit svou nabídku</Link>
+            </div>
           </div>
         </header>
 

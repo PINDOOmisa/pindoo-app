@@ -15,7 +15,7 @@ const tiles: Tile[] = [
 export default function HomePage(){
   return (
     <>
-      {/* HERO s pozadím jako na Kreezalidu (můžeš vyměnit URL fotky níže) */}
+      {/* HERO s pozadím + vyhledáváním jako na Kreezalidu */}
       <section className="hero-wrap card" style={{padding:0}}>
         <div className="hero-bg" style={{backgroundImage:
           'url(https://images.unsplash.com/photo-1581090700227-1e37b190418e?q=80&w=2000&auto=format&fit=crop)'
@@ -24,9 +24,10 @@ export default function HomePage(){
           <h1>Tvůj portál pro všechny služby na jednom místě</h1>
           <p>Nechce se ti hledat? Zadej poptávku a my oslovíme profíky ve tvém okolí za tebe.</p>
 
+          {/* search row: slova + oblast + tlačítko Hledat */}
           <div className="search-row">
-            <input className="search-input" placeholder="Co potřebuješ řešit?" />
-            <input className="search-input" placeholder="Město" />
+            <input className="search-input" placeholder="Co potřebuješ řešit?" aria-label="Co potřebuješ řešit?" />
+            <input className="search-input" placeholder="Město / oblast" aria-label="Město nebo oblast" />
             <button className="search-btn">Hledat</button>
           </div>
 
@@ -49,12 +50,11 @@ export default function HomePage(){
         </div>
       </section>
 
-      {/* žluté „sticky“ CTA jako na Kreezalidu – zde v rámci stránky */}
+      {/* žluté CTA + feedback panel */}
       <section style={{marginTop:22, display:'flex', justifyContent:'flex-end'}}>
         <Link href="/vytvoreni-poptavky" className="btn btn-accent">Zadat poptávku</Link>
       </section>
 
-      {/* Feedback panel – tvoje pravidlo */}
       <section style={{marginTop:18}}>
         <img
           src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png"
