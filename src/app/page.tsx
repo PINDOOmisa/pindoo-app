@@ -15,35 +15,47 @@ const tiles: Tile[] = [
 export default function HomePage(){
   return (
     <>
-      {/* HERO */}
-      <section className="hero">
-        <h1>Najdeme ti ověřené poskytovatele. Rychle a bez starostí.</h1>
-        <p>Popiš, co potřebuješ. My rozešleme poptávku ověřeným profíkům a ty si vybereš nejlepší nabídku.</p>
-        <div style={{display:'flex',gap:12,flexWrap:'wrap',marginTop:2}}>
-          <Link href="/vytvoreni-poptavky" className="btn btn-primary">Zadat poptávku</Link>
-          <Link href="/provider" className="btn btn-ghost">Jsem poskytovatel</Link>
-        </div>
-        <div className="badges">
-          <span>✔ Ověření poskytovatelé</span>
-          <span>✔ Férový pay-per-lead</span>
-          <span>✔ Rychlá komunikace</span>
+      {/* HERO s pozadím jako na Kreezalidu (můžeš vyměnit URL fotky níže) */}
+      <section className="hero-wrap card" style={{padding:0}}>
+        <div className="hero-bg" style={{backgroundImage:
+          'url(https://images.unsplash.com/photo-1581090700227-1e37b190418e?q=80&w=2000&auto=format&fit=crop)'
+        }} />
+        <div className="hero">
+          <h1>Tvůj portál pro všechny služby na jednom místě</h1>
+          <p>Nechce se ti hledat? Zadej poptávku a my oslovíme profíky ve tvém okolí za tebe.</p>
+
+          <div className="search-row">
+            <input className="search-input" placeholder="Co potřebuješ řešit?" />
+            <input className="search-input" placeholder="Město" />
+            <button className="search-btn">Hledat</button>
+          </div>
+
+          <div style={{display:'flex',gap:12,flexWrap:'wrap',marginTop:14}}>
+            <Link href="/vytvoreni-poptavky" className="btn btn-accent">Zadat poptávku</Link>
+            <Link href="/provider" className="btn btn-primary">Vložit svou nabídku</Link>
+          </div>
         </div>
       </section>
 
-      {/* Tiles */}
-      <section style={{marginTop:18}}>
+      {/* Dlaždice */}
+      <section style={{marginTop:22}}>
         <div className="grid-tiles">
           {tiles.map((t,i)=>(
-            <Link key={i} href={t.href} className="card" style={{padding:16,textDecoration:'none',color:'inherit'}}>
-              <div style={{fontWeight:700,marginBottom:6}}>{t.title}</div>
-              <div style={{color:'var(--pindo-muted)'}}>{t.desc}</div>
+            <Link key={i} href={t.href} className="tile" style={{textDecoration:'none',color:'inherit'}}>
+              <h3>{t.title}</h3>
+              <p>{t.desc}</p>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Feedback panel – tvoje trvalé pravidlo */}
-      <section style={{marginTop:22}}>
+      {/* žluté „sticky“ CTA jako na Kreezalidu – zde v rámci stránky */}
+      <section style={{marginTop:22, display:'flex', justifyContent:'flex-end'}}>
+        <Link href="/vytvoreni-poptavky" className="btn btn-accent">Zadat poptávku</Link>
+      </section>
+
+      {/* Feedback panel – tvoje pravidlo */}
+      <section style={{marginTop:18}}>
         <img
           src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png"
           alt="Feedback"
