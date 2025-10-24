@@ -1,35 +1,17 @@
-import Link from 'next/link';
-
-type Tile = { title:string; desc:string; href:string };
-const tiles: Tile[] = [
-  { title:'Řemesla', desc:'Elektrikáři, instalatéři, zedníci…', href:'/top-poskytovatel' },
-  { title:'Úklid & domácnost', desc:'Pravidelný i jednorázový úklid', href:'/top-poskytovatel' },
-  { title:'Zahrada & exteriér', desc:'Údržba, sekání, stromy', href:'/top-poskytovatel' },
-  { title:'Beauty & PMU', desc:'Obočí, rty, linky, kurzy', href:'/top-poskytovatel' },
-  { title:'Foto / Video / Audio', desc:'Fotografové, střih, zvuk', href:'/top-poskytovatel' },
-  { title:'Události / Svatby', desc:'Výzdoba, koordinace, catering', href:'/top-poskytovatel' },
-  { title:'Hlídání dětí & psi', desc:'Chůvy, doučování, venčení', href:'/top-poskytovatel' },
-  { title:'Digitální služby', desc:'Weby, grafika, AI, marketing', href:'/top-poskytovatel' },
-];
+import HeroSearch from "@/components/HeroSearch";
+import CategoryGrid from "@/components/CategoryGrid";
+import FeedbackPanel from "@/components/FeedbackPanel";
 
 export default function HomePage(){
   return (
     <>
-      {/* HERO s pozadím + vyhledáváním jako na Kreezalidu */}
-      <section className="hero-wrap card" style={{padding:0}}>
-        <div className="hero-bg" style={{backgroundImage:
-          'url(https://images.unsplash.com/photo-1581090700227-1e37b190418e?q=80&w=2000&auto=format&fit=crop)'
-        }} />
-        <div className="hero">
-          <h1>Tvůj portál pro všechny služby na jednom místě</h1>
-          <p>Nechce se ti hledat? Zadej poptávku a my oslovíme profíky ve tvém okolí za tebe.</p>
+      <HeroSearch />
+      <CategoryGrid />
+      <FeedbackPanel />
+    </>
+  );
+}
 
-          {/* search row: slova + oblast + tlačítko Hledat */}
-          <div className="search-row">
-            <input className="search-input" placeholder="Co potřebuješ řešit?" aria-label="Co potřebuješ řešit?" />
-            <input className="search-input" placeholder="Město / oblast" aria-label="Město nebo oblast" />
-            <button className="search-btn">Hledat</button>
-          </div>
 
           <div style={{display:'flex',gap:12,flexWrap:'wrap',marginTop:14}}>
             <Link href="/vytvoreni-poptavky" className="btn btn-accent">Zadat poptávku</Link>
