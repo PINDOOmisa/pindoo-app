@@ -426,4 +426,45 @@ html,body{background:var(--pindo-bg); color:var(--pindo-ink);}
     padding-top: calc( var(--hero-pt, 0px) + env(safe-area-inset-top) );
   }
 }
+/* Hero – víc místa pod CTA na mobilech */
+@media (max-width: 720px){
+  .hero .cta-row{ margin-top: 14px; margin-bottom: 22px; }   /* mezera okolo tlačítka */
+  .hero .hero-inner{ padding-bottom: 28px !important; }      /* rezerva uvnitř boxu */
+  .hero{ margin-bottom: 14px; }                               /* malý odstup od dlaždic */
+}
+/* ===== HEADER – základ ===== */
+.header{ background:#0E3A8A; color:#fff; z-index:100; }
+.header .container.bar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px; max-width:1200px; margin:0 auto; gap:12px;
+}
+.header .brand{ color:#fff; text-decoration:none; font-weight:800; letter-spacing:.4px; }
+.nav-links a{ color:#fff; text-decoration:none; margin:0 10px; font-weight:600; }
+.cta{ display:flex; gap:8px; }
+.btn-soft{ background:#fff; color:#0E3A8A; border-radius:10px; padding:8px 12px; font-weight:700; text-decoration:none; }
+
+/* ===== MOBIL: skryj nav + cta, zobraz hamburger ===== */
+.hamburger{ display:none; background:transparent; border:0; width:34px; height:28px; position:relative; }
+.hamburger span{ position:absolute; left:0; right:0; height:3px; background:#fff; border-radius:2px; }
+.hamburger span:nth-child(1){ top:4px; }
+.hamburger span:nth-child(2){ top:12px; }
+.hamburger span:nth-child(3){ top:20px; }
+
+@media (max-width: 860px){
+  .nav-links, .cta{ display:none; }
+  .hamburger{ display:block; }
+  /* zruš středový „proužek s textem“ efekt – nic se necentruje */
+  .header .container.bar{ justify-content:space-between; }
+}
+
+/* ===== MOBIL DROPDOWN ===== */
+.mobile-menu{
+  display:flex; flex-direction:column; gap:10px;
+  background:#0E3A8A; padding:12px 16px 16px;
+  border-top:1px solid rgba(255,255,255,.15);
+}
+.mobile-menu a{
+  color:#fff; text-decoration:none; font-weight:600; padding:6px 2px;
+}
+.mobile-menu hr{ border:none; border-top:1px solid rgba(255,255,255,.2); margin:4px 0; }
 
