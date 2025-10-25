@@ -510,4 +510,107 @@ html,body{background:var(--pindo-bg); color:var(--pindo-ink);}
 @media (max-width: 900px){
   .mobile-menu.open{ display:block !important; }
 }
+"use client";
+import Link from "next/link";
+
+type Cat = { slug: string; title: string; desc: string; };
+
+const CATS: Cat[] = [
+  { slug: "domacnost-uklid", title: "Domácnost & úklid", desc: "Pravidelný a jednorázový úklid" },
+  { slug: "remesla-stavebni", title: "Řemesla & stavební práce", desc: "Elektrikáři, instalatéři, zedníci…" },
+  { slug: "zahrada-exterier", title: "Zahrada & exteriér", desc: "Údržba, sekání, stromy" },
+  { slug: "krasa-pmu", title: "Krása & PMU", desc: "Obočí, rty, linky, kurzy" },
+  { slug: "zdravi-wellness", title: "Zdraví & wellness", desc: "Masáže, fyzio, výživa" },
+
+  { slug: "pece-seniori", title: "Péče o seniory", desc: "Osobní asistence, doprovod" },
+  { slug: "pece-deti", title: "Péče o děti", desc: "Chůvy, doučování, hlídání" },
+  { slug: "pece-zvirata", title: "Péče o zvířata", desc: "Venčení, hlídání, výcvik" },
+  { slug: "auto-doprava", title: "Auto, moto & doprava", desc: "Přeprava, servis, odtahy" },
+  { slug: "udalosti-svatby", title: "Události & svatby", desc: "Výzdoba, koordinace, catering" },
+
+  { slug: "foto-video-audio", title: "Foto, video & audio", desc: "Fotografové, střih, zvuk" },
+  { slug: "it-digital", title: "IT & digitální tvorba", desc: "Weby, grafika, AI, marketing" },
+  { slug: "podnikani-ucetnictvi", title: "Podnikání & administrativa", desc: "Účetnictví, právní služby" },
+  { slug: "uceni-hobby", title: "Učení, hobby & volný čas", desc: "Kurzy, lekce, vzdělávání" },
+  { slug: "nouzove-vyjezdy", title: "Nouzové výjezdy", desc: "Pohotovostní zásahy" },
+];
+
+export default function CategoryGrid() {
+  return (
+    <section className="cats-wrap">
+      <div className="cats">
+        {CATS.map((c) => (
+          <Link key={c.slug} href={`/kategorie/${c.slug}`} className="cat">
+            <span className="cat-ico" aria-hidden />
+            <span className="cat-title">{c.title}</span>
+            <span className="cat-desc">{c.desc}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+/* ===== Kategorie – kompaktní „kreezalid-like“ ===== */
+
+/* obal kvůli vlastní šířce bloku */
+.cats-wrap{ max-width: 1160px; margin: 0 auto; padding: 10px 12px 28px; }
+
+/* mřížka: desktop 5×3, tablet 4, mobil 3 */
+.cats{
+  display:grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;                 /* menší mezery */
+}
+
+@media (max-width: 1100px){
+  .cats{ grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 760px){
+  .cats{ grid-template-columns: repeat(3, 1fr); gap: 12px; }
+}
+
+/* karta – menší, s tenkým obrysem (ne těžký stín) */
+.cat{
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  min-height: 118px;         /* menší výška */
+  padding: 12px 10px;        /* kompaktnější vnitřek */
+  border: 1px solid #E6EAF2; /* „kreezalid“ tenký obrys */
+  border-radius: 14px;
+  background: #fff;
+  text-decoration:none;
+  color: #0F2350;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  box-shadow: 0 1px 0 rgba(16,24,40,0.02);
+}
+
+.cat:hover{
+  transform: translateY(-1px);
+  border-color:#CED6E6;
+  box-shadow: 0 4px 14px rgba(16,24,40,0.06);
+}
+
+/* ikonka – placeholder */
+.cat-ico{
+  width: 34px; height: 34px; border-radius:10px;
+  background: #EEF2FB; border:1px solid #DFE6F5;
+  margin-bottom: 10px;
+}
+
+/* texty – menší řezy */
+.cat-title{
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 1.2;
+  letter-spacing: .2px;
+  color:#0E2A6B;
+}
+.cat-desc{
+  margin-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.25;
+  color:#5E6B85;
+}
+
+/* poslední řádek a okraje – aby blok působil uceleně */
+.cats-wrap .cats{ margin-top: 6px; }
 
