@@ -1,8 +1,8 @@
 "use client";
 
-const VIDEO_URL = "/hero.mp4"; // může být i externí MP4
-
 export default function HeroSearch() {
+  const VIDEO_URL = "/hero.mp4"; // může být i externí odkaz
+
   return (
     <section className="hero">
       <div className="container">
@@ -16,7 +16,7 @@ export default function HeroSearch() {
               loop
               playsInline
               preload="auto"
-              poster="/hero-poster.jpg" // volitelné
+              poster="/hero-poster.jpg"
             />
             <div className="hero-overlay" />
           </div>
