@@ -1,41 +1,96 @@
-import Link from "next/link";
+"use client";
 
-// Ikonky si doplníš do pole níže (SVG/IMG URL). Ponechal jsem placeholder.
-const items = [
-  { href:"/remesla", title:"Řemesla", sub:"Elektrikáři, instalatéři, zedníci…", icon:"/icons/remesla.svg" },
-  { href:"/uklid", title:"Úklid & domácnost", sub:"Pravidelný i jednorázový úklid", icon:"/icons/uklid.svg" },
-  { href:"/zahrada", title:"Zahrada & exteriér", sub:"Údržba, sekání, stromy", icon:"/icons/zahrada.svg" },
-  { href:"/beauty", title:"Beauty & PMU", sub:"Obočí, rty, linky, kurzy", icon:"/icons/beauty.svg" },
-  { href:"/foto-video-audio", title:"Foto / Video / Audio", sub:"Fotografové, střih, zvuk", icon:"/icons/foto.svg" },
-  { href:"/udalosti", title:"Události / Svatby", sub:"Výzdoba, koordinace, catering", icon:"/icons/udalosti.svg" },
-  { href:"/hlidani", title:"Hlídání dětí & psi", sub:"Chůvy, doučování, venčení", icon:"/icons/hlidani.svg" },
-  { href:"/digital", title:"Digitální služby", sub:"Weby, grafika, AI, marketing", icon:"/icons/digital.svg" },
-];
+export default function CategoryGrid() {
+  const categories = [
+    { title: "Domácnost & úklid", desc: "Pravidelný a jednorázový úklid" },
+    { title: "Řemesla & stavební práce", desc: "Elektrikáři, instalatéři, zedníci…" },
+    { title: "Zahrada & exteriér", desc: "Údržba, sekání, stromy" },
+    { title: "Krása & PMU", desc: "Obočí, rty, linky, kurzy" },
+    { title: "Zdraví & wellness", desc: "Masáže, fyzio, výživa" },
+    { title: "Péče o seniory", desc: "Osobní asistence, doprovod" },
+    { title: "Péče o děti", desc: "Chůvy, doučování, hlídání" },
+    { title: "Péče o zvířata", desc: "Venčení, hlídání, výcvik" },
+    { title: "Auto, moto & doprava", desc: "Přeprava, servis, odtahy" },
+    { title: "Události & svatby", desc: "Výzdoba, koordinace, catering" },
+    { title: "Foto, video & audio", desc: "Fotografové, střih, zvuk" },
+    { title: "IT & digitální tvorba", desc: "Weby, grafika, AI, marketing" },
+    { title: "Podnikání & administrativa", desc: "Účetnictví, právní služby" },
+    { title: "Učení, hobby & volný čas", desc: "Kurzy, lekce, vzdělávání" },
+    { title: "Nouzové výjezdy", desc: "Pohotovostní zásahy" },
+  ];
 
-export default function CategoryGrid(){
   return (
-    <section className="kreez-grid">
-      <div className="container">
-        <div className="kreez-tiles">
-          {items.map((it)=>(
-            <Link key={it.href} href={it.href} className="kreez-tile">
-              <div className="kreez-ico">
-                {/* Pokud dáš IMG, měj čtverec 72–80px; nebo sem vlož přímo svoje SVG */}
-                <img src={it.icon} alt="" aria-hidden="true" />
-              </div>
-              <div className="kreez-txt">
-                <b>{it.title}</b>
-                <small>{it.sub}</small>
-              </div>
-            </Link>
-          ))}
-        </div>
+    <section
+      className="categories"
+      style={{
+        backgroundColor: "#F9FAFB",
+        padding: "70px 0 90px",
+      }}
+    >
+      <div
+        className="container"
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "0 20px",
+        }}
+      >
+        <div
+          className="grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "24px",
+          }}
+        >
+          {categories.map((cat, i) => (
+            <a
+              key={i}
+              href="#"
+              className="tile"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "150px",
+                backgroundColor: "#FFFFFF",
+                borderRadius: "16px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                textAlign: "center",
+                padding: "20px",
+                textDecoration: "none",
+                color: "#0E3A8A",
+                transition: "all 0.25s ease",
+              }}
+              onMouseOver={(e) =>
+                ((e.currentTarget.style.transform = "translateY(-4px)"),
+                (e.currentTarget.style.boxShadow = "0 8px 18px rgba(0,0,0,0.08)"))
+              }
+              onMouseOut={(e) =>
+                ((e.currentTarget.style.transform = "translateY(0)"),
+                (e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.05)"))
+              }
+            >
+              {/* ikonku doplníš sem */}
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  marginBottom: "12px",
+                  backgroundColor: "#E7EEF9",
+                  borderRadius: "10px",
+                }}
+              ></div>
 
-        <div className="kreez-more">
-          <a href="/vytvoreni-poptavky" className="btn btn-accent">Zadat poptávku</a>
+              <div style={{ fontWeight: 600, fontSize: "16px" }}>{cat.title}</div>
+              <div style={{ fontSize: "13px", color: "#6B7280", marginTop: "4px" }}>
+                {cat.desc}
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     </section>
   );
 }
-
