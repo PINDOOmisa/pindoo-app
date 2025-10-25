@@ -1,12 +1,13 @@
 "use client";
 
 export default function HeroSearch() {
-  // Video z Imgur (tvůj banner)
+  // video z Imgur
   const VIDEO_URL = "https://i.imgur.com/vnjTopk.mp4";
 
   return (
     <section className="hero">
-      <div className="container">
+      {/* full-bleed wrapper (100vw) */}
+      <div className="hero-bleed">
         <div className="hero-wrap">
           {/* video pozadí */}
           <div className="hero-media">
@@ -22,20 +23,26 @@ export default function HeroSearch() {
             <div className="hero-overlay" />
           </div>
 
-          {/* obsah */}
+          {/* obsah – vycentrovaný na šířku containeru */}
           <div className="hero-card">
-            <h1>Tvůj portál pro všechny služby na jednom místě</h1>
-            <p>Nechce se ti hledat? Zadej poptávku a my oslovíme profíky ve tvém okolí za tebe.</p>
+            <div className="hero-inner">
+              <h1>Tvůj portál pro všechny služby na jednom místě</h1>
 
-            <div className="search-row">
-              <input className="search-input" placeholder="Co potřebuješ řešit?" />
-              <input className="search-input search-loc" placeholder="Město / oblast" />
-              <button className="search-btn">Hledat</button>
-            </div>
+              <div className="search-row">
+                <input className="search-input" placeholder="Co potřebuješ řešit?" />
+                <input className="search-input search-loc" placeholder="Město / oblast" />
+                <button className="search-btn">Hledat</button>
+              </div>
 
-            <div className="cta-row">
-              <a href="/vytvoreni-poptavky" className="btn btn-accent">Zadat poptávku</a>
-              <a href="/provider" className="btn btn-primary">Vložit svou nabídku</a>
+              {/* přesunuto NAD tlačítko */}
+              <p className="hero-note">
+                Nechce se ti hledat? Zadej poptávku a my oslovíme profíky ve tvém okolí za tebe.
+              </p>
+
+              {/* jen jedno CTA */}
+              <div className="cta-row">
+                <a href="/vytvoreni-poptavky" className="btn btn-accent">Zadat poptávku</a>
+              </div>
             </div>
           </div>
         </div>

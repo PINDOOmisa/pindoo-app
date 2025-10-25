@@ -11,12 +11,13 @@ export default function Header(){
             <Link href="/jak-funguje">Jak funguje</Link>
             <Link href="/top-poskytovatel">TOP poskytovatelé</Link>
             <Link href="/napoveda">Nápověda</Link>
+            {/* chráněný vstup pro poskytovatele: nejdřív login, pak redirect na /provider */}
+            <Link href="/prihlaseni?next=/provider">Vložit svou nabídku</Link>
           </nav>
         </div>
         <div className="cta">
           <Link href="/registrace" className="btn btn-soft">Registrace</Link>
           <Link href="/prihlaseni" className="btn btn-soft">Přihlášení</Link>
-          <Link href="/provider" className="btn btn-accent">Vložit svou nabídku</Link>
         </div>
       </div>
     </header>
