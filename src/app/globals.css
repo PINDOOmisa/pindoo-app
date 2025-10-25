@@ -367,4 +367,33 @@ html,body{background:var(--pindo-bg); color:var(--pindo-ink);}
 /* --- HERO: drobný top spacing na mobilech, ať text nikdy „neleze“ pod bar --- */
 @media (max-width: 720px){
   .hero .hero-inner{ padding-top: 6px; }
+}/* === HERO: víc místa nahoře na mobilech + klidnější headline === */
+@media (max-width: 720px){
+  /* výška hero boxu trochu vyšší, ať se nic „neusekne“ */
+  .hero .hero-wrap{ min-height: 360px; }
+
+  /* hlavní obsah hero – přidejme výraznější horní odsazení */
+  .hero .hero-inner{ padding-top: 28px !important; padding-left: 12px; padding-right: 12px; }
+
+  /* headline menší a kompaktnější řádkování, aby se vešel nad formulář */
+  .hero .hero-inner h1{
+    font-size: 28px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 14px;
+  }
+
+  /* blok se search – lehce zmenšit vertikální mezeru nad a pod */
+  .search-row{ gap: 10px; margin-top: 8px; }
+
+  /* tlačítko na 100 % šířky (už to tak máš, jen jistota) */
+  .search-btn{ width: 100%; }
+
+  /* informativní věta + o chlup menší mezery, ať se vejde do boxu */
+  .hero-note{ margin-top: 10px; font-size: 15px; line-height: 1.35; }
 }
+
+/* iOS notch – bezpečný horní okraj kdekoliv (pro jistotu) */
+@supports (padding: env(safe-area-inset-top)) {
+  .hero .hero-inner{ padding-top: calc(28px + env(safe-area-inset-top)); }
+}
+
