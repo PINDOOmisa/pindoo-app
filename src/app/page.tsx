@@ -12,17 +12,13 @@ export default function HomePage(){
   );
 }
 
+<div style={{display:'flex',gap:12,flexWrap:'wrap',marginTop:14}}>
+  <a href="/vytvoreni-poptavky" className="btn btn-accent">Zadat poptávku</a>
+  <a href="/provider" className="btn btn-primary">Vložit svou nabídku</a>
+</div>
+</div>
+</section>
 
-          <div style={{display:'flex',gap:12,flexWrap:'wrap',marginTop:14}}>
-            <Link href="/vytvoreni-poptavky" className="btn btn-accent">Zadat poptávku</Link>
-            <Link href="/provider" className="btn btn-primary">Vložit svou nabídku</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Dlaždice */}
-      <section style={{marginTop:22}}>
-        <div className="grid-tiles">
           {tiles.map((t,i)=>(
             <Link key={i} href={t.href} className="tile" style={{textDecoration:'none',color:'inherit'}}>
               <h3>{t.title}</h3>
