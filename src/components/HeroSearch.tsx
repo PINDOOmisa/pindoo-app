@@ -34,14 +34,19 @@ export default function HeroSearch() {
                 <button className="search-btn">Hledat</button>
               </div>
 
-              {/* přesunuto NAD tlačítko */}
+              {/* VĚTŠÍ MEZERA pod vyhledáváním */}
+              <div style={{ marginTop: 36 }} />
+
+              {/* text nad CTA */}
               <p className="hero-note">
                 Nechce se ti hledat? Zadej poptávku a my oslovíme profíky ve tvém okolí za tebe.
               </p>
 
               {/* jen jedno CTA */}
               <div className="cta-row">
-                <a href="/vytvoreni-poptavky" className="btn btn-accent">Zadat poptávku</a>
+                <a href="/vytvoreni-poptavky" className="btn btn-accent">
+                  Zadat poptávku
+                </a>
               </div>
             </div>
           </div>
