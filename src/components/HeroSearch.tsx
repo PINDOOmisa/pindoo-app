@@ -1,7 +1,8 @@
 "use client";
 
 export default function HeroSearch() {
-  const VIDEO_URL = "/hero.mp4"; // může být i externí odkaz
+  // Video z Imgur (tvůj banner)
+  const VIDEO_URL = "https://i.imgur.com/vnjTopk.mp4";
 
   return (
     <section className="hero">
@@ -10,7 +11,7 @@ export default function HeroSearch() {
           {/* video pozadí */}
           <div className="hero-media">
             <video
-              src={https://i.imgur.com/vnjTopk.mp4}
+              src={VIDEO_URL}
               autoPlay
               muted
               loop
