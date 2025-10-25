@@ -1,9 +1,8 @@
 "use client";
 
-const VIDEO_URL =
-  "/hero.mp4"; // ⬅ může být i externí URL (MP4/H.264). Nahraj soubor do /public/hero.mp4
+const VIDEO_URL = "/hero.mp4"; // může být i externí MP4
 
-export default function HeroSearch(){
+export default function HeroSearch() {
   return (
     <section className="hero">
       <div className="container">
@@ -17,12 +16,12 @@ export default function HeroSearch(){
               loop
               playsInline
               preload="auto"
-              poster="/hero-poster.jpg"  // volitelné: nahraj do /public
+              poster="/hero-poster.jpg" // volitelné
             />
             <div className="hero-overlay" />
           </div>
 
-          {/* obsah jako na Kreezalidu */}
+          {/* obsah */}
           <div className="hero-card">
             <h1>Tvůj portál pro všechny služby na jednom místě</h1>
             <p>Nechce se ti hledat? Zadej poptávku a my oslovíme profíky ve tvém okolí za tebe.</p>
