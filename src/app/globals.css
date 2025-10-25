@@ -396,4 +396,34 @@ html,body{background:var(--pindo-bg); color:var(--pindo-ink);}
 @supports (padding: env(safe-area-inset-top)) {
   .hero .hero-inner{ padding-top: calc(28px + env(safe-area-inset-top)); }
 }
+/* === HERO – více místa a menší h1 na užších mobilech === */
+@media (max-width: 720px){
+  .hero .hero-wrap{ min-height: 420px; }                /* víc výšky pro obsah */
+  .hero .hero-inner{
+    padding-top: 44px !important;                       /* výraznější horní odsazení */
+    padding-bottom: 18px;                               /* jistota, ať nic „nesjede“ pod oblouk */
+  }
+  .hero .hero-inner h1{
+    font-size: 26px !important;
+    line-height: 1.15 !important;
+    margin-bottom: 12px;
+  }
+}
+
+/* iPhone 12/13/14/15 (š. 390 px) a menší – ještě o kousek víc místa */
+@media (max-width: 390px){
+  .hero .hero-wrap{ min-height: 460px; }                /* pohodlná rezerva */
+  .hero .hero-inner{ padding-top: 56px !important; }
+  .hero .hero-inner h1{
+    font-size: 22px !important;
+    line-height: 1.15 !important;
+  }
+}
+
+/* Bezpečná oblast pro notch / Dynamic Island – přičte se k paddingu */
+@supports (padding: env(safe-area-inset-top)) {
+  .hero .hero-inner{
+    padding-top: calc( var(--hero-pt, 0px) + env(safe-area-inset-top) );
+  }
+}
 
