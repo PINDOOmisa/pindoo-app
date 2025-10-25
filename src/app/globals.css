@@ -467,4 +467,47 @@ html,body{background:var(--pindo-bg); color:var(--pindo-ink);}
   color:#fff; text-decoration:none; font-weight:600; padding:6px 2px;
 }
 .mobile-menu hr{ border:none; border-top:1px solid rgba(255,255,255,.2); margin:4px 0; }
+/* ===== HEADER – základ ===== */
+.header{ background:#0E3A8A; color:#fff; z-index:100; }
+.header .container.bar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px; max-width:1200px; margin:0 auto; gap:12px;
+}
+.header .brand{ color:#fff; text-decoration:none; font-weight:800; letter-spacing:.4px; }
+.nav-links a{ color:#fff; text-decoration:none; margin:0 10px; font-weight:600; white-space:nowrap; }
+.cta{ display:flex; gap:8px; }
+.btn-soft{ background:#fff; color:#0E3A8A; border-radius:10px; padding:8px 12px; font-weight:700; text-decoration:none; }
+
+/* ===== HAMBURGER ===== */
+.hamburger{ display:none; background:transparent; border:0; width:34px; height:28px; position:relative; }
+.hamburger span{ position:absolute; left:0; right:0; height:3px; background:#fff; border-radius:2px; }
+.hamburger span:nth-child(1){ top:4px; }
+.hamburger span:nth-child(2){ top:12px; }
+.hamburger span:nth-child(3){ top:20px; }
+
+/* ===== MOBIL: skryj vodorovné menu + CTA, zobraz hamburger ===== */
+@media (max-width: 900px){
+  .nav-links, .cta{ display:none !important; }   /* <- nic v modrém pruhu */
+  .hamburger{ display:block !important; }
+  .header .container.bar{ justify-content:space-between; }
+}
+
+/* ===== MOBIL DROPDOWN ===== */
+.mobile-menu{
+  display:none; position:relative; background:#0E3A8A;
+  padding:12px 16px 16px; border-top:1px solid rgba(255,255,255,.15);
+}
+.mobile-menu a{ color:#fff; text-decoration:none; font-weight:600; padding:8px 2px; display:block; }
+.mobile-menu hr{ border:none; border-top:1px solid rgba(255,255,255,.2); margin:8px 0; }
+.mobile-menu .mobile-cta{
+  display:flex; gap:10px; margin-top:8px;
+}
+.mobile-menu .mobile-cta a{
+  background:#fff; color:#0E3A8A; border-radius:10px; padding:10px 12px;
+  text-align:center; flex:1;
+}
+
+@media (max-width: 900px){
+  .mobile-menu.open{ display:block !important; }
+}
 
