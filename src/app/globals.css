@@ -95,3 +95,69 @@ html,body{background:var(--pindo-bg); color:var(--pindo-ink);}
 .feedback .panel{display:flex; gap:18px; background:#fff; border:1px solid var(--pindo-border); border-radius:18px; padding:18px; align-items:center; box-shadow:var(--shadow);}
 .feedback img{width:100px; height:100px; border-radius:14px; object-fit:cover;}
 .feedback .txt{flex:1;}
+/* ====== HERO s videem (Kreezalid-like) ====== */
+.hero{ margin:18px 0 28px; }
+.hero .hero-wrap{ position:relative; border-radius:20px; overflow:hidden; box-shadow:var(--shadow); }
+.hero .hero-media{ position:relative; height: 340px; } /* výška banneru jako na Kreezalidu */
+.hero .hero-media video{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+}
+.hero .hero-overlay{ position:absolute; inset:0;
+  background: linear-gradient(120deg, rgba(15,23,42,.4), rgba(14,58,138,.5));
+}
+/* vnitřní karta s obsahem */
+.hero .hero-card{
+  position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center;
+  padding: 22px 24px; color:#fff;
+}
+.hero .hero-card h1{ font-size:44px; line-height:1.1; margin:0 0 10px; text-shadow:0 2px 10px rgba(0,0,0,.25); }
+.hero .hero-card p{ margin:0 0 14px; opacity:.95; }
+.search-row{ display:flex; gap:12px; flex-wrap:wrap; }
+.search-input{ flex:1 1 380px; min-width:240px; border:0; padding:14px 16px; border-radius:12px; outline:none; }
+.search-loc{ flex:0 1 300px; }
+.search-btn{ padding:14px 18px; border-radius:12px; background:#1f2547; color:#fff; border:0; font-weight:700; }
+.cta-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
+@media (max-width: 960px){
+  .hero .hero-media{ height: 280px; }
+  .hero .hero-card h1{ font-size:30px; }
+}
+
+/* ====== GRID DLAŽDIC – přesné rozvržení ====== */
+.kreez-grid{ margin: 8px 0 26px; }
+.kreez-tiles{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);  /* desktop 4 sloupce jako na Kreezalidu */
+  gap: 16px;
+}
+@media (max-width: 1100px){ .kreez-tiles{ grid-template-columns: repeat(3, 1fr);} }
+@media (max-width: 720px){ .kreez-tiles{ grid-template-columns: repeat(2, 1fr);} }
+
+/* dlaždice: fixní výška, ikona vlevo, text vpravo */
+.kreez-tile{
+  display:flex; align-items:center; gap:14px;
+  background:#fff; border:1px solid var(--pindo-border);
+  border-radius:16px; padding:16px 16px;
+  min-height:108px;  /* výška „Kreezalid“ karty */
+  text-decoration:none; color:inherit;
+  box-shadow:0 2px 10px rgba(2,21,72,.04);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.kreez-tile:hover{
+  transform: translateY(-2px);
+  box-shadow:0 10px 22px rgba(2,21,72,.10);
+}
+
+.kreez-ico{
+  width:80px; height:80px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  background:#f6f8ff;  /* světlé pozadí pod ikonou (jako Kreezalid) */
+  flex:0 0 auto; overflow:hidden;
+}
+.kreez-ico img{ width:64px; height:64px; object-fit:contain; }
+
+.kreez-txt b{ display:block; font-weight:700; margin-bottom:4px; font-size:16px; }
+.kreez-txt small{ color:var(--pindo-muted); font-size:13px; display:block; }
+
+.kreez-more{ display:flex; justify-content:flex-end; margin-top:10px; }
+
+/* ====== Header beze změny (už máš) ====== */
