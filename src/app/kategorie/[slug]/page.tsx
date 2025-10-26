@@ -1,27 +1,27 @@
+// src/app/kategorie/[slug]/page.tsx
 import * as CatMod from "@/data/categories";
 import Link from "next/link";
-import SubcategoryGrid from "@/components/SubcategoryGrid";
 
 type Raw = any;
 
 function extractRaw(mod: any): Raw[] {
-  const pick =
-    (Array.isArray(mod) && mod) ||
-    (Array.isArray(mod?.default) && mod.default) ||
-    (Array.isArray(mod?.categories) && mod.categories) ||
-    (Array.isArray(mod?.default?.categories) && mod.default.categories) ||
-    (Array.isArray(mod?.data) && mod.data) ||
-    (Array.isArray(mod?.default?.data) && mod.default.data) ||
+  const candidates: any[] = [];
+  if (Array.isArray(mod)) candidates.push(mod);
+  if (Array.isArray(mod?.default)) candidates.push(mod.default);
+  if (Array.isArray(mod?.categories)) candidates.push(mod.categories);
+  if (Array.isArray(mod?.default?.categories)) candidates.push(mod.default.categories);
+  if (Array.isArray(mod?.data)) candidates.push(mod.data);
+  if (Array.isArray(mod?.default?.data)) candidates.push(mod.default.data);
+  const found =
+    candidates.find((v) => Array.isArray(v)) ||
     Object.values(mod || {}).find((v: any) => Array.isArray(v)) ||
     Object.values(mod?.default || {}).find((v: any) => Array.isArray(v)) ||
     [];
-  return (pick as Raw[]) || [];
+  return (found as Raw[]) || [];
 }
 
 const normTitle = (x: Raw) =>
-  (x?.title ?? x?.name ?? x?.label ?? x?.CategoryName ?? x?.Title ?? "")
-    .toString()
-    .trim();
+  (x?.title ?? x?.name ?? x?.label ?? x?.CategoryName ?? x?.Title ?? "").toString().trim();
 
 function normSlug(x: Raw, title: string) {
   const s =
@@ -39,8 +39,7 @@ function normSlug(x: Raw, title: string) {
 }
 
 function extractSubcats(raw: Raw): Raw[] {
-  // Podporujeme různé názvy polí z exportů
-  const cands =
+  const c =
     raw?.subcategories ??
     raw?.subcategory ??
     raw?.children ??
@@ -50,15 +49,8 @@ function extractSubcats(raw: Raw): Raw[] {
     raw?.Children ??
     raw?.Items ??
     null;
-
-  if (Array.isArray(cands)) return cands;
-
-  // Některé exporty mají objekt s klíči -> vezmeme values
-  if (cands && typeof cands === "object") {
-    const vals = Object.values(cands).filter((v) => !!v);
-    if (vals.length && Array.isArray(vals[0])) return vals[0] as Raw[];
-    return vals as Raw[];
-  }
+  if (Array.isArray(c)) return c;
+  if (c && typeof c === "object") return Object.values(c) as Raw[];
   return [];
 }
 
@@ -73,7 +65,6 @@ export async function generateStaticParams() {
 
 export default function CategoryDetailPage({ params }: { params: { slug: string } }) {
   const list = extractRaw(CatMod);
-
   const found = list
     .map((x) => {
       const title = normTitle(x);
@@ -84,16 +75,17 @@ export default function CategoryDetailPage({ params }: { params: { slug: string 
 
   if (!found) {
     return (
-      <main className="container">
-        <h1 className="h1">Kategorie nenalezena</h1>
-        <p className="muted">
+      <main style={{ maxWidth: "1140px", margin: "0 auto", padding: "24px 16px" }}>
+        <h1 style={{ margin: 0, fontSize: "1.75rem", fontWeight: 800, color: "#0f172a" }}>
+          Kategorie nenalezena
+        </h1>
+        <p style={{ color: "#6b7280" }}>
           Zpět na{" "}
-          <Link href="/kategorie" className="link">
+          <Link href="/kategorie" style={{ color: "#0E3A8A", textDecoration: "underline" }}>
             všechny kategorie
           </Link>
           .
         </p>
-        <style jsx>{styles}</style>
       </main>
     );
   }
@@ -101,30 +93,100 @@ export default function CategoryDetailPage({ params }: { params: { slug: string 
   const subs = extractSubcats(found.raw);
 
   return (
-    <main className="container">
-      <div className="top">
-        <Link href="/kategorie" className="link">
+    <main style={{ maxWidth: "1140px", margin: "0 auto", padding: "24px 16px" }}>
+      <div style={{ marginBottom: 8 }}>
+        <Link href="/kategorie" style={{ color: "#0E3A8A", textDecoration: "underline" }}>
           ← Zpět na kategorie
         </Link>
       </div>
 
-      <h1 className="h1">{found.title}</h1>
+      <h1 style={{ margin: 0, fontSize: "1.75rem", fontWeight: 800, color: "#0f172a" }}>
+        {found.title}
+      </h1>
 
-      <div className="spacer" />
+      <div style={{ height: 12 }} />
 
-      {/* Grid podkategorií */}
-      <SubcategoryGrid categorySlug={found.slug} items={subs} />
-
-      <style jsx>{styles}</style>
+      {/* Grid podkategorií (ikonka nahoře + název) */}
+      <div
+        style={{
+          background: "#f6f7fb",
+          border: "1px solid rgba(226,232,240,.7)",
+          borderRadius: 22,
+          padding: "18px 0",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1140px",
+            margin: "0 auto",
+            padding: "0 16px",
+            display: "grid",
+            gap: 14,
+            gridTemplateColumns: "repeat(2, 1fr)",
+          }}
+        >
+          {subs.map((s: any) => {
+            const t =
+              (s?.title ?? s?.name ?? s?.label ?? s?.Title ?? "").toString().trim() || "Bez názvu";
+            const subSlug = normSlug(s, t);
+            return (
+              <Link
+                key={subSlug}
+                href={`/kategorie/${found.slug}/${subSlug}`}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  minHeight: 110,
+                  padding: 16,
+                  background: "#fff",
+                  border: "1px solid #e6eaf2",
+                  borderRadius: 14,
+                  boxShadow: "0 1px 0 rgba(2,8,23,.04)",
+                  color: "#0E3A8A",
+                  textDecoration: "none",
+                }}
+              >
+                <span
+                  style={{
+                    position: "relative",
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    border: "2px solid #0E3A8A",
+                    display: "grid",
+                    placeItems: "center",
+                    overflow: "hidden",
+                    background: "#fff",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: "50%",
+                      border: "2px solid #0E3A8A",
+                      opacity: 0.3,
+                    }}
+                  />
+                </span>
+                <div
+                  style={{
+                    fontSize: ".95rem",
+                    fontWeight: 700,
+                    color: "#0E3A8A",
+                    textAlign: "center",
+                  }}
+                >
+                  {t}
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
     </main>
   );
 }
-
-const styles = `
-.container { max-width: 1140px; margin: 0 auto; padding: 24px 16px; }
-.top { margin-bottom: 8px; }
-.h1 { font-size: 1.75rem; font-weight: 800; margin: 0; color: #0f172a; }
-.muted { color: #6b7280; }
-.link { color: #0E3A8A; text-decoration: underline; }
-.spacer { height: 12px; }
-`;
