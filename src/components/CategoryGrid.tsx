@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CATEGORIES } from "../data/categories";
 
 export default function CategoryGrid() {
-  // Deduplikace pro případ, že data obsahují dvojáky
+  // deduplikace podle slug (kdyby data přišla 2×)
   const seen = new Set<string>();
   const unique = CATEGORIES.filter((c) => {
     if (seen.has(c.slug)) return false;
