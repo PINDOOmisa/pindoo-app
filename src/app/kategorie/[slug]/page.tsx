@@ -1,4 +1,5 @@
-import { CATEGORIES } from "@/data/categories";
+import { CATEGORIES } from "../../../data/categories";
+
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ slug: c.slug }));

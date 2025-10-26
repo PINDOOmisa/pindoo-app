@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { CATEGORIES } from "@/data/categories";
+import { CATEGORIES } from "../../data/categories";
+
 
 export default function CategoriesPage() {
   return (
