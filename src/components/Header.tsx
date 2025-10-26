@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 export default function Header() {
   const [open, setOpen] = useState(false);
 
-  // Při přechodu na desktop zavři mobilní menu
+  // Zavři mobilní menu při přepnutí na desktop
   useEffect(() => {
     const onResize = () => {
       if (window.innerWidth > 900) setOpen(false);
@@ -16,85 +16,104 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="header">
-      <div className="container-bar">
-        {/* Logo vlevo */}
-        <Link href="/" className="brand" aria-label="PINDOO domů">
-          <Image
-            src="/pindoo-logo.png"
-            alt="PINDOO"
-            width={160}
-            height={42}
-            priority
-            unoptimized
-          />
-        </Link>
+    <>
+      <header className="header">
+        <div className="container-bar">
+          {/* Logo vlevo */}
+          <Link href="/" className="brand" aria-label="PINDOO domů">
+            <Image
+              src="/pindoo-logo.png"
+              alt="PINDOO"
+              width={160}
+              height={40}
+              priority
+              unoptimized
+            />
+          </Link>
 
-        {/* Desktop navigace */}
-        <nav className="nav-links">
-          <Link href="/jak-to-funguje">Jak to funguje?</Link>
-          <Link href="/napoveda">Centrum nápovědy</Link>
-        </nav>
+          {/* Navigace */}
+          <nav className="nav-links">
+            <Link href="/jak-to-funguje">Jak to funguje?</Link>
+            <Link href="/napoveda">Centrum nápovědy</Link>
+          </nav>
 
-        {/* Desktop CTA */}
-        <div className="cta">
-          <Link href="/registrace" className="btn btn-outline">Registrace</Link>
-          <Link href="/prihlaseni" className="btn btn-filled">Přihlášení</Link>
+          {/* CTA */}
+          <div className="cta">
+            <Link href="/registrace" className="btn btn-outline">
+              Registrace
+            </Link>
+            <Link href="/prihlaseni" className="btn btn-filled">
+              Přihlášení
+            </Link>
+          </div>
+
+          {/* Hamburger */}
+          <button
+            className="hamburger"
+            aria-label="Otevřít menu"
+            aria-expanded={open}
+            onClick={() => setOpen(v => !v)}
+          >
+            <span /><span /><span />
+          </button>
         </div>
 
-        {/* Hamburger (mobil) */}
-        <button
-          className="hamburger"
-          aria-label="Otevřít menu"
-          aria-expanded={open}
-          onClick={() => setOpen(v => !v)}
-        >
-          <span /><span /><span />
-        </button>
-      </div>
-
-      {/* Mobilní dropdown */}
-      <div className={`mobile-menu ${open ? "open" : ""}`} role="menu">
-        <Link href="/jak-to-funguje" role="menuitem" onClick={() => setOpen(false)}>
-          Jak to funguje?
-        </Link>
-        <Link href="/napoveda" role="menuitem" onClick={() => setOpen(false)}>
-          Centrum nápovědy
-        </Link>
-        <hr />
-        <Link href="/prihlaseni" role="menuitem" onClick={() => setOpen(false)}>
-          Vložit nabídku
-        </Link>
-        <div className="mobile-cta">
-          <Link href="/registrace" onClick={() => setOpen(false)}>Registrace</Link>
-          <Link href="/prihlaseni" onClick={() => setOpen(false)}>Přihlášení</Link>
+        {/* Mobilní menu */}
+        <div className={`mobile-menu ${open ? "open" : ""}`} role="menu">
+          <Link href="/jak-to-funguje" onClick={() => setOpen(false)}>
+            Jak to funguje?
+          </Link>
+          <Link href="/napoveda" onClick={() => setOpen(false)}>
+            Centrum nápovědy
+          </Link>
+          <hr />
+          <Link href="/prihlaseni" onClick={() => setOpen(false)}>
+            Vložit nabídku
+          </Link>
+          <div className="mobile-cta">
+            <Link href="/registrace" onClick={() => setOpen(false)}>
+              Registrace
+            </Link>
+            <Link href="/prihlaseni" onClick={() => setOpen(false)}>
+              Přihlášení
+            </Link>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* === STYLY === */}
+      {/* Rezervní mezera pod headerem – zabrání zajíždění banneru */}
+      <div className="header-spacer" />
+
       <style jsx>{`
-        .header{
-          position: sticky;
+        .header {
+          position: fixed;         /* pevně nahoře */
           top: 0;
+          left: 0;
+          right: 0;
           z-index: 50;
           background: rgba(255,255,255,.97);
           backdrop-filter: saturate(180%) blur(8px);
           border-bottom: 1px solid #e5e7eb;
+          height: 64px;            /* pevná výška */
         }
-        .container-bar{
+        .header-spacer {
+          height: 64px;            /* rezerva pod headerem */
+        }
+
+        .container-bar {
           max-width: 1200px;
           margin: 0 auto;
           padding: 0 20px;
-          height: 64px;                      /* pevná, nízká výška */
+          height: 64px;
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 20px;
-          line-height: 1.1;                  /* anti-roztažení */
         }
-        .brand{ display:inline-flex; align-items:center; text-decoration:none; line-height:0; }
 
-        .nav-links{ display:none; gap:32px; align-items:center; }
+        .brand { display:inline-flex; align-items:center; line-height:0; }
+
+        .nav-links { display:none; gap:32px; align-items:center; }
         @media (min-width:900px){ .nav-links{ display:flex; } }
         .nav-links :global(a){
           font-size:15.5px; font-weight:600; color:#0e3a8a; text-decoration:none; transition:color .2s;
@@ -103,9 +122,7 @@ export default function Header() {
 
         .cta{ display:none; align-items:center; gap:10px; }
         @media (min-width:640px){ .cta{ display:flex; } }
-        .btn{
-          padding:8px 14px; border-radius:12px; font-weight:600; text-decoration:none; font-size:15px; transition:all .2s;
-        }
+        .btn{ padding:8px 14px; border-radius:12px; font-weight:600; text-decoration:none; font-size:15px; transition:all .2s; }
         .btn-outline{ color:#0e3a8a; border:1px solid #d1d5db; background:#fff; }
         .btn-outline:hover{ background:#f7f8fa; }
         .btn-filled{ color:#fff; background:#0e3a8a; border:1px solid #0e3a8a; }
@@ -126,6 +143,6 @@ export default function Header() {
         .mobile-menu :global(a){ color:#0e3a8a; font-weight:600; text-decoration:none; }
         .mobile-cta{ display:flex; gap:14px; margin-top:8px; }
       `}</style>
-    </header>
+    </>
   );
 }
