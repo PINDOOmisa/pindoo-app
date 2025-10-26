@@ -7,7 +7,7 @@ import * as CatMod from "@/data/categories";
 type Raw = any;
 type Cat = { title: string; slug: string; description?: string; iconUrl?: string | null };
 
-// ——— extrakce dat z libovolného exportu ———
+// ——— extrakce + normalizace ———
 function extractRaw(mod: any): Raw[] {
   const pick =
     (Array.isArray(mod) && mod) ||
@@ -21,18 +21,15 @@ function extractRaw(mod: any): Raw[] {
     [];
   return (pick as Raw[]) || [];
 }
-
-function normTitle(x: Raw): string {
-  return (x?.title ?? x?.name ?? x?.label ?? x?.CategoryName ?? x?.Title ?? "").toString().trim();
-}
-function normSlug(x: Raw, title: string): string {
+const normTitle = (x: Raw) =>
+  (x?.title ?? x?.name ?? x?.label ?? x?.CategoryName ?? x?.Title ?? "").toString().trim();
+function normSlug(x: Raw, title: string) {
   const s =
     x?.slug ??
     x?.Slug ??
     x?.id ??
     x?.Id ??
-    title
-      .toLowerCase()
+    title.toLowerCase()
       .normalize("NFD")
       .replace(/\p{Diacritic}/gu, "")
       .replace(/[^a-z0-9]+/g, "-")
@@ -43,24 +40,22 @@ function normDesc(x: Raw): string | undefined {
   const d =
     x?.description ??
     x?.desc ??
-    x?.subtitle ??         // ✅ přidáno
-    x?.subTitle ??         // ✅ přidáno
+    x?.subtitle ??
+    x?.subTitle ??
     x?.shortDescription ??
     x?.Subtitle ??
     x?.Description;
-  return d ? d.toString() : undefined;
+  return d ? d.toString().trim() : undefined;
 }
-function normIcon(x: Raw): string | null {
-  return (x?.iconUrl ?? x?.icon ?? x?.image ?? null) || null;
-}
+const normIcon = (x: Raw) => (x?.iconUrl ?? x?.icon ?? x?.image ?? null) || null;
+
 function normalize(raw: Raw): Cat | null {
   const title = normTitle(raw);
   if (!title) return null;
-  const slug = normSlug(raw, title);
-  return { title, slug, description: normDesc(raw), iconUrl: normIcon(raw) };
+  return { title, slug: normSlug(raw, title), description: normDesc(raw), iconUrl: normIcon(raw) };
 }
-function dedupeKeepOrder(items: Cat[]): Cat[] {
-  const seen = new Set<string>(), out: Cat[] = [];
+function dedupeKeepOrder(items: Cat[]) {
+  const seen = new Set<string>(); const out: Cat[] = [];
   for (const it of items) {
     const key = (it.slug || it.title).toLowerCase();
     if (!seen.has(key)) { seen.add(key); out.push(it); }
@@ -69,9 +64,7 @@ function dedupeKeepOrder(items: Cat[]): Cat[] {
 }
 
 export default function CategoryGrid() {
-  const categories = dedupeKeepOrder(
-    extractRaw(CatMod).map(normalize).filter(Boolean) as Cat[]
-  );
+  const categories = dedupeKeepOrder(extractRaw(CatMod).map(normalize).filter(Boolean) as Cat[]);
 
   return (
     <section className="p-root">
@@ -82,31 +75,39 @@ export default function CategoryGrid() {
 
       <div className="p-shell">
         <div className="p-grid">
-          {categories.map((cat) => (
-            <Link key={cat.slug} href={`/kategorie/${cat.slug}`} className="p-card">
-              <div className="p-badge">
-                {cat.iconUrl ? (
-                  <Image
-                    src={cat.iconUrl}
-                    alt={cat.title}
-                    fill
-                    sizes="72px"
-                    style={{ objectFit: "contain", padding: 10 }}
-                  />
-                ) : (
-                  <span className="p-init">{cat.title.slice(0, 2).toUpperCase()}</span>
-                )}
-              </div>
+          {categories.map((cat) => {
+            const sub = (cat.description || "").trim();
+            const hideSub =
+              !sub ||
+              sub.toLowerCase() === cat.title.toLowerCase(); // ❌ neschovávej duplicitní podtitul
+            return (
+              <Link key={cat.slug} href={`/kategorie/${cat.slug}`} className="p-card">
+                <div className="p-badge">
+                  {cat.iconUrl ? (
+                    <Image
+                      src={cat.iconUrl}
+                      alt={cat.title}
+                      fill
+                      sizes="76px"
+                      style={{ objectFit: "contain", padding: 10 }}
+                    />
+                  ) : (
+                    <span className="p-init">{cat.title.slice(0, 2).toUpperCase()}</span>
+                  )}
+                </div>
 
-              <h3 className="p-title">{cat.title}</h3>
-              <p className="p-desc">
-                {cat.description || "Zobrazit detail →"}
-              </p>
-            </Link>
-          ))}
+                <h3 className="p-title">{cat.title}</h3>
+                {!hideSub ? (
+                  <p className="p-desc">{sub}</p>
+                ) : (
+                  <p className="p-desc muted">Zobrazit detail →</p>
+                )}
+              </Link>
+            );
+          })}
         </div>
 
-        {/* Feedback panel — povinný */}
+        {/* Feedback panel */}
         <div className="p-feedback">
           <div className="p-feedback-row">
             <Image
@@ -120,9 +121,7 @@ export default function CategoryGrid() {
               <p><strong>Chybí tu nějaká kategorie nebo něco nesedí?</strong></p>
               <p>Dej nám vědět a upravíme to. Díky za zpětnou vazbu!</p>
             </div>
-            <a href="mailto:hello@pindoo.cz?subject=Zpetna%20vazba%20kategorie" className="p-feedback-btn">
-              Napsat feedback
-            </a>
+            <a href="mailto:hello@pindoo.cz?subject=Zpetna%20vazba%20kategorie" className="p-feedback-btn">Napsat feedback</a>
           </div>
         </div>
       </div>
@@ -131,7 +130,7 @@ export default function CategoryGrid() {
         :root {
           --blue: #0E3A8A;
           --ink: #0f172a;
-          --muted: #64748b;
+          --muted: #6B7280;
           --border: #E6EAF2;
           --bg: #F6F7FB;
           --card: #fff;
@@ -151,7 +150,7 @@ export default function CategoryGrid() {
           padding: 22px;
         }
 
-        .p-grid { display: grid; gap: 22px; grid-template-columns: 1fr; }
+        .p-grid { display: grid; gap: 26px; grid-template-columns: 1fr; }
         @media (min-width: 640px) { .p-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 768px) { .p-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 1024px){ .p-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -159,35 +158,35 @@ export default function CategoryGrid() {
 
         .p-card {
           display: flex; flex-direction: column; align-items: center; text-align: center;
-          gap: 12px; padding: 24px 18px 20px;
+          gap: 10px; padding: 26px 18px 22px;
           background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
           text-decoration: none; color: inherit;
           box-shadow: 0 1px 0 rgba(2,8,23,.04);
           transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-          min-height: 172px;
+          min-height: 176px;
         }
         .p-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: #dfe5f0; }
 
-        /* KRUH větší + jemný shadow jako původně */
+        /* větší, světlejší kruh nahoře (jako původně) */
         .p-badge {
           position: relative;
-          width: 64px; height: 64px;        /* větší kruh */
+          width: 72px; height: 72px;
           border-radius: 50%;
-          background: #EAF1FE;              /* světlejší modrá „bublina“ */
-          border: 1px solid #e6ecf6;
-          box-shadow: inset 0 -2px 6px rgba(14,58,138,.06);
+          background: #EEF3FF;
+          border: 1px solid #E3EAF8;
           overflow: hidden;
           display: grid; place-items: center;
         }
         .p-init { color: var(--blue); font-weight: 800; font-size: 1.05rem; letter-spacing: .3px; }
 
-        .p-title { margin: 4px 0 0; font-size: 1.06rem; font-weight: 800; color: var(--ink); }
+        .p-title { margin: 6px 0 0; font-size: 1.06rem; font-weight: 800; color: var(--ink); }
         .p-desc {
-          margin: 2px 0 0; color: var(--muted); font-size: .92rem;
-          max-width: 18ch;                 /* jako dřív – krátký 1řádkový podtitul */
-          overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+          margin: 2px 0 0; font-size: .92rem; color: var(--muted);
+          max-width: 22ch;                         /* 1 řádek, krátký podtitul */
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
           min-height: 1.4em;
         }
+        .p-desc.muted { color: #8A94A6; }
 
         .p-feedback { margin-top: 18px; background: #fff; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
         .p-feedback-row { display: flex; gap: 14px; padding: 14px; align-items: center; flex-wrap: wrap; }
