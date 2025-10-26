@@ -1,616 +1,155 @@
+/* =========================
+   PINDOO — GLOBALS (CSS only)
+   ========================= */
+
+/* --- Theme tokens --- */
 :root{
   --pindo-bg:#F7F7F9;
   --pindo-card:#FFFFFF;
   --pindo-border:#E6E6EF;
+  --pindo-ink:#0f172a;
   --pindo-text:#1F2937;
   --pindo-muted:#6B7280;
-  --pindo-primary:#0E3A8A;         /* tmavá PINDOO modrá */
-  --pindo-primary-weak:#E7EEF9;
-  --pindo-accent:#F5B301;          /* žluté CTA jako na Kreezalidu */
+
+  --pindo-blue:#0E3A8A;
+  --pindo-blue-700:#123a7a;
+  --pindo-yellow:#F5B301;
+
   --radius:18px;
-  --shadow:0 18px 38px rgba(14,58,138,.08),0 4px 10px rgba(14,58,138,.08);
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--pindo-bg);color:var(--pindo-text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
-a{color:inherit}
-.container{max-width:1180px;margin:0 auto;padding:0 18px}
-.card{background:var(--pindo-card);border:1px solid var(--pindo-border);border-radius:var(--radius);box-shadow:var(--shadow)}
-.grid-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
-.btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:14px;padding:12px 18px;transition:.15s transform}
-.btn:hover{transform:translateY(-1px)}
-.btn-primary{background:var(--pindo-primary);color:#fff}
-.btn-ghost{background:var(--pindo-primary-weak);color:var(--pindo-primary)}
-.btn-accent{background:var(--pindo-accent);color:#111}
-.badges{display:flex;gap:10px;flex-wrap:wrap;color:var(--pindo-muted);font-size:14px}
-.header{background:var(--pindo-primary);color:#fff;position:sticky;top:0;z-index:50}
-.nav{display:flex;gap:14px;flex-wrap:wrap}
-.nav a{color:#fff;text-decoration:none;opacity:.95}
-.nav a:hover{opacity:1}
-.logo{font-weight:900;letter-spacing:.2px}
-footer{color:var(--pindo-muted);text-align:center;padding:22px}
-
-/* HERO */
-.hero-wrap{position:relative;border-radius:22px;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background-position:center;background-size:cover;filter:brightness(.7)}
-.hero{position:relative;padding:46px 24px}
-.hero h1{margin:0 0 12px;font-size:44px;line-height:1.08;color:#fff}
-.hero p{margin:0 0 16px;color:#f2f6ff;font-size:18px}
-
-/* search row jako na Kreezalidu */
-.search-row{display:grid;grid-template-columns:2fr 1.1fr auto;gap:12px}
-.search-input{background:#fff;border:1px solid var(--pindo-border);border-radius:12px;padding:14px 16px;font-size:16px}
-.search-btn{background:#221A56;color:#fff;border:none;border-radius:12px;padding:14px 22px;font-weight:800;cursor:pointer}
-@media (max-width:720px){
-  .hero{padding:28px 16px}
-  .hero h1{font-size:30px}
-  .search-row{grid-template-columns:1fr}
-}
-
-/* karty na homepage */
-.tile{padding:18px;border-radius:18px;border:1px solid var(--pindo-border);box-shadow:var(--shadow)}
-.tile h3{margin:0 0 6px;font-size:18px}
-.tile p{margin:0;color:var(--pindo-muted)}
-:root{
-  --pindo-blue:#0E3A8A; --pindo-blue-700:#123a7a;
-  --pindo-ink:#0f172a; --pindo-muted:#6b7280;
-  --pindo-card:#fff; --pindo-bg:#f6f7fb; --pindo-border:#e5e7eb;
-  --pindo-yellow:#F4B301;
   --shadow:0 12px 28px rgba(2,21,72,.08), 0 2px 6px rgba(2,21,72,.06);
 }
-html,body{background:var(--pindo-bg); color:var(--pindo-ink);}
-.container{max-width:1180px; margin-inline:auto; padding-inline:16px;}
-.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 18px; border-radius:12px; font-weight:600; text-decoration:none; border:0; cursor:pointer;}
-.btn-primary{background:var(--pindo-blue); color:#fff;}
-.btn-primary:hover{background:var(--pindo-blue-700);}
-.btn-accent{background:var(--pindo-yellow); color:#111827;}
-.btn-soft{background:#eef2ff; color:var(--pindo-blue);}
-.header{background:var(--pindo-blue); color:#fff;}
-.header .bar{display:flex; align-items:center; justify-content:space-between; height:64px;}
-.header .left{display:flex; align-items:center; gap:22px;}
-.header .brand{font-weight:800; letter-spacing:.3px;}
-.header nav a{color:#cfe0ff; text-decoration:none; font-weight:600;}
-.header nav{display:flex; gap:18px;}
-.header .cta{display:flex; gap:10px;}
-@media (max-width:840px){ .header nav{display:none;} }
 
-.hero{margin:18px 0 28px;}
-.hero .card{background:linear-gradient(120deg,#5f6ad6,#783ca8 40%,#0e3a8a);
-  padding:22px; border-radius:20px; box-shadow:var(--shadow); color:#fff;}
-.hero h1{font-size:44px; line-height:1.1; margin:12px 0;}
-.hero p{opacity:.92; margin:0 0 16px;}
-.search-row{display:flex; gap:12px; flex-wrap:wrap;}
-.search-input{flex:1 1 380px; min-width:240px; border:0; padding:14px 16px; border-radius:12px; outline:none;}
-.search-loc{flex:0 1 300px;}
-.search-btn{padding:14px 18px; border-radius:12px; background:#1f2547; color:#fff; border:0; font-weight:700;}
-@media (max-width:840px){ .hero h1{font-size:30px;} }
+/* --- Resets / base --- */
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; background:var(--pindo-bg); color:var(--pindo-ink); font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; }
+a{ color:inherit; text-decoration:none; }
+.container{ max-width:1180px; margin-inline:auto; padding-inline:16px; }
 
-.tiles{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin:14px 0 26px;}
-@media (max-width:1020px){ .tiles{grid-template-columns:repeat(3,1fr);} }
-@media (max-width:720px){ .tiles{grid-template-columns:repeat(2,1fr);} }
-.tile{background:var(--pindo-card); border:1px solid var(--pindo-border); border-radius:16px; padding:18px; box-shadow:0 2px 10px rgba(2,21,72,.04);}
-.tile b{display:block; margin-bottom:6px;}
-.tile small{color:var(--pindo-muted);}
+/* --- Buttons --- */
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 18px; border-radius:12px; font-weight:700; border:0; cursor:pointer; }
+.btn-primary{ background:var(--pindo-blue); color:#fff; }
+.btn-primary:hover{ background:varp(--pindo-blue-700); }
+.btn-accent{ background:var(--pindo-yellow); color:#111827; }
+.btn-soft{ background:#eef2ff; color:var(--pindo-blue); }
 
-.feedback{margin:26px 0 46px;}
-.feedback .panel{display:flex; gap:18px; background:#fff; border:1px solid var(--pindo-border); border-radius:18px; padding:18px; align-items:center; box-shadow:var(--shadow);}
-.feedback img{width:100px; height:100px; border-radius:14px; object-fit:cover;}
-.feedback .txt{flex:1;}
-/* ====== HERO s videem (Kreezalid-like) ====== */
-.hero{ margin:18px 0 28px; }
-.hero .hero-wrap{ position:relative; border-radius:20px; overflow:hidden; box-shadow:var(--shadow); }
-.hero .hero-media{ position:relative; height: 340px; } /* výška banneru jako na Kreezalidu */
-.hero .hero-media video{
-  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-}
-.hero .hero-overlay{ position:absolute; inset:0;
-  background: linear-gradient(120deg, rgba(15,23,42,.4), rgba(14,58,138,.5));
-}
-/* vnitřní karta s obsahem */
-.hero .hero-card{
-  position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center;
-  padding: 22px 24px; color:#fff;
-}
-.hero .hero-card h1{ font-size:44px; line-height:1.1; margin:0 0 10px; text-shadow:0 2px 10px rgba(0,0,0,.25); }
-.hero .hero-card p{ margin:0 0 14px; opacity:.95; }
-.search-row{ display:flex; gap:12px; flex-wrap:wrap; }
-.search-input{ flex:1 1 380px; min-width:240px; border:0; padding:14px 16px; border-radius:12px; outline:none; }
-.search-loc{ flex:0 1 300px; }
-.search-btn{ padding:14px 18px; border-radius:12px; background:#1f2547; color:#fff; border:0; font-weight:700; }
-.cta-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
-@media (max-width: 960px){
-  .hero .hero-media{ height: 280px; }
-  .hero .hero-card h1{ font-size:30px; }
-}
+/* =========================
+   HEADER (desktop + mobile)
+   ========================= */
+.header{ background:var(--pindo-blue); color:#fff; position:sticky; top:0; z-index:100; }
+@supports (padding: env(safe-area-inset-top)) { .header{ padding-top:env(safe-area-inset-top); } }
 
-/* ====== GRID DLAŽDIC – přesné rozvržení ====== */
-.kreez-grid{ margin: 8px 0 26px; }
-.kreez-tiles{
-  display:grid;
-  grid-template-columns: repeat(4, 1fr);  /* desktop 4 sloupce jako na Kreezalidu */
-  gap: 16px;
-}
-@media (max-width: 1100px){ .kreez-tiles{ grid-template-columns: repeat(3, 1fr);} }
-@media (max-width: 720px){ .kreez-tiles{ grid-template-columns: repeat(2, 1fr);} }
-
-/* dlaždice: fixní výška, ikona vlevo, text vpravo */
-.kreez-tile{
-  display:flex; align-items:center; gap:14px;
-  background:#fff; border:1px solid var(--pindo-border);
-  border-radius:16px; padding:16px 16px;
-  min-height:108px;  /* výška „Kreezalid“ karty */
-  text-decoration:none; color:inherit;
-  box-shadow:0 2px 10px rgba(2,21,72,.04);
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-.kreez-tile:hover{
-  transform: translateY(-2px);
-  box-shadow:0 10px 22px rgba(2,21,72,.10);
-}
-
-.kreez-ico{
-  width:80px; height:80px; border-radius:14px;
-  display:flex; align-items:center; justify-content:center;
-  background:#f6f8ff;  /* světlé pozadí pod ikonou (jako Kreezalid) */
-  flex:0 0 auto; overflow:hidden;
-}
-.kreez-ico img{ width:64px; height:64px; object-fit:contain; }
-
-.kreez-txt b{ display:block; font-weight:700; margin-bottom:4px; font-size:16px; }
-.kreez-txt small{ color:var(--pindo-muted); font-size:13px; display:block; }
-
-.kreez-more{ display:flex; justify-content:flex-end; margin-top:10px; }
-
-/* ====== Header beze změny (už máš) ====== */
-/* ===== HERO full-bleed (100vw) ===== */
-.hero { margin: 0 0 28px; }
-.hero .hero-bleed{
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  width: 100vw;
-}
-.hero .hero-wrap{ position: relative; height: 380px; }
-.hero .hero-media{ position: relative; height: 100%; }
-.hero .hero-media video{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.hero .hero-overlay{ position: absolute; inset: 0; background: linear-gradient(120deg, rgba(15,23,42,.40), rgba(14,58,138,.55)); }
-
-/* obsah – centrován na max 1180px */
-.hero .hero-card{
-  position: absolute; inset: 0; display: flex; align-items: center;
-}
-.hero .hero-inner{
-  width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 16px; color: #fff;
-}
-.hero .hero-inner h1{ font-size: 44px; line-height: 1.1; margin: 0 0 12px; text-shadow: 0 2px 10px rgba(0,0,0,.25); }
-.search-row{ display: flex; gap: 12px; flex-wrap: wrap; }
-.search-input{ flex: 1 1 380px; min-width: 240px; border: 0; padding: 14px 16px; border-radius: 12px; outline: none; }
-.search-loc{ flex: 0 1 300px; }
-.search-btn{ padding: 14px 18px; border-radius: 12px; background: #1f2547; color: #fff; border: 0; font-weight: 700; }
-.hero-note{ margin: 12px 0 8px; opacity: .95; }
-.cta-row{ display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
-
-@media (max-width: 960px){
-  .hero .hero-wrap{ height: 300px; }
-  .hero .hero-inner h1{ font-size: 30px; }
-}
-/* ===== Categories (5x3 desktop, responsive) ===== */
-.categories{ background:#F9FAFB; padding:70px 0 90px; }
-.tiles-grid{
-  display:grid;
-  gap:24px;
-  /* desktop fixně 5 sloupců */
-  grid-template-columns: repeat(5, 1fr);
-}
-@media (max-width: 1200px){ .tiles-grid{ grid-template-columns: repeat(4, 1fr); } }
-@media (max-width: 992px){  .tiles-grid{ grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 768px){  .tiles-grid{ grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 460px){  .tiles-grid{ grid-template-columns: 1fr; } }
-
-.tile{
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  height:150px; padding:20px; text-align:center; text-decoration:none;
-  background:#fff; border-radius:16px; color:#0E3A8A;
-  box-shadow:0 4px 12px rgba(0,0,0,.05);
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-.tile:hover{ transform: translateY(-4px); box-shadow:0 10px 22px rgba(0,0,0,.10); }
-
-.tile-ico{
-  width:40px; height:40px; margin-bottom:12px; border-radius:10px; background:#E7EEF9;
-}
-.tile-title{ font-weight:700; font-size:16px; }
-.tile-sub{ font-size:13px; color:#6B7280; margin-top:4px; }
-/* ===== Mobile/Tablet fixes ===== */
-
-/* Hero: menší výška, větší čitelnost, stack formuláře */
-@media (max-width: 960px){
-  .hero .hero-wrap{ height: 320px; }
-  .hero .hero-inner h1{ font-size:30px; }
-}
-@media (max-width: 720px){
-  .hero .hero-wrap{ height: 300px; }
-  .hero .hero-inner{ padding: 0 12px; }
-  .search-row{ flex-direction: column; gap:10px; }
-  .search-input{ flex: 1 1 auto; width:100%; }
-  .search-btn{ width:100%; }
-  .cta-row{ justify-content: stretch; }
-  .btn.btn-accent{ width:100%; }
-  .hero-note{ margin-top: 10px; }
-}
-
-/* Header: trochu víc vzduchu a wrap na malých šířkách */
-@media (max-width: 860px){
-  .header .bar{ gap:10px; }
-  .header nav a{ padding: 8px 10px; }
-}
-@media (max-width: 720px){
-  .header .bar{ flex-direction: column; align-items: flex-start; }
-  .header .cta{ width:100%; display:flex; gap:8px; }
-  .header .cta .btn{ flex:1; }
-}
-/* ===== HEADER layout fix ===== */
-.header {
-  background: #0e3a8a;
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-.header .container.bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.header .brand {
-  color: white;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.header nav a {
-  color: white;
-  text-decoration: none;
-  margin: 0 10px;
-  font-weight: 500;
-}
-
-.header .cta {
-  display: flex;
-  gap: 10px;
-}
-
-.btn-soft {
-  background: white;
-  color: #0e3a8a;
-  border-radius: 8px;
-  padding: 6px 14px;
-  font-weight: 600;
-  font-size: 14px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.btn-soft:hover {
-  background: #e7eef9;
-}
-
-/* ===== MOBILE FIX ===== */
-@media (max-width: 860px) {
-  .header .container.bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .header nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .header .cta {
-    width: 100%;
-    display: flex;
-    gap: 8px;
-  }
-
-  .header .cta .btn-soft {
-    flex: 1;
-    text-align: center;
-    font-size: 15px;
-  }
-}
-/* --- HEADER: robustní chování + mobile fix --- */
-.header {
-  background: #0e3a8a;
-  color: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-/* iOS notch – bezpečný horní okraj */
-@supports (padding: env(safe-area-inset-top)) {
-  .header { padding-top: env(safe-area-inset-top); }
-}
-
-.header .container.bar{
-  display:flex; justify-content:space-between; align-items:center;
-  padding: 12px 16px; max-width:1200px; margin:0 auto; gap:12px;
-}
-
-.header .brand{ color:#fff; text-decoration:none; font-weight:800; letter-spacing:.4px; }
-.header nav a{ color:#fff; text-decoration:none; margin:0 10px; font-weight:600; white-space:nowrap; }
-
-.header .cta{ display:flex; gap:8px; }
-.header .cta .btn-soft{
-  background:#fff; color:#0e3a8a; border-radius:10px; padding:8px 12px;
-  font-weight:700; font-size:15px; text-decoration:none;
-}
-
-/* --- MOBIL ≤ 720 px: vypnout sticky, hezky zalomit, 100% šířky tlačítek --- */
-@media (max-width: 720px){
-  .header{ position: static; }                     /* <- zásadní: žádné překrývání hera */
-  .header .container.bar{ flex-direction:column; align-items:flex-start; gap:10px; }
-  .header nav{ display:flex; flex-wrap:wrap; gap:8px; row-gap:6px; }
-  .header .cta{ width:100%; display:flex; gap:8px; }
-  .header .cta .btn-soft{ flex:1; text-align:center; padding:10px 12px; font-size:16px; }
-}
-
-/* --- HERO: drobný top spacing na mobilech, ať text nikdy „neleze“ pod bar --- */
-@media (max-width: 720px){
-  .hero .hero-inner{ padding-top: 6px; }
-}/* === HERO: víc místa nahoře na mobilech + klidnější headline === */
-@media (max-width: 720px){
-  /* výška hero boxu trochu vyšší, ať se nic „neusekne“ */
-  .hero .hero-wrap{ min-height: 360px; }
-
-  /* hlavní obsah hero – přidejme výraznější horní odsazení */
-  .hero .hero-inner{ padding-top: 28px !important; padding-left: 12px; padding-right: 12px; }
-
-  /* headline menší a kompaktnější řádkování, aby se vešel nad formulář */
-  .hero .hero-inner h1{
-    font-size: 28px !important;
-    line-height: 1.2 !important;
-    margin-bottom: 14px;
-  }
-
-  /* blok se search – lehce zmenšit vertikální mezeru nad a pod */
-  .search-row{ gap: 10px; margin-top: 8px; }
-
-  /* tlačítko na 100 % šířky (už to tak máš, jen jistota) */
-  .search-btn{ width: 100%; }
-
-  /* informativní věta + o chlup menší mezery, ať se vejde do boxu */
-  .hero-note{ margin-top: 10px; font-size: 15px; line-height: 1.35; }
-}
-
-/* iOS notch – bezpečný horní okraj kdekoliv (pro jistotu) */
-@supports (padding: env(safe-area-inset-top)) {
-  .hero .hero-inner{ padding-top: calc(28px + env(safe-area-inset-top)); }
-}
-/* === HERO – více místa a menší h1 na užších mobilech === */
-@media (max-width: 720px){
-  .hero .hero-wrap{ min-height: 420px; }                /* víc výšky pro obsah */
-  .hero .hero-inner{
-    padding-top: 44px !important;                       /* výraznější horní odsazení */
-    padding-bottom: 18px;                               /* jistota, ať nic „nesjede“ pod oblouk */
-  }
-  .hero .hero-inner h1{
-    font-size: 26px !important;
-    line-height: 1.15 !important;
-    margin-bottom: 12px;
-  }
-}
-
-/* iPhone 12/13/14/15 (š. 390 px) a menší – ještě o kousek víc místa */
-@media (max-width: 390px){
-  .hero .hero-wrap{ min-height: 460px; }                /* pohodlná rezerva */
-  .hero .hero-inner{ padding-top: 56px !important; }
-  .hero .hero-inner h1{
-    font-size: 22px !important;
-    line-height: 1.15 !important;
-  }
-}
-
-/* Bezpečná oblast pro notch / Dynamic Island – přičte se k paddingu */
-@supports (padding: env(safe-area-inset-top)) {
-  .hero .hero-inner{
-    padding-top: calc( var(--hero-pt, 0px) + env(safe-area-inset-top) );
-  }
-}
-/* Hero – víc místa pod CTA na mobilech */
-@media (max-width: 720px){
-  .hero .cta-row{ margin-top: 14px; margin-bottom: 22px; }   /* mezera okolo tlačítka */
-  .hero .hero-inner{ padding-bottom: 28px !important; }      /* rezerva uvnitř boxu */
-  .hero{ margin-bottom: 14px; }                               /* malý odstup od dlaždic */
-}
-/* ===== HEADER – základ ===== */
-.header{ background:#0E3A8A; color:#fff; z-index:100; }
 .header .container.bar{
   display:flex; align-items:center; justify-content:space-between;
-  padding:12px 16px; max-width:1200px; margin:0 auto; gap:12px;
+  padding:12px 16px; gap:12px; max-width:1200px; margin:0 auto;
 }
-.header .brand{ color:#fff; text-decoration:none; font-weight:800; letter-spacing:.4px; }
-.nav-links a{ color:#fff; text-decoration:none; margin:0 10px; font-weight:600; }
-.cta{ display:flex; gap:8px; }
-.btn-soft{ background:#fff; color:#0E3A8A; border-radius:10px; padding:8px 12px; font-weight:700; text-decoration:none; }
+.header .brand{ color:#fff; font-weight:800; letter-spacing:.4px; }
+.header nav a{ color:#cfe0ff; font-weight:600; margin:0 10px; }
+.header nav{ display:flex; gap:18px; }
+.header .cta{ display:flex; gap:8px; }
+.header .cta .btn-soft{ background:#fff; color:var(--pindo-blue); border-radius:10px; padding:8px 12px; }
 
-/* ===== MOBIL: skryj nav + cta, zobraz hamburger ===== */
+/* Hamburger trigger (hidden on desktop) */
 .hamburger{ display:none; background:transparent; border:0; width:34px; height:28px; position:relative; }
 .hamburger span{ position:absolute; left:0; right:0; height:3px; background:#fff; border-radius:2px; }
-.hamburger span:nth-child(1){ top:4px; }
-.hamburger span:nth-child(2){ top:12px; }
-.hamburger span:nth-child(3){ top:20px; }
+.hamburger span:nth-child(1){ top:4px; } .hamburger span:nth-child(2){ top:12px; } .hamburger span:nth-child(3){ top:20px; }
 
-@media (max-width: 860px){
-  .nav-links, .cta{ display:none; }
-  .hamburger{ display:block; }
-  /* zruš středový „proužek s textem“ efekt – nic se necentruje */
+/* Mobile header behavior */
+@media (max-width:900px){
   .header .container.bar{ justify-content:space-between; }
+  .header nav, .header .cta{ display:none !important; }
+  .hamburger{ display:block !important; }
 }
 
-/* ===== MOBIL DROPDOWN ===== */
+/* Slide-down mobile menu */
 .mobile-menu{
-  display:flex; flex-direction:column; gap:10px;
-  background:#0E3A8A; padding:12px 16px 16px;
+  display:none; background:var(--pindo-blue); padding:12px 16px 16px;
   border-top:1px solid rgba(255,255,255,.15);
 }
-.mobile-menu a{
-  color:#fff; text-decoration:none; font-weight:600; padding:6px 2px;
-}
-.mobile-menu hr{ border:none; border-top:1px solid rgba(255,255,255,.2); margin:4px 0; }
-/* ===== HEADER – základ ===== */
-.header{ background:#0E3A8A; color:#fff; z-index:100; }
-.header .container.bar{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px 16px; max-width:1200px; margin:0 auto; gap:12px;
-}
-.header .brand{ color:#fff; text-decoration:none; font-weight:800; letter-spacing:.4px; }
-.nav-links a{ color:#fff; text-decoration:none; margin:0 10px; font-weight:600; white-space:nowrap; }
-.cta{ display:flex; gap:8px; }
-.btn-soft{ background:#fff; color:#0E3A8A; border-radius:10px; padding:8px 12px; font-weight:700; text-decoration:none; }
-
-/* ===== HAMBURGER ===== */
-.hamburger{ display:none; background:transparent; border:0; width:34px; height:28px; position:relative; }
-.hamburger span{ position:absolute; left:0; right:0; height:3px; background:#fff; border-radius:2px; }
-.hamburger span:nth-child(1){ top:4px; }
-.hamburger span:nth-child(2){ top:12px; }
-.hamburger span:nth-child(3){ top:20px; }
-
-/* ===== MOBIL: skryj vodorovné menu + CTA, zobraz hamburger ===== */
-@media (max-width: 900px){
-  .nav-links, .cta{ display:none !important; }   /* <- nic v modrém pruhu */
-  .hamburger{ display:block !important; }
-  .header .container.bar{ justify-content:space-between; }
-}
-
-/* ===== MOBIL DROPDOWN ===== */
-.mobile-menu{
-  display:none; position:relative; background:#0E3A8A;
-  padding:12px 16px 16px; border-top:1px solid rgba(255,255,255,.15);
-}
-.mobile-menu a{ color:#fff; text-decoration:none; font-weight:600; padding:8px 2px; display:block; }
+.mobile-menu.open{ display:block; }
+.mobile-menu a{ color:#fff; font-weight:600; padding:8px 2px; display:block; }
 .mobile-menu hr{ border:none; border-top:1px solid rgba(255,255,255,.2); margin:8px 0; }
-.mobile-menu .mobile-cta{
-  display:flex; gap:10px; margin-top:8px;
+.mobile-menu .mobile-cta{ display:flex; gap:10px; margin-top:8px; }
+.mobile-menu .mobile-cta a{ background:#fff; color:var(--pindo-blue); border-radius:10px; padding:10px 12px; text-align:center; flex:1; }
+
+/* =========================
+   HERO (video, full-bleed)
+   ========================= */
+.hero{ margin:0 0 28px; }
+.hero .hero-bleed{
+  position:relative; left:50%; right:50%; margin-left:-50vw; margin-right:-50vw; width:100vw;
 }
-.mobile-menu .mobile-cta a{
-  background:#fff; color:#0E3A8A; border-radius:10px; padding:10px 12px;
-  text-align:center; flex:1;
+.hero .hero-wrap{ position:relative; height:380px; border-radius:20px; overflow:hidden; box-shadow:var(--shadow); }
+.hero .hero-media{ position:relative; height:100%; }
+.hero .hero-media video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.hero .hero-overlay{ position:absolute; inset:0; background:linear-gradient(120deg, rgba(15,23,42,.40), rgba(14,58,138,.55)); }
+
+/* Hero content centered to container */
+.hero .hero-card{ position:absolute; inset:0; display:flex; align-items:center; color:#fff; }
+.hero .hero-inner{ width:100%; max-width:1180px; margin:0 auto; padding:0 16px; }
+.hero .hero-inner h1{ font-size:44px; line-height:1.1; margin:0 0 12px; text-shadow:0 2px 10px rgba(0,0,0,.25); }
+.hero-note{ margin:12px 0 8px; opacity:.95; }
+.cta-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:8px; }
+
+/* Search row */
+.search-row{ display:flex; gap:12px; flex-wrap:wrap; }
+.search-input{ flex:1 1 380px; min-width:240px; border:0; padding:14px 16px; border-radius:12px; outline:none; background:#fff; }
+.search-loc{ flex:0 1 300px; }
+.search-btn{ padding:14px 18px; border-radius:12px; background:#1f2547; color:#fff; border:0; font-weight:700; }
+
+/* Hero responsiveness */
+@media (max-width:960px){
+  .hero .hero-wrap{ height:320px; }
+  .hero .hero-inner h1{ font-size:30px; }
+}
+@media (max-width:720px){
+  .hero .hero-wrap{ min-height:420px; }
+  .hero .hero-inner{ padding-top:44px !important; padding-bottom:22px; }
+  .hero .hero-inner h1{ font-size:26px; line-height:1.15; margin-bottom:12px; }
+  .search-row{ flex-direction:column; gap:10px; }
+  .search-input{ flex:1 1 auto; width:100%; }
+  .search-btn{ width:100%; }
+  .cta-row{ margin-top:14px; margin-bottom:22px; }
+}
+@media (max-width:390px){
+  .hero .hero-wrap{ min-height:460px; }
+  .hero .hero-inner{ padding-top:56px !important; }
+  .hero .hero-inner h1{ font-size:22px; line-height:1.15; }
+}
+@supports (padding: env(safe-area-inset-top)){
+  .hero .hero-inner{ padding-top:calc( var(--hero-pt,0px) + env(safe-area-inset-top) ); }
 }
 
-@media (max-width: 900px){
-  .mobile-menu.open{ display:block !important; }
-}
-"use client";
-import Link from "next/link";
+/* =========================
+   CATEGORIES (Kreezalid-like)
+   ========================= */
 
-type Cat = { slug: string; title: string; desc: string; };
+/* wrapper kvůli vlastní šířce bloku */
+.cats-wrap{ max-width:1160px; margin:0 auto; padding:10px 12px 28px; }
 
-const CATS: Cat[] = [
-  { slug: "domacnost-uklid", title: "Domácnost & úklid", desc: "Pravidelný a jednorázový úklid" },
-  { slug: "remesla-stavebni", title: "Řemesla & stavební práce", desc: "Elektrikáři, instalatéři, zedníci…" },
-  { slug: "zahrada-exterier", title: "Zahrada & exteriér", desc: "Údržba, sekání, stromy" },
-  { slug: "krasa-pmu", title: "Krása & PMU", desc: "Obočí, rty, linky, kurzy" },
-  { slug: "zdravi-wellness", title: "Zdraví & wellness", desc: "Masáže, fyzio, výživa" },
-
-  { slug: "pece-seniori", title: "Péče o seniory", desc: "Osobní asistence, doprovod" },
-  { slug: "pece-deti", title: "Péče o děti", desc: "Chůvy, doučování, hlídání" },
-  { slug: "pece-zvirata", title: "Péče o zvířata", desc: "Venčení, hlídání, výcvik" },
-  { slug: "auto-doprava", title: "Auto, moto & doprava", desc: "Přeprava, servis, odtahy" },
-  { slug: "udalosti-svatby", title: "Události & svatby", desc: "Výzdoba, koordinace, catering" },
-
-  { slug: "foto-video-audio", title: "Foto, video & audio", desc: "Fotografové, střih, zvuk" },
-  { slug: "it-digital", title: "IT & digitální tvorba", desc: "Weby, grafika, AI, marketing" },
-  { slug: "podnikani-ucetnictvi", title: "Podnikání & administrativa", desc: "Účetnictví, právní služby" },
-  { slug: "uceni-hobby", title: "Učení, hobby & volný čas", desc: "Kurzy, lekce, vzdělávání" },
-  { slug: "nouzove-vyjezdy", title: "Nouzové výjezdy", desc: "Pohotovostní zásahy" },
-];
-
-export default function CategoryGrid() {
-  return (
-    <section className="cats-wrap">
-      <div className="cats">
-        {CATS.map((c) => (
-          <Link key={c.slug} href={`/kategorie/${c.slug}`} className="cat">
-            <span className="cat-ico" aria-hidden />
-            <span className="cat-title">{c.title}</span>
-            <span className="cat-desc">{c.desc}</span>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
-/* ===== Kategorie – kompaktní „kreezalid-like“ ===== */
-
-/* obal kvůli vlastní šířce bloku */
-.cats-wrap{ max-width: 1160px; margin: 0 auto; padding: 10px 12px 28px; }
-
-/* mřížka: desktop 5×3, tablet 4, mobil 3 */
+/* mřížka – desktop 5×?, tablet 4, mobil 3 */
 .cats{
-  display:grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 14px;                 /* menší mezery */
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:14px;
 }
+@media (max-width:1100px){ .cats{ grid-template-columns:repeat(4,1fr); } }
+@media (max-width:760px){ .cats{ grid-template-columns:repeat(3,1fr); gap:12px; } }
 
-@media (max-width: 1100px){
-  .cats{ grid-template-columns: repeat(4, 1fr); }
-}
-@media (max-width: 760px){
-  .cats{ grid-template-columns: repeat(3, 1fr); gap: 12px; }
-}
-
-/* karta – menší, s tenkým obrysem (ne těžký stín) */
+/* karta – menší, tenký obrys, lehký stín */
 .cat{
   display:flex; flex-direction:column; align-items:center; text-align:center;
-  min-height: 118px;         /* menší výška */
-  padding: 12px 10px;        /* kompaktnější vnitřek */
-  border: 1px solid #E6EAF2; /* „kreezalid“ tenký obrys */
-  border-radius: 14px;
-  background: #fff;
-  text-decoration:none;
-  color: #0F2350;
-  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-  box-shadow: 0 1px 0 rgba(16,24,40,0.02);
+  min-height:118px; padding:12px 10px;
+  background:#fff; border:1px solid #E6EAF2; border-radius:14px;
+  color:#0F2350; box-shadow:0 1px 0 rgba(16,24,40,0.02);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
 }
+.cat:hover{ transform:translateY(-1px); border-color:#CED6E6; box-shadow:0 4px 14px rgba(16,24,40,0.06); }
 
-.cat:hover{
-  transform: translateY(-1px);
-  border-color:#CED6E6;
-  box-shadow: 0 4px 14px rgba(16,24,40,0.06);
-}
+/* ikonka placeholder (nahraď vlastní) */
+.cat-ico{ width:34px; height:34px; border-radius:10px; background:#EEF2FB; border:1px solid #DFE6F5; margin-bottom:10px; }
 
-/* ikonka – placeholder */
-.cat-ico{
-  width: 34px; height: 34px; border-radius:10px;
-  background: #EEF2FB; border:1px solid #DFE6F5;
-  margin-bottom: 10px;
-}
+/* texty */
+.cat-title{ font-weight:800; font-size:15px; line-height:1.2; letter-spacing:.2px; color:#0E2A6B; }
+.cat-desc{ margin-top:6px; font-size:12.5px; line-height:1.25; color:#5E6B85; }
 
-/* texty – menší řezy */
-.cat-title{
-  font-weight: 800;
-  font-size: 15px;
-  line-height: 1.2;
-  letter-spacing: .2px;
-  color:#0E2A6B;
-}
-.cat-desc{
-  margin-top: 6px;
-  font-size: 12.5px;
-  line-height: 1.25;
-  color:#5E6B85;
-}
-
-/* poslední řádek a okraje – aby blok působil uceleně */
-.cats-wrap .cats{ margin-top: 6px; }
-
+/* drobný top offset, ať blok působí uceleně */
+.cats-wrap .cats{ margin-top:6px; }
