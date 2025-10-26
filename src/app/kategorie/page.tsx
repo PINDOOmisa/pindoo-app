@@ -1,9 +1,12 @@
-import CategoryGrid from "../../components/CategoryGrid";
+import CategoryGrid from "@/components/CategoryGrid";
+
+export const metadata = {
+  title: "Kategorie | PINDOO",
+};
 
 export default function CategoriesPage() {
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-extrabold mb-6">Kategorie služeb</h1>
+    <main className="container mx-auto max-w-7xl px-4 py-8">
       <CategoryGrid />
     </main>
   );
