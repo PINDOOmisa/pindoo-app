@@ -153,3 +153,30 @@ a{ color:inherit; text-decoration:none; }
 
 /* drobný top offset, ať blok působí uceleně */
 .cats-wrap .cats{ margin-top:6px; }
+/* === FORCE: kompaktní dlaždice jako na Kreezalidu (priorita) === */
+body .cats-wrap{ max-width:1160px; margin:6px auto 28px; padding:0 12px; }
+body .cats{
+  display:grid !important;
+  grid-template-columns:repeat(5,1fr) !important; /* desktop 5× */
+  gap:14px !important;
+}
+@media (max-width:1100px){ body .cats{ grid-template-columns:repeat(4,1fr) !important; } }
+@media (max-width:760px){  body .cats{ grid-template-columns:repeat(3,1fr) !important; gap:12px !important; } }
+
+body a.cat{
+  display:flex !important; flex-direction:column; align-items:center; text-align:center;
+  min-height:118px; padding:12px 10px;
+  background:#fff; border:1px solid #E6EAF2; border-radius:14px;
+  color:#0F2350; text-decoration:none;
+  box-shadow:0 1px 0 rgba(16,24,40,.02);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+body a.cat:hover{ transform:translateY(-1px); border-color:#CED6E6; box-shadow:0 4px 14px rgba(16,24,40,.06); }
+
+body .cat-ico{
+  width:34px; height:34px; border-radius:10px;
+  background:#EEF2FB; border:1px solid #DFE6F5;
+  margin-bottom:10px; flex:0 0 auto;
+}
+body .cat-title{ font-weight:800; font-size:15px; line-height:1.2; letter-spacing:.2px; color:#0E2A6B; }
+body .cat-desc{ margin-top:6px; font-size:12.5px; line-height:1.25; color:#5E6B85; }
