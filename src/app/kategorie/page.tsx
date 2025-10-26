@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { CATEGORIES } from "@/data/categories";
 
-export default function CategoryGrid() {
+export default function CategoriesPage() {
   return (
-    <section className="max-w-7xl mx-auto px-4 py-8">
+    <main className="max-w-7xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-extrabold mb-6">Kategorie služeb</h1>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {CATEGORIES.map((c) => (
           <Link
@@ -19,6 +20,6 @@ export default function CategoryGrid() {
           </Link>
         ))}
       </div>
-    </section>
+    </main>
   );
 }
