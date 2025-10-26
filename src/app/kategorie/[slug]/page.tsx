@@ -1,28 +1,29 @@
-import categoriesRaw from "@/data/categories"; // nebo { categories } dle souboru
+import * as CatMod from "@/data/categories";
 import Link from "next/link";
+import SubcategoryGrid from "@/components/SubcategoryGrid";
 
 type Raw = any;
 
-function toArray(): Raw[] {
-  return Array.isArray(categoriesRaw)
-    ? categoriesRaw
-    : Array.isArray((categoriesRaw as any)?.categories)
-    ? (categoriesRaw as any).categories
-    : [];
+function extractRaw(mod: any): Raw[] {
+  const pick =
+    (Array.isArray(mod) && mod) ||
+    (Array.isArray(mod?.default) && mod.default) ||
+    (Array.isArray(mod?.categories) && mod.categories) ||
+    (Array.isArray(mod?.default?.categories) && mod.default.categories) ||
+    (Array.isArray(mod?.data) && mod.data) ||
+    (Array.isArray(mod?.default?.data) && mod.default.data) ||
+    Object.values(mod || {}).find((v: any) => Array.isArray(v)) ||
+    Object.values(mod?.default || {}).find((v: any) => Array.isArray(v)) ||
+    [];
+  return (pick as Raw[]) || [];
 }
 
-function normTitle(x: Raw): string {
-  return (
-    x?.title ??
-    x?.name ??
-    x?.label ??
-    x?.CategoryName ??
-    x?.Title ??
-    ""
-  ).toString().trim();
-}
+const normTitle = (x: Raw) =>
+  (x?.title ?? x?.name ?? x?.label ?? x?.CategoryName ?? x?.Title ?? "")
+    .toString()
+    .trim();
 
-function normSlug(x: Raw, title: string): string {
+function normSlug(x: Raw, title: string) {
   const s =
     x?.slug ??
     x?.Slug ??
@@ -37,8 +38,32 @@ function normSlug(x: Raw, title: string): string {
   return s.toString().trim();
 }
 
+function extractSubcats(raw: Raw): Raw[] {
+  // Podporujeme různé názvy polí z exportů
+  const cands =
+    raw?.subcategories ??
+    raw?.subcategory ??
+    raw?.children ??
+    raw?.subs ??
+    raw?.items ??
+    raw?.Subcategories ??
+    raw?.Children ??
+    raw?.Items ??
+    null;
+
+  if (Array.isArray(cands)) return cands;
+
+  // Některé exporty mají objekt s klíči -> vezmeme values
+  if (cands && typeof cands === "object") {
+    const vals = Object.values(cands).filter((v) => !!v);
+    if (vals.length && Array.isArray(vals[0])) return vals[0] as Raw[];
+    return vals as Raw[];
+  }
+  return [];
+}
+
 export async function generateStaticParams() {
-  const list = toArray();
+  const list = extractRaw(CatMod);
   return list.map((x) => {
     const title = normTitle(x);
     const slug = normSlug(x, title);
@@ -47,7 +72,7 @@ export async function generateStaticParams() {
 }
 
 export default function CategoryDetailPage({ params }: { params: { slug: string } }) {
-  const list = toArray();
+  const list = extractRaw(CatMod);
 
   const found = list
     .map((x) => {
@@ -59,36 +84,47 @@ export default function CategoryDetailPage({ params }: { params: { slug: string 
 
   if (!found) {
     return (
-      <main className="container mx-auto max-w-4xl px-4 py-12">
-        <h1 className="text-2xl font-semibold text-slate-900">Kategorie nenalezena</h1>
-        <p className="text-slate-600 mt-2">
-          Zpět na <Link href="/kategorie" className="text-[#0E3A8A] underline">všechny kategorie</Link>.
+      <main className="container">
+        <h1 className="h1">Kategorie nenalezena</h1>
+        <p className="muted">
+          Zpět na{" "}
+          <Link href="/kategorie" className="link">
+            všechny kategorie
+          </Link>
+          .
         </p>
+        <style jsx>{styles}</style>
       </main>
     );
   }
 
-  const desc =
-    found.raw?.description ??
-    found.raw?.desc ??
-    found.raw?.shortDescription ??
-    "";
+  const subs = extractSubcats(found.raw);
 
   return (
-    <main className="container mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-6">
-        <Link href="/kategorie" className="text-sm text-[#0E3A8A] underline">← Zpět na kategorie</Link>
+    <main className="container">
+      <div className="top">
+        <Link href="/kategorie" className="link">
+          ← Zpět na kategorie
+        </Link>
       </div>
-      <h1 className="text-3xl md:text-4xl font-semibold text-slate-900">{found.title}</h1>
-      {desc ? <p className="text-slate-600 mt-3 max-w-3xl">{desc}</p> : null}
 
-      {/* TODO: sem později doplníme subkategorie/filtry/listingy */}
-      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
-        <p className="text-slate-700">
-          Připravujeme přehled poskytovatelů a filtrů pro „{found.title}“. 
-          Zatím můžeš prozkoumat ostatní <Link href="/kategorie" className="text-[#0E3A8A] underline">kategorie</Link>.
-        </p>
-      </div>
+      <h1 className="h1">{found.title}</h1>
+
+      <div className="spacer" />
+
+      {/* Grid podkategorií */}
+      <SubcategoryGrid categorySlug={found.slug} items={subs} />
+
+      <style jsx>{styles}</style>
     </main>
   );
 }
+
+const styles = `
+.container { max-width: 1140px; margin: 0 auto; padding: 24px 16px; }
+.top { margin-bottom: 8px; }
+.h1 { font-size: 1.75rem; font-weight: 800; margin: 0; color: #0f172a; }
+.muted { color: #6b7280; }
+.link { color: #0E3A8A; text-decoration: underline; }
+.spacer { height: 12px; }
+`;
