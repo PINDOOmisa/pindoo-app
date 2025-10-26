@@ -1,3 +1,4 @@
+// server component – žádný "use client", žádné styled-jsx
 import Link from "next/link";
 
 export default function SubcategoryPage({
@@ -7,24 +8,18 @@ export default function SubcategoryPage({
 }) {
   const { slug, subslug } = params;
   return (
-    <main className="container">
-      <p className="back">
-        <Link href={`/kategorie/${slug}`} className="link">
+    <main style={{ maxWidth: "1140px", margin: "0 auto", padding: "24px 16px" }}>
+      <p style={{ marginBottom: 8 }}>
+        <Link href={`/kategorie/${slug}`} style={{ color: "#0E3A8A", textDecoration: "underline" }}>
           ← Zpět na {slug}
         </Link>
       </p>
-      <h1 className="h1">Podkategorie: {subslug}</h1>
-      <p className="muted">
-        Sem přijde výpis poskytovatelů / filtrů pro tuto podkategorii.
+      <h1 style={{ fontSize: "1.6rem", fontWeight: 800, margin: 0, color: "#0f172a" }}>
+        Podkategorie: {subslug}
+      </h1>
+      <p style={{ color: "#6b7280" }}>
+        (Sem přijde výpis poskytovatelů / filtrování pro tuto podkategorii.)
       </p>
-
-      <style jsx>{`
-        .container { max-width: 1140px; margin: 0 auto; padding: 24px 16px; }
-        .back { margin-bottom: 8px; }
-        .h1 { font-size: 1.6rem; font-weight: 800; margin: 0; color: #0f172a; }
-        .muted { color: #6b7280; }
-        .link { color: #0E3A8A; text-decoration: underline; }
-      `}</style>
     </main>
   );
 }
