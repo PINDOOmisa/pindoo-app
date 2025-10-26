@@ -29,6 +29,7 @@ export default function HeroSearch() {
           <button className="search-btn">Hledat</button>
         </div>
 
+        {/* věta dál od search baru a blíž k tlačítku */}
         <p className="hero-sub">
           Nechce se ti hledat? Zadej poptávku a my oslovíme profíky ve tvém okolí za tebe.
         </p>
@@ -37,15 +38,20 @@ export default function HeroSearch() {
       </div>
 
       <style jsx>{`
-        /* === ÚZKÝ HERO === */
+        /* ===== FULL-BLEED hero přes celou šířku okna ===== */
         .hero{
           position: relative;
           overflow: hidden;
-          border-radius: 24px;
           background: #0f172a;
-          min-height: 360px;            /* ↓ z 520 na 360 (užší) */
-          margin: 12px auto 24px;
-          max-width: 1200px;
+          /* plná šířka přes okraj layoutu */
+          width: 100vw;
+          margin-left: 50%;
+          transform: translateX(-50%);
+          /* menší výška než předtím */
+          min-height: 320px;
+          margin-top: 12px;
+          margin-bottom: 24px;
+          border-radius: 0; /* až do krajů */
         }
 
         .hero-bg{ position:absolute; inset:0; z-index:0; }
@@ -57,31 +63,29 @@ export default function HeroSearch() {
             radial-gradient(60% 60% at 50% 30%, rgba(0,0,0,.18) 0%, rgba(0,0,0,0) 100%);
         }
 
+        /* obsah držíme rozumně úzký */
         .hero-content{
           position: relative; z-index: 2;
           max-width: 1120px; margin: 0 auto;
-          padding: 28px 20px 22px;    /* ↓ menší vnitřní mezery */
+          padding: 26px 20px 18px;
           text-align: center; color: #fff;
         }
 
-        /* menší H1, aby se vešla elegantněji */
         .hero-title{
           font-weight: 800;
           line-height: 1.12;
-          margin: 0 0 16px 0;
+          margin: 0 0 14px 0;
           text-shadow: 0 2px 12px rgba(0,0,0,.32);
-          font-size: clamp(28px, 4.8vw, 44px); /* ↓ desktop max 44 */
+          font-size: clamp(28px, 4.6vw, 44px);
           letter-spacing: -0.2px;
         }
 
         .hero-search{
           display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
-          margin:0 auto 14px; max-width: 900px;
+          margin:0 auto 10px; max-width: 900px;
         }
         .field{
-          height:52px;                  /* ↓ z 56 */
-          font-size:17px;
-          border-radius:16px; padding:0 16px;
+          height:52px; font-size:17px; border-radius:16px; padding:0 16px;
           border:1px solid rgba(255,255,255,.25);
           background: rgba(255,255,255,.95);
           color:#111827; outline:none;
@@ -97,7 +101,12 @@ export default function HeroSearch() {
           box-shadow:0 6px 16px rgba(31,41,64,.20);
         }
 
-        .hero-sub{ font-size:16px; margin:8px 0 14px; color:#E8EBF2; }
+        /* věta dál od vyhledávání a blíž k tlačítku */
+        .hero-sub{
+          font-size:16px;
+          margin: 22px 0 8px;  /* ↑ větší odstup od search, ↓ menší k tlačítku */
+          color:#E8EBF2;
+        }
 
         .request-btn{
           display:inline-flex; align-items:center; justify-content:center;
@@ -105,17 +114,18 @@ export default function HeroSearch() {
           font-weight:700; font-size:17px; color:#0f172a;
           background:#fbbf24; border:none; cursor:pointer;
           box-shadow:0 10px 22px rgba(251,191,36,.28);
-          margin:8px auto 6px;
+          margin:6px auto 10px;
         }
 
-        /* Mobil ještě užší */
+        /* Mobil ještě kompaktnější */
         @media (max-width: 640px){
-          .hero{ min-height: 300px; margin: 10px 12px 20px; }
-          .hero-content{ padding: 22px 14px 18px; }
+          .hero{ min-height: 280px; margin-top: 10px; margin-bottom: 20px; }
+          .hero-content{ padding: 20px 14px 14px; }
           .field{ height:48px; font-size:16px; flex:1 1 100%; }
           .field.area{ flex-basis:100%; }
           .search-btn{ width:100%; height:48px; font-size:16px; }
-          .request-btn{ font-size:16.5px; padding:10px 16px; margin:12px auto 10px; }
+          .hero-sub{ margin: 20px 0 6px; }
+          .request-btn{ font-size:16.5px; padding:10px 16px; }
         }
       `}</style>
     </section>
