@@ -29,7 +29,6 @@ export default function HeroSearch() {
           <button className="search-btn">Hledat</button>
         </div>
 
-        {/* věta dál od search baru a blíž k tlačítku */}
         <p className="hero-sub">
           Nechce se ti hledat? Zadej poptávku a my oslovíme profíky ve tvém okolí za tebe.
         </p>
@@ -38,20 +37,18 @@ export default function HeroSearch() {
       </div>
 
       <style jsx>{`
-        /* ===== FULL-BLEED hero přes celou šířku okna ===== */
+        /* ===== FULL-BLEED (přes celou šířku) ===== */
         .hero{
           position: relative;
           overflow: hidden;
           background: #0f172a;
-          /* plná šířka přes okraj layoutu */
           width: 100vw;
           margin-left: 50%;
           transform: translateX(-50%);
-          /* menší výška než předtím */
           min-height: 320px;
           margin-top: 12px;
           margin-bottom: 24px;
-          border-radius: 0; /* až do krajů */
+          border-radius: 0;
         }
 
         .hero-bg{ position:absolute; inset:0; z-index:0; }
@@ -63,7 +60,6 @@ export default function HeroSearch() {
             radial-gradient(60% 60% at 50% 30%, rgba(0,0,0,.18) 0%, rgba(0,0,0,0) 100%);
         }
 
-        /* obsah držíme rozumně úzký */
         .hero-content{
           position: relative; z-index: 2;
           max-width: 1120px; margin: 0 auto;
@@ -82,7 +78,8 @@ export default function HeroSearch() {
 
         .hero-search{
           display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
-          margin:0 auto 10px; max-width: 900px;
+          margin:0 auto 28px; /* ↑ VĚTŠÍ ODSTUP OD VĚTY */
+          max-width: 900px;
         }
         .field{
           height:52px; font-size:17px; border-radius:16px; padding:0 16px;
@@ -101,10 +98,9 @@ export default function HeroSearch() {
           box-shadow:0 6px 16px rgba(31,41,64,.20);
         }
 
-        /* věta dál od vyhledávání a blíž k tlačítku */
         .hero-sub{
           font-size:16px;
-          margin: 22px 0 8px;  /* ↑ větší odstup od search, ↓ menší k tlačítku */
+          margin: 6px 0 8px; /* věta blíž k tlačítku */
           color:#E8EBF2;
         }
 
@@ -117,14 +113,14 @@ export default function HeroSearch() {
           margin:6px auto 10px;
         }
 
-        /* Mobil ještě kompaktnější */
         @media (max-width: 640px){
           .hero{ min-height: 280px; margin-top: 10px; margin-bottom: 20px; }
           .hero-content{ padding: 20px 14px 14px; }
           .field{ height:48px; font-size:16px; flex:1 1 100%; }
           .field.area{ flex-basis:100%; }
           .search-btn{ width:100%; height:48px; font-size:16px; }
-          .hero-sub{ margin: 20px 0 6px; }
+          .hero-search{ margin:0 auto 22px; } /* ↑ mezera i na mobilu */
+          .hero-sub{ margin: 6px 0 6px; }     /* věta blíž k CTA */
           .request-btn{ font-size:16.5px; padding:10px 16px; }
         }
       `}</style>
