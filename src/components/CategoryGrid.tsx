@@ -40,7 +40,14 @@ function normSlug(x: Raw, title: string): string {
   return s.toString().trim();
 }
 function normDesc(x: Raw): string | undefined {
-  const d = x?.description ?? x?.desc ?? x?.shortDescription ?? x?.Subtitle ?? x?.Description;
+  const d =
+    x?.description ??
+    x?.desc ??
+    x?.subtitle ??         // ✅ přidáno
+    x?.subTitle ??         // ✅ přidáno
+    x?.shortDescription ??
+    x?.Subtitle ??
+    x?.Description;
   return d ? d.toString() : undefined;
 }
 function normIcon(x: Raw): string | null {
@@ -53,7 +60,7 @@ function normalize(raw: Raw): Cat | null {
   return { title, slug, description: normDesc(raw), iconUrl: normIcon(raw) };
 }
 function dedupeKeepOrder(items: Cat[]): Cat[] {
-  const seen = new Set<string>(); const out: Cat[] = [];
+  const seen = new Set<string>(), out: Cat[] = [];
   for (const it of items) {
     const key = (it.slug || it.title).toLowerCase();
     if (!seen.has(key)) { seen.add(key); out.push(it); }
@@ -62,8 +69,9 @@ function dedupeKeepOrder(items: Cat[]): Cat[] {
 }
 
 export default function CategoryGrid() {
-  const raw = extractRaw(CatMod);
-  const categories = dedupeKeepOrder(raw.map(normalize).filter(Boolean) as Cat[]);
+  const categories = dedupeKeepOrder(
+    extractRaw(CatMod).map(normalize).filter(Boolean) as Cat[]
+  );
 
   return (
     <section className="p-root">
@@ -76,14 +84,14 @@ export default function CategoryGrid() {
         <div className="p-grid">
           {categories.map((cat) => (
             <Link key={cat.slug} href={`/kategorie/${cat.slug}`} className="p-card">
-              <div className="p-icon">
+              <div className="p-badge">
                 {cat.iconUrl ? (
                   <Image
                     src={cat.iconUrl}
                     alt={cat.title}
                     fill
-                    sizes="64px"
-                    style={{ objectFit: "contain", padding: 8 }}
+                    sizes="72px"
+                    style={{ objectFit: "contain", padding: 10 }}
                   />
                 ) : (
                   <span className="p-init">{cat.title.slice(0, 2).toUpperCase()}</span>
@@ -91,16 +99,14 @@ export default function CategoryGrid() {
               </div>
 
               <h3 className="p-title">{cat.title}</h3>
-              {cat.description ? (
-                <p className="p-desc">{cat.description}</p>
-              ) : (
-                <p className="p-hint">Zobrazit detail →</p>
-              )}
+              <p className="p-desc">
+                {cat.description || "Zobrazit detail →"}
+              </p>
             </Link>
           ))}
         </div>
 
-        {/* Feedback panel dole – necháváme */}
+        {/* Feedback panel — povinný */}
         <div className="p-feedback">
           <div className="p-feedback-row">
             <Image
@@ -114,10 +120,7 @@ export default function CategoryGrid() {
               <p><strong>Chybí tu nějaká kategorie nebo něco nesedí?</strong></p>
               <p>Dej nám vědět a upravíme to. Díky za zpětnou vazbu!</p>
             </div>
-            <a
-              href="mailto:hello@pindoo.cz?subject=Zpetna%20vazba%20kategorie"
-              className="p-feedback-btn"
-            >
+            <a href="mailto:hello@pindoo.cz?subject=Zpetna%20vazba%20kategorie" className="p-feedback-btn">
               Napsat feedback
             </a>
           </div>
@@ -125,16 +128,15 @@ export default function CategoryGrid() {
       </div>
 
       <style jsx>{`
-        /* barvy/rádiusy jako dřív */
         :root {
           --blue: #0E3A8A;
-          --muted: #64748b;
           --ink: #0f172a;
-          --card: #ffffff;
+          --muted: #64748b;
           --border: #E6EAF2;
           --bg: #F6F7FB;
-          --shadow: 0 10px 24px rgba(14,58,138,.06), 0 2px 6px rgba(14,58,138,.05);
+          --card: #fff;
           --radius: 20px;
+          --shadow: 0 10px 24px rgba(14,58,138,.06), 0 2px 6px rgba(14,58,138,.05);
         }
 
         .p-root { width: 100%; }
@@ -142,7 +144,6 @@ export default function CategoryGrid() {
         .p-h2 { margin: 0 0 4px; font-size: 1.6rem; font-weight: 700; color: var(--ink); }
         .p-sub { margin: 0; color: var(--muted); }
 
-        /* světlé „plátno“ pod gridem jako dřív */
         .p-shell {
           background: var(--bg);
           border: 1px solid rgba(226,232,240,.7);
@@ -150,45 +151,44 @@ export default function CategoryGrid() {
           padding: 22px;
         }
 
-        /* mřížka */
         .p-grid { display: grid; gap: 22px; grid-template-columns: 1fr; }
         @media (min-width: 640px) { .p-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 768px) { .p-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 1024px){ .p-grid { grid-template-columns: repeat(4, 1fr); } }
         @media (min-width: 1280px){ .p-grid { grid-template-columns: repeat(5, 1fr); } }
 
-        /* karta – centrovaný obsah, bez levého zarovnání */
         .p-card {
           display: flex; flex-direction: column; align-items: center; text-align: center;
-          gap: 12px; padding: 22px 18px;
+          gap: 12px; padding: 24px 18px 20px;
           background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
           text-decoration: none; color: inherit;
           box-shadow: 0 1px 0 rgba(2,8,23,.04);
           transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+          min-height: 172px;
         }
         .p-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: #dfe5f0; }
 
-        /* KRUH nahoře – přesně jako na starém designu */
-        .p-icon {
+        /* KRUH větší + jemný shadow jako původně */
+        .p-badge {
           position: relative;
-          width: 56px; height: 56px;
+          width: 64px; height: 64px;        /* větší kruh */
           border-radius: 50%;
-          background: #E7EEF9;
-          border: 1px solid var(--border);
+          background: #EAF1FE;              /* světlejší modrá „bublina“ */
+          border: 1px solid #e6ecf6;
+          box-shadow: inset 0 -2px 6px rgba(14,58,138,.06);
           overflow: hidden;
           display: grid; place-items: center;
         }
-        .p-init { color: var(--blue); font-weight: 700; font-size: 1.05rem; }
+        .p-init { color: var(--blue); font-weight: 800; font-size: 1.05rem; letter-spacing: .3px; }
 
-        .p-title { margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--ink); }
+        .p-title { margin: 4px 0 0; font-size: 1.06rem; font-weight: 800; color: var(--ink); }
         .p-desc {
           margin: 2px 0 0; color: var(--muted); font-size: .92rem;
-          display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-          min-height: 2.5em;
+          max-width: 18ch;                 /* jako dřív – krátký 1řádkový podtitul */
+          overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+          min-height: 1.4em;
         }
-        .p-hint { margin: 2px 0 0; color: #6b7280; font-size: .92rem; min-height: 2.5em; }
 
-        /* feedback dole */
         .p-feedback { margin-top: 18px; background: #fff; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
         .p-feedback-row { display: flex; gap: 14px; padding: 14px; align-items: center; flex-wrap: wrap; }
         .p-feedback-text p { margin: 0; }
