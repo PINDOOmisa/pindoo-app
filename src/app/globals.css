@@ -180,3 +180,36 @@ body .cat-ico{
 }
 body .cat-title{ font-weight:800; font-size:15px; line-height:1.2; letter-spacing:.2px; color:#0E2A6B; }
 body .cat-desc{ margin-top:6px; font-size:12.5px; line-height:1.25; color:#5E6B85; }
+/* === Categories block – compact Kreezalid-like === */
+.categories{ background:#F9FAFB; padding:28px 0 54px; }
+
+.tiles-grid{
+  display:grid;
+  gap:14px;
+  /* desktop: 5 sloupců (15 karet = 5 × 3) */
+  grid-template-columns:repeat(5,1fr);
+}
+@media (max-width:1200px){ .tiles-grid{ grid-template-columns:repeat(4,1fr); } }
+@media (max-width:992px) { .tiles-grid{ grid-template-columns:repeat(3,1fr); } }
+@media (max-width:720px) { .tiles-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:460px) { .tiles-grid{ grid-template-columns:1fr; } }
+
+/* karta */
+.tile{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-height:118px; padding:12px 10px; text-align:center; text-decoration:none;
+  background:#fff; border:1px solid #E6EAF2; border-radius:14px; color:#0F2350;
+  box-shadow:0 1px 0 rgba(16,24,40,.02);
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.tile:hover{ transform:translateY(-1px); border-color:#CED6E6; box-shadow:0 6px 18px rgba(16,24,40,.08); }
+
+/* ikonka (placeholder – své SVG/PNG jen vložíš dovnitř) */
+.tile-ico{
+  width:34px; height:34px; border-radius:10px; margin-bottom:10px;
+  background:#EEF2FB; border:1px solid #DFE6F5;
+}
+
+/* texty */
+.tile-title{ font-weight:800; font-size:15px; line-height:1.2; color:#0E2A6B; }
+.tile-sub  { margin-top:6px; font-size:12.5px; line-height:1.25; color:#5E6B85; }
