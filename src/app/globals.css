@@ -213,3 +213,87 @@ body .cat-desc{ margin-top:6px; font-size:12.5px; line-height:1.25; color:#5E6B8
 /* texty */
 .tile-title{ font-weight:800; font-size:15px; line-height:1.2; color:#0E2A6B; }
 .tile-sub  { margin-top:6px; font-size:12.5px; line-height:1.25; color:#5E6B85; }
+/* === HEADER – světlý styl jako na Kreezalidu === */
+.header {
+  background: #fff;
+  color: #0E3A8A;
+  border-bottom: 1px solid #E6EAF2;
+  z-index: 100;
+}
+.header .container.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 12px;
+}
+.header .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+}
+.header .brand img {
+  height: 36px;
+  width: auto;
+}
+.nav-links a {
+  color: #0E3A8A;
+  text-decoration: none;
+  margin: 0 10px;
+  font-weight: 600;
+}
+.cta {
+  display: flex;
+  gap: 8px;
+}
+.btn-soft {
+  background: #E7EEF9;
+  color: #0E3A8A;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.btn-accent {
+  background: #F5B301;
+  color: #111;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* === HERO – světlejší, menší, bez overlay === */
+.hero .hero-wrap {
+  height: 320px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(14,58,138,.05);
+}
+.hero .hero-media video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.95);
+}
+.hero .hero-overlay { display: none; }
+.hero .hero-inner h1 {
+  font-size: 40px;
+  line-height: 1.1;
+  margin: 0 0 12px;
+  text-shadow: 0 1px 6px rgba(0,0,0,.25);
+}
+.hero {
+  margin-bottom: 32px;
+}
+
+/* === DLAŽDICE BLOK – šedé podbarvení pod celým blokem === */
+.categories {
+  background: #F9FAFB;
+  padding: 50px 0 70px;
+}
