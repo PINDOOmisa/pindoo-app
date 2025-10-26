@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 export default function Header() {
   const [open, setOpen] = useState(false);
 
-  // zavřít mobilní menu při změně šířky (návrat na desktop)
+  // Zavření mobilního menu při přepnutí na desktop
   useEffect(() => {
     const onResize = () => {
       if (window.innerWidth > 900) setOpen(false);
@@ -17,18 +17,17 @@ export default function Header() {
 
   return (
     <header className="header">
-      <div className="container bar">
-        {/* Logo vlevo (nahraj /public/pindoo-logo.svg) */}
+      <div className="container-bar">
+        {/* Logo vlevo */}
         <Link href="/" className="brand" aria-label="PINDOO domů">
-          <span className="logo-wrap" aria-hidden>
-            <Image
-              src="/pindoo-logo.svg"
-              alt="PINDOO"
-              width={120}
-              height={32}
-              priority
-            />
-          </span>
+          <Image
+            src="/pindoo-logo.png"
+            alt="PINDOO"
+            width={160}
+            height={42}
+            priority
+            unoptimized
+          />
         </Link>
 
         {/* Desktop navigace */}
@@ -39,18 +38,24 @@ export default function Header() {
 
         {/* Desktop CTA */}
         <div className="cta">
-          <Link href="/registrace" className="btn btn-soft">Registrace</Link>
-          <Link href="/prihlaseni" className="btn btn-soft">Přihlášení</Link>
+          <Link href="/registrace" className="btn btn-outline">
+            Registrace
+          </Link>
+          <Link href="/prihlaseni" className="btn btn-filled">
+            Přihlášení
+          </Link>
         </div>
 
-        {/* Hamburger – jen mobil */}
+        {/* Hamburger menu */}
         <button
           className="hamburger"
           aria-label="Otevřít menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
         >
-          <span /><span /><span />
+          <span />
+          <span />
+          <span />
         </button>
       </div>
 
@@ -63,99 +68,141 @@ export default function Header() {
           Centrum nápovědy
         </Link>
         <hr />
-        {/* „Vložit nabídku“ → pošleme do loginu/registrace */}
         <Link href="/prihlaseni" role="menuitem" onClick={() => setOpen(false)}>
           Vložit nabídku
         </Link>
         <div className="mobile-cta">
-          <Link href="/registrace" onClick={() => setOpen(false)}>Registrace</Link>
-          <Link href="/prihlaseni" onClick={() => setOpen(false)}>Přihlášení</Link>
+          <Link href="/registrace" onClick={() => setOpen(false)}>
+            Registrace
+          </Link>
+          <Link href="/prihlaseni" onClick={() => setOpen(false)}>
+            Přihlášení
+          </Link>
         </div>
       </div>
 
-      {/* Lokální styly pro barvy a jemné dorovnání, nezasahují do zbytku webu */}
+      {/* === STYLY === */}
       <style jsx>{`
         .header {
           position: sticky;
           top: 0;
           z-index: 50;
-          background: rgba(255,255,255,.95);
-          backdrop-filter: saturate(150%) blur(6px);
+          background: rgba(255, 255, 255, 0.97);
+          backdrop-filter: saturate(180%) blur(8px);
           border-bottom: 1px solid #e5e7eb;
         }
-        .container.bar {
+
+        .container-bar {
           max-width: 1200px;
           margin: 0 auto;
-          padding: 0 16px;
-          height: 64px;
+          padding: 0 20px;
+          height: 72px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 16px;
+          gap: 20px;
         }
-        .brand { display: inline-flex; align-items: center; text-decoration: none; }
-        .logo-wrap { display: inline-flex; line-height: 0; }
+
+        .brand {
+          display: inline-flex;
+          align-items: center;
+          text-decoration: none;
+          line-height: 0;
+        }
 
         .nav-links {
           display: none;
-          gap: 28px;
+          gap: 32px;
           align-items: center;
         }
-        @media (min-width: 900px) { .nav-links { display: flex; } }
+        @media (min-width: 900px) {
+          .nav-links {
+            display: flex;
+          }
+        }
 
         .nav-links :global(a) {
-          font-size: 15px;
+          font-size: 15.5px;
           font-weight: 600;
-          color: #0E3A8A;             /* PINDOO blue */
+          color: #0e3a8a;
           text-decoration: none;
-          transition: color .18s ease;
+          transition: color 0.2s ease;
         }
-        .nav-links :global(a:hover) { color: #08235C; } /* tmavší modrá */
+        .nav-links :global(a:hover) {
+          color: #08235c;
+        }
 
         .cta {
           display: none;
           align-items: center;
-          gap: 8px;
+          gap: 10px;
         }
-        @media (min-width: 640px) { .cta { display: flex; } }
+        @media (min-width: 640px) {
+          .cta {
+            display: flex;
+          }
+        }
 
-        .btn.btn-soft {
-          padding: 8px 12px;
+        .btn {
+          padding: 8px 14px;
           border-radius: 12px;
-          border: 1px solid #e5e7eb;
-          background: #ffffff;
-          color: #0E3A8A;
           font-weight: 600;
           text-decoration: none;
+          font-size: 15px;
+          transition: all 0.2s ease;
         }
-        .btn.btn-soft:hover {
-          border-color: #cfd3db;
-          background: #f9fafb;
+
+        .btn-outline {
+          color: #0e3a8a;
+          border: 1px solid #d1d5db;
+          background: #fff;
+        }
+        .btn-outline:hover {
+          background: #f7f8fa;
+        }
+
+        .btn-filled {
+          color: #fff;
+          background: #0e3a8a;
+          border: 1px solid #0e3a8a;
+        }
+        .btn-filled:hover {
+          background: #08235c;
         }
 
         .hamburger {
           display: inline-flex;
-          width: 40px; height: 40px;
-          align-items: center; justify-content: center;
+          width: 42px;
+          height: 42px;
+          align-items: center;
+          justify-content: center;
           border-radius: 10px;
           border: 1px solid #e5e7eb;
           background: #fff;
         }
-        @media (min-width: 900px) { .hamburger { display: none; } }
+        @media (min-width: 900px) {
+          .hamburger {
+            display: none;
+          }
+        }
         .hamburger span {
-          display: block; width: 18px; height: 2px; background:#0E3A8A; margin: 2px 0;
+          display: block;
+          width: 18px;
+          height: 2px;
+          background: #0e3a8a;
+          margin: 3px 0;
         }
 
         .mobile-menu {
           display: grid;
-          gap: 10px;
-          padding: 12px 16px;
+          gap: 12px;
+          padding: 14px 20px;
           border-top: 1px solid #e5e7eb;
           background: #ffffff;
-          transform: translateY(-6px);
+          transform: translateY(-8px);
           opacity: 0;
           pointer-events: none;
-          transition: opacity .18s ease, transform .18s ease;
+          transition: opacity 0.2s ease, transform 0.2s ease;
         }
         .mobile-menu.open {
           transform: translateY(0);
@@ -163,21 +210,16 @@ export default function Header() {
           pointer-events: auto;
         }
         .mobile-menu :global(a) {
-          color: #0E3A8A;
+          color: #0e3a8a;
           font-weight: 600;
           text-decoration: none;
         }
         .mobile-cta {
-          display: flex; gap: 12px; margin-top: 6px;
+          display: flex;
+          gap: 14px;
+          margin-top: 8px;
         }
       `}</style>
     </header>
   );
 }
-<Image
-  src="/pindoo-logo.svg"
-  alt="PINDOO"
-  width={120}
-  height={32}
-  priority
-/>
