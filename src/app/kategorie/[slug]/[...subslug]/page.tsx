@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 
 type Raw = any;
 
-/* — tolerantní utilitky (stejné jako na [slug]) — */
+/* utilitky (stejné jako na [slug]) */
 function extractRaw(mod: any): Raw[] {
   const candidates: any[] = [];
   if (Array.isArray(mod)) candidates.push(mod);
@@ -57,7 +57,6 @@ function subsOf(raw: Raw): Raw[] {
 function subTitle(x: Raw) {
   return (x?.title ?? x?.name ?? x?.label ?? x?.Title ?? "").toString().trim() || "Bez názvu";
 }
-
 function findCategoryBySlug(slug: string) {
   const all = extractRaw(CatMod);
   for (const raw of all) {
@@ -84,7 +83,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const cat = findCategoryBySlug(params.slug);
   const sub = cat ? findSubBySlug(cat.raw, primarySub) : null;
   const catTitle = cat?.title ?? params.slug;
-  const subTitleTxt = sub?.title ?? primarySub || "Podkategorie";
+  const subTitleTxt = (sub?.title ?? primarySub) || "Podkategorie"; // ← závorky
   return {
     title: `${subTitleTxt} – ${catTitle} | PINDOO`,
     description: `Najdeme ti ověřené poskytovatele pro „${subTitleTxt}“ v kategorii „${catTitle}“.`,
@@ -97,11 +96,10 @@ export default async function SubcategoryCatchAll({ params }: { params: Params }
   const sub = cat ? findSubBySlug(cat.raw, primarySub) : null;
 
   const catTitleTxt = cat?.title ?? params.slug;
-  const subTitleTxt = sub?.title ?? primarySub || "Podkategorie";
+  const subTitleTxt = (sub?.title ?? primarySub) || "Podkategorie"; // ← závorky
 
   return (
     <main style={{ maxWidth: "1140px", margin: "0 auto", padding: "24px 16px" }}>
-      {/* Breadcrumb */}
       <nav style={{ marginBottom: 8, fontSize: ".95rem" }}>
         <Link href="/kategorie" style={{ color: "#0E3A8A", textDecoration: "underline" }}>
           Kategorie
