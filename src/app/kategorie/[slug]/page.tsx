@@ -9,26 +9,65 @@ import type { Metadata } from "next";
 import { CATEGORIES } from "@/data/categories";
 
 type MaybeString = string | null | undefined;
-type RawSub = { title?: MaybeString; name?: MaybeString; label?: MaybeString; Title?: MaybeString;
-  slug?: MaybeString; Slug?: MaybeString; image?: MaybeString; img?: MaybeString; photo?: MaybeString;
-  thumbnailUrl?: MaybeString; thumb?: MaybeString; cover?: MaybeString; coverImage?: MaybeString; iconUrl?: MaybeString; icon?: MaybeString; };
-type RawCategory = { slug?: MaybeString; Slug?: MaybeString; title?: MaybeString; name?: MaybeString; label?: MaybeString; Title?: MaybeString;
-  subcategories?: RawSub[]; subCats?: RawSub[]; subs?: RawSub[]; children?: RawSub[]; };
+type RawSub = {
+  title?: MaybeString; name?: MaybeString; label?: MaybeString; Title?: MaybeString;
+  slug?: MaybeString;  Slug?: MaybeString;
+  image?: MaybeString; img?: MaybeString; photo?: MaybeString;
+  thumbnailUrl?: MaybeString; thumb?: MaybeString; cover?: MaybeString; coverImage?: MaybeString; iconUrl?: MaybeString; icon?: MaybeString;
+};
+type RawCategory = {
+  slug?: MaybeString; Slug?: MaybeString;
+  title?: MaybeString; name?: MaybeString; label?: MaybeString; Title?: MaybeString;
+  subcategories?: RawSub[]; subCats?: RawSub[]; subs?: RawSub[]; children?: RawSub[];
+};
 
-function pick<T = any>(obj: Record<string, any>, keys: string[], fallback: T): T { for (const k of keys) if (obj && obj[k] != null) return obj[k] as T; return fallback; }
-function slugify(input: string): string { return (input || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, ""); }
-function subTitle(s: RawSub): string { const t = String(pick<string>(s as any, ["title","name","label","Title"], "") || "").trim(); return t || "Bez názvu"; }
-function subImage(s: RawSub): string | null { return pick<string | null>(s as any, ["image","img","photo","thumbnailUrl","thumb","cover","coverImage","iconUrl","icon"], null) || null; }
-function normSubSlug(s: RawSub, title: string): string { const explicit = String(pick<string>(s as any, ["slug","Slug"], "") || "").trim(); return explicit || slugify(title); }
-function catTitle(c: RawCategory): string { return String(pick<string>(c as any, ["title","name","label","Title"], "") || "").trim(); }
-function catSlug(c: RawCategory): string { const explicit = String(pick<string>(c as any, ["slug","Slug"], "") || "").trim(); return explicit || slugify(catTitle(c)); }
-function catSubs(c: RawCategory): RawSub[] { return (pick<RawSub[]>(c as any, ["subcategories","subCats","subs","children"], []) || []) as RawSub[]; }
+function pick<T = any>(obj: Record<string, any>, keys: string[], fallback: T): T {
+  for (const k of keys) if (obj && obj[k] != null) return obj[k] as T;
+  return fallback;
+}
+function slugify(input: string): string {
+  return (input || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+}
+function subTitle(s: RawSub): string {
+  const t = String(pick<string>(s as any, ["title","name","label","Title"], "") || "").trim();
+  return t || "Bez názvu";
+}
+function normSubSlug(s: RawSub, title: string): string {
+  const explicit = String(pick<string>(s as any, ["slug","Slug"], "") || "").trim();
+  return explicit || slugify(title);
+}
+/** Podkategorie obrázek: 1) vezmi explicitní pole, 2) jinak fallback /img/subcategories/<slug>.png */
+function subImage(s: RawSub): string | null {
+  const explicit = pick<string | null>(
+    s as any,
+    ["image","img","photo","thumbnailUrl","thumb","cover","coverImage","iconUrl","icon"],
+    null
+  );
+  if (explicit) return explicit;
+  const sl = normSubSlug(s, subTitle(s));
+  return `/img/subcategories/${sl}.png`; // máš .png soubory v /public/img/subcategories
+}
+
+function catTitle(c: RawCategory): string {
+  return String(pick<string>(c as any, ["title","name","label","Title"], "") || "").trim();
+}
+function catSlug(c: RawCategory): string {
+  const explicit = String(pick<string>(c as any, ["slug","Slug"], "") || "").trim();
+  return explicit || slugify(catTitle(c));
+}
+function catSubs(c: RawCategory): RawSub[] {
+  return (pick<RawSub[]>(c as any, ["subcategories","subCats","subs","children"], []) || []) as RawSub[];
+}
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const list = (CATEGORIES as RawCategory[]) || [];
   const found = list.find((c) => catSlug(c) === params.slug);
   const title = found ? `${catTitle(found)} | PINDOO` : "PINDOO";
-  const description = found ? `Vyber si z přehledu subkategorií v oblasti „${catTitle(found)}“. Najdeme ti ověřené poskytovatele.` : "Přehled subkategorií";
+  const description = found
+    ? `Vyber si z přehledu subkategorií v oblasti „${catTitle(found)}“. Najdeme ti ověřené poskytovatele.`
+    : "Přehled subkategorií";
   return { title, description };
 }
 
@@ -44,9 +83,14 @@ export default async function Page({ params }: { params: { slug: string } }) {
   return (
     <main style={{ maxWidth: 1140, margin: "0 auto", padding: "24px 16px" }}>
       <div style={{ marginBottom: 12 }}>
-        <Link href="/kategorie" style={{ color: "#0E3A8A", textDecoration: "underline" }}>← Zpět na kategorie</Link>
+        <Link href="/kategorie" style={{ color: "#0E3A8A", textDecoration: "underline" }}>
+          ← Zpět na kategorie
+        </Link>
       </div>
-      <h1 style={{ margin: 0, fontSize: "1.75rem", lineHeight: 1.25, fontWeight: 800, color: "#0f172a" }}>{parentTitle}</h1>
+
+      <h1 style={{ margin: 0, fontSize: "1.75rem", lineHeight: 1.25, fontWeight: 800, color: "#0f172a" }}>
+        {parentTitle}
+      </h1>
 
       <style>{`
         .subs { display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -66,15 +110,32 @@ export default async function Page({ params }: { params: { slug: string } }) {
           return (
             <Link key={`${subSlug}-${i}`} href={`/kategorie/${parentSlug}/${subSlug}`} className="card">
               <div className="ttl">{t}</div>
-              {img ? <img src={img} alt="" className="img" /> : <div className="ph" aria-hidden="true" />}
+              {img ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={img} alt={t} className="img" />
+              ) : (
+                <div className="ph" aria-hidden="true" />
+              )}
             </Link>
           );
         })}
       </div>
 
-      <section style={{ marginTop: 24, border: "1px solid #e6eaf2", borderRadius: 16, overflow: "hidden", background: "#fff" }}>
+      <section
+        style={{
+          marginTop: 24,
+          border: "1px solid #e6eaf2",
+          borderRadius: 16,
+          overflow: "hidden",
+          background: "#fff",
+        }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+        <img
+          src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png"
+          alt=""
+          style={{ width: "100%", height: "auto", display: "block" }}
+        />
       </section>
     </main>
   );

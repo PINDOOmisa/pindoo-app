@@ -6,6 +6,7 @@ export const CATEGORIES: Category[] = [
     "title": "Domácnost & úklid",
     "subtitle": "Domácnost & úklid",
     "slug": "domacnost-uklid",
+  
     "subcategories": [
       {
         "title": "Generální jednorázový úklid",
