@@ -1,6 +1,7 @@
-// src/app/kategorie/[slug]/[subslug]/page.tsx
+// src/app/kategorie/[slug]/[...subslug]/page.tsx
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const dynamicParams = true;
 
 import * as CatMod from "@/data/categories";
 import Link from "next/link";
@@ -8,7 +9,7 @@ import type { Metadata } from "next";
 
 type Raw = any;
 
-/* ---- stejné tolerantní utility jako na [slug] stránce ---- */
+/* — tolerantní utilitky (stejné jako na [slug]) — */
 function extractRaw(mod: any): Raw[] {
   const candidates: any[] = [];
   if (Array.isArray(mod)) candidates.push(mod);
@@ -24,10 +25,8 @@ function extractRaw(mod: any): Raw[] {
     [];
   return (found as Raw[]) || [];
 }
-
 const normTitle = (x: Raw) =>
   (x?.title ?? x?.name ?? x?.label ?? x?.CategoryName ?? x?.Title ?? "").toString().trim();
-
 function slugify(title: string) {
   return title
     .toLowerCase()
@@ -36,12 +35,10 @@ function slugify(title: string) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 }
-
 function normSlug(x: Raw, title: string) {
   const s = x?.slug ?? x?.Slug ?? x?.id ?? x?.Id ?? slugify(title);
   return s.toString().trim();
 }
-
 function subsOf(raw: Raw): Raw[] {
   const c =
     raw?.subcategories ??
@@ -57,12 +54,10 @@ function subsOf(raw: Raw): Raw[] {
   if (c && typeof c === "object") return Object.values(c) as Raw[];
   return [];
 }
-
 function subTitle(x: Raw) {
   return (x?.title ?? x?.name ?? x?.label ?? x?.Title ?? "").toString().trim() || "Bez názvu";
 }
 
-/* ---- Najdeme parent kategorii i konkrétní subkategorii dle slugů ---- */
 function findCategoryBySlug(slug: string) {
   const all = extractRaw(CatMod);
   for (const raw of all) {
@@ -82,24 +77,27 @@ function findSubBySlug(parentRaw: Raw, subslug: string) {
   return null;
 }
 
-/* ---- Metadata: použijeme reálné názvy, jinak fallback z URL ---- */
-export async function generateMetadata({ params }: { params: { slug: string; subslug: string } }): Promise<Metadata> {
+type Params = { slug: string; subslug: string[] };
+
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const primarySub = params.subslug?.[0] ?? "";
   const cat = findCategoryBySlug(params.slug);
-  const sub = cat ? findSubBySlug(cat.raw, params.subslug) : null;
+  const sub = cat ? findSubBySlug(cat.raw, primarySub) : null;
   const catTitle = cat?.title ?? params.slug;
-  const subTitleTxt = sub?.title ?? params.subslug;
+  const subTitleTxt = sub?.title ?? primarySub || "Podkategorie";
   return {
     title: `${subTitleTxt} – ${catTitle} | PINDOO`,
     description: `Najdeme ti ověřené poskytovatele pro „${subTitleTxt}“ v kategorii „${catTitle}“.`,
   };
 }
 
-export default async function SubcategoryPage({ params }: { params: { slug: string; subslug: string } }) {
+export default async function SubcategoryCatchAll({ params }: { params: Params }) {
+  const primarySub = params.subslug?.[0] ?? "";
   const cat = findCategoryBySlug(params.slug);
-  const sub = cat ? findSubBySlug(cat.raw, params.subslug) : null;
+  const sub = cat ? findSubBySlug(cat.raw, primarySub) : null;
 
   const catTitleTxt = cat?.title ?? params.slug;
-  const subTitleTxt = sub?.title ?? params.subslug;
+  const subTitleTxt = sub?.title ?? primarySub || "Podkategorie";
 
   return (
     <main style={{ maxWidth: "1140px", margin: "0 auto", padding: "24px 16px" }}>
@@ -116,13 +114,11 @@ export default async function SubcategoryPage({ params }: { params: { slug: stri
         <span style={{ color: "#0f172a", fontWeight: 600 }}>{subTitleTxt}</span>
       </nav>
 
-      {/* H1 */}
       <h1 style={{ margin: 0, fontSize: "1.9rem", fontWeight: 800, color: "#0f172a" }}>{subTitleTxt}</h1>
       <p style={{ marginTop: 8, color: "#475569" }}>
         Zástupná stránka pro „{subTitleTxt}“. Sem napojíme výpis poskytovatelů / lead formulář.
       </p>
 
-      {/* Placeholder + feedback panel */}
       <section style={{ marginTop: 16, padding: 16, background: "#fff", border: "1px solid #e6eaf2", borderRadius: 16 }}>
         <div style={{ padding: 16, border: "1px dashed #cbd5e1", borderRadius: 12, textAlign: "center", color: "#475569" }}>
           Bude zde filtr a karty poskytovatelů.
