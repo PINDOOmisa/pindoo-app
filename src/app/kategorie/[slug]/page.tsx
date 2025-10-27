@@ -6,7 +6,7 @@ export const dynamicParams = true;
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { categories } from "@/data/categories";
+import { CATEGORIES } from "@/data/categories";
 
 type MaybeString = string | null | undefined;
 type RawSub = { title?: MaybeString; name?: MaybeString; label?: MaybeString; Title?: MaybeString;
@@ -25,7 +25,7 @@ function catSlug(c: RawCategory): string { const explicit = String(pick<string>(
 function catSubs(c: RawCategory): RawSub[] { return (pick<RawSub[]>(c as any, ["subcategories","subCats","subs","children"], []) || []) as RawSub[]; }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const list = (categories as RawCategory[]) || [];
+  const list = (CATEGORIES as RawCategory[]) || [];
   const found = list.find((c) => catSlug(c) === params.slug);
   const title = found ? `${catTitle(found)} | PINDOO` : "PINDOO";
   const description = found ? `Vyber si z přehledu subkategorií v oblasti „${catTitle(found)}“. Najdeme ti ověřené poskytovatele.` : "Přehled subkategorií";
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function Page({ params }: { params: { slug: string } }) {
-  const all = (categories as RawCategory[]) || [];
+  const all = (CATEGORIES as RawCategory[]) || [];
   const found = all.find((c) => catSlug(c) === params.slug);
   if (!found) return notFound();
 
@@ -73,6 +73,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       </div>
 
       <section style={{ marginTop: 24, border: "1px solid #e6eaf2", borderRadius: 16, overflow: "hidden", background: "#fff" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png" alt="" style={{ width: "100%", height: "auto", display: "block" }} />
       </section>
     </main>

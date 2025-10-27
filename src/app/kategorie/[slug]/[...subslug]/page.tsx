@@ -20,7 +20,7 @@ export default function SubPage({ params }: { params: { slug: string; subslug: s
       </h1>
 
       <p style={{ marginTop: 12, color: "#334155" }}>
-        Tohle je placeholder pro obsah podkategorie. V dalším kroku sem přidáme filtry a výpis poskytovatelů.
+        Placeholder pro obsah podkategorie. Později sem přidáme filtry a výpis poskytovatelů.
       </p>
     </main>
   );

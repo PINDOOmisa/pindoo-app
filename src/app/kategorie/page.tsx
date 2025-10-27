@@ -3,15 +3,16 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import Link from "next/link";
-import { categories } from "@/data/categories";
+import { CATEGORIES } from "@/data/categories";
 
-/* — stejné helpery jako na detailu, aby sluy seděly — */
+/* Helpery (stejné jako na detailu, aby slugy seděly) */
 type MaybeString = string | null | undefined;
 type RawCategory = {
   slug?: MaybeString; Slug?: MaybeString;
   title?: MaybeString; name?: MaybeString; label?: MaybeString; Title?: MaybeString;
   image?: MaybeString; img?: MaybeString; icon?: MaybeString; coverImage?: MaybeString; thumbnailUrl?: MaybeString;
 };
+
 function pick<T = any>(obj: Record<string, any>, keys: string[], fallback: T): T {
   for (const k of keys) if (obj && obj[k] != null) return obj[k] as T;
   return fallback;
@@ -26,14 +27,14 @@ function catTitle(c: RawCategory): string {
 }
 function catSlug(c: RawCategory): string {
   const explicit = String(pick<string>(c as any, ["slug","Slug"], "") || "").trim();
-  return explicit || slugify(catTitle(c)); // ← stejné jako na detailu
+  return explicit || slugify(catTitle(c)); // stejné jako na detailu
 }
 function catImage(c: RawCategory): string | null {
   return pick<string | null>(c as any, ["image","img","icon","coverImage","thumbnailUrl"], null) || null;
 }
 
 export default function Page() {
-  const list = (categories as RawCategory[]) || [];
+  const list = (CATEGORIES as RawCategory[]) || [];
 
   return (
     <main style={{ maxWidth: 1140, margin: "0 auto", padding: "24px 16px" }}>
@@ -55,7 +56,7 @@ export default function Page() {
           const slug = catSlug(c);
           const ttl = catTitle(c) || "Kategorie";
           const img = catImage(c);
-          if (!slug) return null; // ochrana
+          if (!slug) return null;
           return (
             <Link key={`${slug}-${i}`} href={`/kategorie/${slug}`} className="card" prefetch>
               <div className="ttl">{ttl}</div>
