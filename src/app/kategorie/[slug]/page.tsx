@@ -7,6 +7,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { CATEGORIES } from "@/data/categories";
+import SubImage from "@/components/SubImage";
 
 type MaybeString = string | null | undefined;
 type RawSub = {
@@ -38,16 +39,12 @@ function normSubSlug(s: RawSub, title: string): string {
   const explicit = String(pick<string>(s as any, ["slug","Slug"], "") || "").trim();
   return explicit || slugify(title);
 }
-/** Podkategorie obrázek: 1) vezmi explicitní pole, 2) jinak fallback /img/subcategories/<slug>.png */
-function subImage(s: RawSub): string | null {
-  const explicit = pick<string | null>(
+function subExplicitImage(s: RawSub): string | null {
+  return pick<string | null>(
     s as any,
     ["image","img","photo","thumbnailUrl","thumb","cover","coverImage","iconUrl","icon"],
     null
   );
-  if (explicit) return explicit;
-  const sl = normSubSlug(s, subTitle(s));
-  return `/img/subcategories/${sl}.png`; // máš .png soubory v /public/img/subcategories
 }
 
 function catTitle(c: RawCategory): string {
@@ -106,16 +103,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
         {subs.map((s, i) => {
           const t = subTitle(s);
           const subSlug = normSubSlug(s, t);
-          const img = subImage(s);
+          const explicit = subExplicitImage(s); // pokud bys někde chtěla zadat image v datech
           return (
             <Link key={`${subSlug}-${i}`} href={`/kategorie/${parentSlug}/${subSlug}`} className="card">
               <div className="ttl">{t}</div>
-              {img ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={img} alt={t} className="img" />
-              ) : (
-                <div className="ph" aria-hidden="true" />
-              )}
+              <SubImage slug={subSlug} alt={t} className="img" src={explicit || null} />
             </Link>
           );
         })}
