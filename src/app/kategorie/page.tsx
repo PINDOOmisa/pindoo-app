@@ -1,138 +1,79 @@
-// src/app/kategorie/[slug]/page.tsx
+// src/app/kategorie/page.tsx
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-export const dynamicParams = true;
 
-import * as CatMod from "@/data/categories";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { categories } from "@/data/categories";
 
-type Raw = any;
-
-/* ===== utilitky tolerantní k různým strukturám ===== */
-function extractRaw(mod: any): Raw[] {
-  const candidates: any[] = [];
-  if (Array.isArray(mod)) candidates.push(mod);
-  if (Array.isArray(mod?.default)) candidates.push(mod.default);
-  if (Array.isArray(mod?.categories)) candidates.push(mod.categories);
-  if (Array.isArray(mod?.default?.categories)) candidates.push(mod.default.categories);
-  if (Array.isArray(mod?.data)) candidates.push(mod.data);
-  if (Array.isArray(mod?.default?.data)) candidates.push(mod.default.data);
-  const found =
-    candidates.find((v) => Array.isArray(v)) ||
-    Object.values(mod || {}).find((v: any) => Array.isArray(v)) ||
-    Object.values(mod?.default || {}).find((v: any) => Array.isArray(v)) ||
-    [];
-  return (found as Raw[]) || [];
+/* — stejné helpery jako na detailu, aby sluy seděly — */
+type MaybeString = string | null | undefined;
+type RawCategory = {
+  slug?: MaybeString; Slug?: MaybeString;
+  title?: MaybeString; name?: MaybeString; label?: MaybeString; Title?: MaybeString;
+  image?: MaybeString; img?: MaybeString; icon?: MaybeString; coverImage?: MaybeString; thumbnailUrl?: MaybeString;
+};
+function pick<T = any>(obj: Record<string, any>, keys: string[], fallback: T): T {
+  for (const k of keys) if (obj && obj[k] != null) return obj[k] as T;
+  return fallback;
+}
+function slugify(input: string): string {
+  return (input || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+}
+function catTitle(c: RawCategory): string {
+  return String(pick<string>(c as any, ["title","name","label","Title"], "") || "").trim();
+}
+function catSlug(c: RawCategory): string {
+  const explicit = String(pick<string>(c as any, ["slug","Slug"], "") || "").trim();
+  return explicit || slugify(catTitle(c)); // ← stejné jako na detailu
+}
+function catImage(c: RawCategory): string | null {
+  return pick<string | null>(c as any, ["image","img","icon","coverImage","thumbnailUrl"], null) || null;
 }
 
-const normTitle = (x: Raw) =>
-  (x?.title ?? x?.name ?? x?.label ?? x?.CategoryName ?? x?.Title ?? "").toString().trim();
-
-function slugify(title: string) {
-  return title
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
-
-function normSlug(x: Raw, title: string) {
-  const s = x?.slug ?? x?.Slug ?? x?.id ?? x?.Id ?? slugify(title);
-  return s.toString().trim();
-}
-
-function extractSubcats(raw: Raw): Raw[] {
-  const c =
-    raw?.subcategories ??
-    raw?.subcategory ??
-    raw?.children ??
-    raw?.subs ??
-    raw?.items ??
-    raw?.Subcategories ??
-    raw?.Children ??
-    raw?.Items ??
-    null;
-  if (Array.isArray(c)) return c;
-  if (c && typeof c === "object") return Object.values(c) as Raw[];
-  return [];
-}
-
-function getImageUrl(x: Raw): string | null {
-  return (
-    x?.image ??
-    x?.img ??
-    x?.photo ??
-    x?.thumbnailUrl ??
-    x?.thumb ??
-    x?.cover ??
-    x?.coverImage ??
-    x?.iconUrl ??
-    x?.icon ??
-    null
-  ) || null;
-}
-
-/* ===== stránka ===== */
-export default function CategoryDetailPage({ params }: { params: { slug: string } }) {
-  const list = extractRaw(CatMod);
-  const found = list
-    .map((x) => {
-      const title = normTitle(x);
-      const slug = normSlug(x, title);
-      return { raw: x, title, slug };
-    })
-    .find((c) => c.slug === params.slug);
-
-  if (!found) {
-    return notFound();
-  }
-
-  const subs = extractSubcats(found.raw);
+export default function Page() {
+  const list = (categories as RawCategory[]) || [];
 
   return (
-    <main style={{ maxWidth: "1140px", margin: "0 auto", padding: "24px 16px" }}>
-      {/* Zpět na kategorie */}
-      <div style={{ marginBottom: 8 }}>
-        <Link href="/kategorie" style={{ color: "#0E3A8A", textDecoration: "underline" }}>
-          ← Zpět na kategorie
-        </Link>
+    <main style={{ maxWidth: 1140, margin: "0 auto", padding: "24px 16px" }}>
+      <h1 style={{ fontSize: "1.875rem", fontWeight: 800, marginBottom: 16, color: "#0f172a" }}>Kategorie</h1>
+
+      {/* grid */}
+      <style>{`
+        .cats { display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+        @media (min-width:640px){ .cats{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+        @media (min-width:1024px){ .cats{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
+        .card{ display:block; border:1px solid #e6eaf2; border-radius:16px; padding:16px; background:#fff; text-decoration:none; }
+        .ttl{ font-weight:600; margin-bottom:12px; color:#0f172a; }
+        .img{ width:100%; height:120px; object-fit:cover; border-radius:12px; display:block; }
+        .ph{ width:100%; height:120px; border-radius:12px; background:#f1f5f9; }
+      `}</style>
+
+      <div className="cats">
+        {list.map((c, i) => {
+          const slug = catSlug(c);
+          const ttl = catTitle(c) || "Kategorie";
+          const img = catImage(c);
+          if (!slug) return null; // ochrana
+          return (
+            <Link key={`${slug}-${i}`} href={`/kategorie/${slug}`} className="card" prefetch>
+              <div className="ttl">{ttl}</div>
+              {img ? <img src={img} alt="" className="img" /> : <div className="ph" aria-hidden="true" />}
+            </Link>
+          );
+        })}
       </div>
 
-      {/* H1 */}
-      <h1 style={{ margin: 0, fontSize: "1.75rem", fontWeight: 800, color: "#0f172a" }}>
-        {found.title}
-      </h1>
-      <div style={{ height: 12 }} />
-
-      {/* Grid podkategorií – pouze třídy scg-* (styly v globals.css) */}
-      <div className="scg-wrap">
-        <div className="scg-grid">
-          {subs.map((s: any) => {
-            const t =
-              (s?.title ?? s?.name ?? s?.label ?? s?.Title ?? "").toString().trim() || "Bez názvu";
-            const subSlug = normSlug(s, t);
-            const img = getImageUrl(s);
-
-            return (
-              <Link
-                key={subSlug}
-                href={`/kategorie/${found.slug}/${subSlug}`}
-                className="scg-card"
-                prefetch
-              >
-                <div className="scg-head">{t}</div>
-                {img ? (
-                  <img src={img} alt="" className="scg-img" />
-                ) : (
-                  <div className="scg-img scg-img--placeholder" aria-hidden="true" />
-                )}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+      {/* povinný feedback panel */}
+      <section style={{ marginTop: 24, border: "1px solid #e6eaf2", borderRadius: 16, overflow: "hidden", background: "#fff" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png"
+          alt=""
+          style={{ width: "100%", height: "auto", display: "block" }}
+        />
+      </section>
     </main>
   );
 }
