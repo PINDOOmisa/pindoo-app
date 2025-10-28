@@ -34,12 +34,9 @@ function catImageFromData(c: RawCategory): string | null {
   return pick<string | null>(c as any, ["image","img","icon","coverImage","thumbnailUrl"], null) || null;
 }
 
-/** Jednoduchý obrázek kategorie.
- * V tuto chvíli počítáme s .jpg v /public/img/categories/<slug>.jpg
- * (když chceš, změň níže příponu na .png/.webp).
- */
+/** Obrázek kategorie z /public/img/categories/<slug>.jpg */
 function CatImage({ slug, alt }: { slug: string; alt: string }) {
-  // defaultně míříme na .jpg, které máš nahrané
+  // defaultně míříme na .jpg (soubory už v repu jsou)
   const src = `/img/categories/${slug}.jpg`;
   // eslint-disable-next-line @next/next/no-img-element
   return (
@@ -49,7 +46,7 @@ function CatImage({ slug, alt }: { slug: string; alt: string }) {
       loading="lazy"
       style={{
         width: "100%",
-        height: 120,
+        height: 120,            // pevná výška kvůli stabilní mřížce
         objectFit: "contain",
         background: "#f8fafc",
         borderRadius: 12,
@@ -77,8 +74,9 @@ export default function Page() {
         .cats { display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); }
         @media (min-width:640px){ .cats{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
         @media (min-width:1024px){ .cats{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
-        .card{ display:block; border:1px solid #e6eaf2; border-radius:16px; padding:16px; background:#fff; text-decoration:none; }
-        .ttl{ font-weight:700; margin:8px 0 0; color:#0f172a; }
+        .card{ display:block; border:1px solid #e6eaf2; border-radius:16px; padding:16px; background:#fff; text-decoration:none; transition: box-shadow .15s ease, transform .15s ease; }
+        .card:hover{ box-shadow:0 8px 20px rgba(14,58,138,0.08); transform: translateY(-2px); }
+        .ttl{ font-weight:700; margin:8px 0 0; color:#0f172a; line-height:1.25; }
       `}</style>
 
       <div className="cats">
@@ -89,8 +87,9 @@ export default function Page() {
           if (!slug) return null;
 
           return (
-            <Link key={`${slug}-${i}`} href={`/kategorie/${slug}`} className="card" prefetch>
+            <Link key={`${slug}-${i}`} href={`/kategorie/${slug}`} className="card">
               {imgFromData ? (
+                // Obrázek přímo z dat (pokud ho nějaká kategorie má definovaný)
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={imgFromData}
@@ -114,7 +113,7 @@ export default function Page() {
         })}
       </div>
 
-      {/* feedback panel */}
+      {/* feedback panel (požadavek z projektu) */}
       <section
         style={{
           marginTop: 24,
