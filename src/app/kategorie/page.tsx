@@ -1,4 +1,5 @@
-// src/app/kategorie/page.tsx
+'use client'; // <- DŮLEŽITÉ: aby fungovaly onError/onLoad na <img>
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -36,9 +37,7 @@ function catImageFromData(c: RawCategory): string | null {
 
 /** Ikona kategorie — vždy vyrenderuje <img> do vyhrazeného boxu  */
 function CategoryIcon({ slug, alt, dataUrl }: { slug: string; alt: string; dataUrl?: string | null }) {
-  // 1) pokud přišla absolutní/externí URL z dat, zkusíme ji rovnou
   const initial = dataUrl || `/img/categories/${slug}.jpg`;
-
   // eslint-disable-next-line @next/next/no-img-element
   return (
     <div className="icon-wrap" aria-hidden="true">
@@ -50,27 +49,24 @@ function CategoryIcon({ slug, alt, dataUrl }: { slug: string; alt: string; dataU
         onError={(e) => {
           const t = e.currentTarget as HTMLImageElement;
           const tried = (t.dataset.tried || "").split(",").filter(Boolean);
-          const order = dataUrl ? [] : ["png", "webp", "jpeg"]; // když je externí URL, neskáčeme na lokální fallbacky
+          const order = dataUrl ? [] : ["png", "webp", "jpeg"];
           const next = order.find((ext) => !tried.includes(ext));
-
           if (next) {
             t.dataset.tried = [...tried, next].join(",");
             t.src = `/img/categories/${slug}.${next}`;
-            return;
+          } else {
+            t.src =
+              'data:image/svg+xml;utf8,' +
+              encodeURIComponent(
+                `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="120" viewBox="0 0 200 120">
+                  <rect width="200" height="120" rx="12" fill="#F1F5F9"/>
+                  <g fill="#94A3B8">
+                    <circle cx="60" cy="60" r="20"/>
+                    <rect x="95" y="40" width="60" height="40" rx="6"/>
+                  </g>
+                </svg>`
+              );
           }
-
-          // poslední, vždy dostupný zobrazitelný placeholder (bez souboru v repu)
-          t.src =
-            'data:image/svg+xml;utf8,' +
-            encodeURIComponent(
-              `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="120" viewBox="0 0 200 120">
-                <rect width="200" height="120" rx="12" fill="#F1F5F9"/>
-                <g fill="#94A3B8">
-                  <circle cx="60" cy="60" r="20"/>
-                  <rect x="95" y="40" width="60" height="40" rx="6"/>
-                </g>
-              </svg>`
-            );
         }}
       />
     </div>
@@ -99,37 +95,24 @@ export default function Page() {
         .tile{
           display:flex; flex-direction:column; justify-content:flex-start; align-items:stretch;
           gap:10px; padding:16px; background:#fff; border:1px solid #e6eaf2; border-radius:16px;
-          text-decoration:none; box-shadow:0 0 0 0 rgba(0,0,0,0);
-          transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+          text-decoration:none; transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
         }
         .tile:hover{ transform: translateY(-2px); box-shadow:0 8px 20px rgba(14,58,138,0.08); border-color:#dbe2ee; }
 
-        /* VYHRAZENÝ PROSTOR PRO IKONU — vždy má výšku, takže se mřížka nerozsype */
         .icon-wrap{
-          width:100%;
-          height:120px;
-          background:#f8fafc;
-          border-radius:12px;
-          display:flex; align-items:center; justify-content:center;
-          overflow:hidden;
+          width:100%; height:120px; background:#f8fafc; border-radius:12px;
+          display:flex; align-items:center; justify-content:center; overflow:hidden;
         }
-        .icon-img{
-          max-width:90%;
-          max-height:90%;
-          object-fit:contain;
-          display:block;
-        }
+        .icon-img{ max-width:90%; max-height:90%; object-fit:contain; display:block; }
 
         .ttl{ font-weight:700; color:#0f172a; line-height:1.25; }
-        .sub{ color:#64748b; font-size:12px; line-height:1.2; } /* volitelný podtitulek */
       `}</style>
 
       <div className="cats">
         {list.map((c, i) => {
           const slug = catSlug(c);
           const ttl = catTitle(c) || "Kategorie";
-          const imgFromData = catImageFromData(c); // pokud někde bude externí URL/icon
-
+          const imgFromData = catImageFromData(c);
           if (!slug) return null;
 
           return (
@@ -141,7 +124,7 @@ export default function Page() {
         })}
       </div>
 
-      {/* feedback panel (projektová konstanta) */}
+      {/* feedback panel */}
       <section
         style={{
           marginTop: 24,
