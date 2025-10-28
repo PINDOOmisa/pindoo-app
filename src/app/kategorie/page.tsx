@@ -1,5 +1,4 @@
-'use client'; // <- DŮLEŽITÉ: aby fungovaly onError/onLoad na <img>
-
+// src/app/kategorie/page.tsx
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -32,42 +31,23 @@ function catSlug(c: RawCategory): string {
   return explicit || slugify(catTitle(c));
 }
 function catImageFromData(c: RawCategory): string | null {
-  return pick<string | null>(c as any, ["image","img","icon","coverImage","thumbnailUrl"], null) || null;
+  return (
+    pick<string | null>(c as any, ["image","img","icon","coverImage","thumbnailUrl"], null) || null
+  );
 }
 
-/** Ikona kategorie — vždy vyrenderuje <img> do vyhrazeného boxu  */
-function CategoryIcon({ slug, alt, dataUrl }: { slug: string; alt: string; dataUrl?: string | null }) {
-  const initial = dataUrl || `/img/categories/${slug}.jpg`;
+/** Jednoduchá ikona: vždy rezervuje prostor a zkouší lokální .jpg podle slugu */
+function CatImage({ slug, alt, dataUrl }: { slug: string; alt: string; dataUrl?: string | null }) {
+  // pokud je v datech přímo URL, použijeme ji; jinak lokální .jpg
+  const src = dataUrl || `/img/categories/${slug}.jpg`;
   // eslint-disable-next-line @next/next/no-img-element
   return (
     <div className="icon-wrap" aria-hidden="true">
       <img
-        src={initial}
+        src={src}
         alt={alt}
         loading="lazy"
         className="icon-img"
-        onError={(e) => {
-          const t = e.currentTarget as HTMLImageElement;
-          const tried = (t.dataset.tried || "").split(",").filter(Boolean);
-          const order = dataUrl ? [] : ["png", "webp", "jpeg"];
-          const next = order.find((ext) => !tried.includes(ext));
-          if (next) {
-            t.dataset.tried = [...tried, next].join(",");
-            t.src = `/img/categories/${slug}.${next}`;
-          } else {
-            t.src =
-              'data:image/svg+xml;utf8,' +
-              encodeURIComponent(
-                `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="120" viewBox="0 0 200 120">
-                  <rect width="200" height="120" rx="12" fill="#F1F5F9"/>
-                  <g fill="#94A3B8">
-                    <circle cx="60" cy="60" r="20"/>
-                    <rect x="95" y="40" width="60" height="40" rx="6"/>
-                  </g>
-                </svg>`
-              );
-          }
-        }}
       />
     </div>
   );
@@ -99,6 +79,7 @@ export default function Page() {
         }
         .tile:hover{ transform: translateY(-2px); box-shadow:0 8px 20px rgba(14,58,138,0.08); border-color:#dbe2ee; }
 
+        /* vyhrazený slot pro ikonku */
         .icon-wrap{
           width:100%; height:120px; background:#f8fafc; border-radius:12px;
           display:flex; align-items:center; justify-content:center; overflow:hidden;
@@ -117,7 +98,7 @@ export default function Page() {
 
           return (
             <Link key={`${slug}-${i}`} href={`/kategorie/${slug}`} className="tile">
-              <CategoryIcon slug={slug} alt={ttl} dataUrl={imgFromData ?? undefined} />
+              <CatImage slug={slug} alt={ttl} dataUrl={imgFromData ?? undefined} />
               <div className="ttl">{ttl}</div>
             </Link>
           );
