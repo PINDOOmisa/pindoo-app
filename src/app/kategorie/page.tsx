@@ -34,49 +34,46 @@ function catImageFromData(c: RawCategory): string | null {
   return pick<string | null>(c as any, ["image","img","icon","coverImage","thumbnailUrl"], null) || null;
 }
 
-/** Obrázek kategorie s fallbackem formátů + debug do konzole */
-function CategoryIcon({ slug, alt }: { slug: string; alt: string }) {
-  // první pokus – .jpg v /public/img/categories/<slug>.jpg
-  const initial = `/img/categories/${slug}.jpg`;
+/** Ikona kategorie — vždy vyrenderuje <img> do vyhrazeného boxu  */
+function CategoryIcon({ slug, alt, dataUrl }: { slug: string; alt: string; dataUrl?: string | null }) {
+  // 1) pokud přišla absolutní/externí URL z dat, zkusíme ji rovnou
+  const initial = dataUrl || `/img/categories/${slug}.jpg`;
+
   // eslint-disable-next-line @next/next/no-img-element
   return (
-    <img
-      src={initial}
-      alt={alt}
-      loading="lazy"
-      title={initial} /* dočasně pro kontrolu */
-      style={{
-        width: "100%",
-        height: 120,
-        objectFit: "contain",
-        background: "#f8fafc",
-        borderRadius: 12,
-        display: "block",
-      }}
-      onLoad={(e) => {
-        // lehký debug – uvidíš úspěšně načtený soubor
-        // @ts-ignore
-        if (typeof window !== "undefined") console.log("Icon OK:", (e.currentTarget as HTMLImageElement).src);
-      }}
-      onError={(e) => {
-        const t = e.currentTarget as HTMLImageElement;
-        const tried = (t.dataset.tried || "").split(",").filter(Boolean);
-        const order = ["png", "webp", "jpeg"]; // pořadí fallbacků
-        const next = order.find((ext) => !tried.includes(ext));
+    <div className="icon-wrap" aria-hidden="true">
+      <img
+        src={initial}
+        alt={alt}
+        loading="lazy"
+        className="icon-img"
+        onError={(e) => {
+          const t = e.currentTarget as HTMLImageElement;
+          const tried = (t.dataset.tried || "").split(",").filter(Boolean);
+          const order = dataUrl ? [] : ["png", "webp", "jpeg"]; // když je externí URL, neskáčeme na lokální fallbacky
+          const next = order.find((ext) => !tried.includes(ext));
 
-        // Debug: uvidíš, jaký slug a co jsme zkusili
-        // @ts-ignore
-        if (typeof window !== "undefined") console.warn("Icon load failed:", slug, "tried:", tried, "current:", t.src);
+          if (next) {
+            t.dataset.tried = [...tried, next].join(",");
+            t.src = `/img/categories/${slug}.${next}`;
+            return;
+          }
 
-        if (next) {
-          t.dataset.tried = [...tried, next].join(",");
-          t.src = `/img/categories/${slug}.${next}`;
-        } else {
-          // poslední záloha – nic nepadá, zobrazíme prázdné místo
-          t.style.visibility = "hidden";
-        }
-      }}
-    />
+          // poslední, vždy dostupný zobrazitelný placeholder (bez souboru v repu)
+          t.src =
+            'data:image/svg+xml;utf8,' +
+            encodeURIComponent(
+              `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="120" viewBox="0 0 200 120">
+                <rect width="200" height="120" rx="12" fill="#F1F5F9"/>
+                <g fill="#94A3B8">
+                  <circle cx="60" cy="60" r="20"/>
+                  <rect x="95" y="40" width="60" height="40" rx="6"/>
+                </g>
+              </svg>`
+            );
+        }}
+      />
+    </div>
   );
 }
 
@@ -98,68 +95,53 @@ export default function Page() {
         .cats { display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); }
         @media (min-width:640px){ .cats{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
         @media (min-width:1024px){ .cats{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
-        .card{ display:block; border:1px solid #e6eaf2; border-radius:16px; padding:16px; background:#fff; text-decoration:none; transition: box-shadow .15s ease, transform .15s ease; }
-        .card:hover{ box-shadow:0 8px 20px rgba(14,58,138,0.08); transform: translateY(-2px); }
-        .ttl{ font-weight:700; margin:8px 0 0; color:#0f172a; line-height:1.25; }
-        .slug-note{ color:#64748b; font-size:12px; margin-top:2px; } /* dočasně pro debug */
+
+        .tile{
+          display:flex; flex-direction:column; justify-content:flex-start; align-items:stretch;
+          gap:10px; padding:16px; background:#fff; border:1px solid #e6eaf2; border-radius:16px;
+          text-decoration:none; box-shadow:0 0 0 0 rgba(0,0,0,0);
+          transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+        }
+        .tile:hover{ transform: translateY(-2px); box-shadow:0 8px 20px rgba(14,58,138,0.08); border-color:#dbe2ee; }
+
+        /* VYHRAZENÝ PROSTOR PRO IKONU — vždy má výšku, takže se mřížka nerozsype */
+        .icon-wrap{
+          width:100%;
+          height:120px;
+          background:#f8fafc;
+          border-radius:12px;
+          display:flex; align-items:center; justify-content:center;
+          overflow:hidden;
+        }
+        .icon-img{
+          max-width:90%;
+          max-height:90%;
+          object-fit:contain;
+          display:block;
+        }
+
+        .ttl{ font-weight:700; color:#0f172a; line-height:1.25; }
+        .sub{ color:#64748b; font-size:12px; line-height:1.2; } /* volitelný podtitulek */
       `}</style>
 
       <div className="cats">
         {list.map((c, i) => {
           const slug = catSlug(c);
           const ttl = catTitle(c) || "Kategorie";
-          const imgFromData = catImageFromData(c);
+          const imgFromData = catImageFromData(c); // pokud někde bude externí URL/icon
+
           if (!slug) return null;
 
           return (
-            <Link key={`${slug}-${i}`} href={`/kategorie/${slug}`} className="card">
-              {imgFromData ? (
-                // Pokud má kategorie obrázek v datech, zobrazíme ho 1:1
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={imgFromData}
-                  alt={ttl}
-                  loading="lazy"
-                  style={{
-                    width: "100%",
-                    height: 120,
-                    objectFit: "contain",
-                    background: "#f8fafc",
-                    borderRadius: 12,
-                    display: "block",
-                  }}
-                  onError={(e) => {
-                    // pokud by data-URL selhala, spadneme na lokální sadu s fallbackem
-                    (e.currentTarget as HTMLImageElement).replaceWith(
-                      (() => {
-                        const wrapper = document.createElement("div");
-                        const tmp = document.createElement("img");
-                        tmp.src = `/img/categories/${slug}.jpg`;
-                        tmp.alt = ttl;
-                        tmp.loading = "lazy";
-                        tmp.style.width = "100%";
-                        tmp.style.height = "120px";
-                        tmp.style.objectFit = "contain";
-                        tmp.style.background = "#f8fafc";
-                        tmp.style.borderRadius = "12px";
-                        tmp.style.display = "block";
-                        wrapper.appendChild(tmp);
-                        return wrapper;
-                      })()
-                    );
-                  }}
-                />
-              ) : (
-                <CategoryIcon slug={slug} alt={ttl} />
-              )}
+            <Link key={`${slug}-${i}`} href={`/kategorie/${slug}`} className="tile">
+              <CategoryIcon slug={slug} alt={ttl} dataUrl={imgFromData ?? undefined} />
               <div className="ttl">{ttl}</div>
-              <div className="slug-note">{slug}</div>
             </Link>
           );
         })}
       </div>
 
-      {/* feedback panel */}
+      {/* feedback panel (projektová konstanta) */}
       <section
         style={{
           marginTop: 24,
