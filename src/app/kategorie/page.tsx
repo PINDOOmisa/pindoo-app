@@ -34,23 +34,47 @@ function catImageFromData(c: RawCategory): string | null {
   return pick<string | null>(c as any, ["image","img","icon","coverImage","thumbnailUrl"], null) || null;
 }
 
-/** Obrázek kategorie z /public/img/categories/<slug>.jpg */
-function CatImage({ slug, alt }: { slug: string; alt: string }) {
-  // defaultně míříme na .jpg (soubory už v repu jsou)
-  const src = `/img/categories/${slug}.jpg`;
+/** Obrázek kategorie s fallbackem formátů + debug do konzole */
+function CategoryIcon({ slug, alt }: { slug: string; alt: string }) {
+  // první pokus – .jpg v /public/img/categories/<slug>.jpg
+  const initial = `/img/categories/${slug}.jpg`;
   // eslint-disable-next-line @next/next/no-img-element
   return (
     <img
-      src={src}
+      src={initial}
       alt={alt}
       loading="lazy"
+      title={initial} /* dočasně pro kontrolu */
       style={{
         width: "100%",
-        height: 120,            // pevná výška kvůli stabilní mřížce
+        height: 120,
         objectFit: "contain",
         background: "#f8fafc",
         borderRadius: 12,
         display: "block",
+      }}
+      onLoad={(e) => {
+        // lehký debug – uvidíš úspěšně načtený soubor
+        // @ts-ignore
+        if (typeof window !== "undefined") console.log("Icon OK:", (e.currentTarget as HTMLImageElement).src);
+      }}
+      onError={(e) => {
+        const t = e.currentTarget as HTMLImageElement;
+        const tried = (t.dataset.tried || "").split(",").filter(Boolean);
+        const order = ["png", "webp", "jpeg"]; // pořadí fallbacků
+        const next = order.find((ext) => !tried.includes(ext));
+
+        // Debug: uvidíš, jaký slug a co jsme zkusili
+        // @ts-ignore
+        if (typeof window !== "undefined") console.warn("Icon load failed:", slug, "tried:", tried, "current:", t.src);
+
+        if (next) {
+          t.dataset.tried = [...tried, next].join(",");
+          t.src = `/img/categories/${slug}.${next}`;
+        } else {
+          // poslední záloha – nic nepadá, zobrazíme prázdné místo
+          t.style.visibility = "hidden";
+        }
       }}
     />
   );
@@ -77,6 +101,7 @@ export default function Page() {
         .card{ display:block; border:1px solid #e6eaf2; border-radius:16px; padding:16px; background:#fff; text-decoration:none; transition: box-shadow .15s ease, transform .15s ease; }
         .card:hover{ box-shadow:0 8px 20px rgba(14,58,138,0.08); transform: translateY(-2px); }
         .ttl{ font-weight:700; margin:8px 0 0; color:#0f172a; line-height:1.25; }
+        .slug-note{ color:#64748b; font-size:12px; margin-top:2px; } /* dočasně pro debug */
       `}</style>
 
       <div className="cats">
@@ -89,7 +114,7 @@ export default function Page() {
           return (
             <Link key={`${slug}-${i}`} href={`/kategorie/${slug}`} className="card">
               {imgFromData ? (
-                // Obrázek přímo z dat (pokud ho nějaká kategorie má definovaný)
+                // Pokud má kategorie obrázek v datech, zobrazíme ho 1:1
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={imgFromData}
@@ -103,17 +128,38 @@ export default function Page() {
                     borderRadius: 12,
                     display: "block",
                   }}
+                  onError={(e) => {
+                    // pokud by data-URL selhala, spadneme na lokální sadu s fallbackem
+                    (e.currentTarget as HTMLImageElement).replaceWith(
+                      (() => {
+                        const wrapper = document.createElement("div");
+                        const tmp = document.createElement("img");
+                        tmp.src = `/img/categories/${slug}.jpg`;
+                        tmp.alt = ttl;
+                        tmp.loading = "lazy";
+                        tmp.style.width = "100%";
+                        tmp.style.height = "120px";
+                        tmp.style.objectFit = "contain";
+                        tmp.style.background = "#f8fafc";
+                        tmp.style.borderRadius = "12px";
+                        tmp.style.display = "block";
+                        wrapper.appendChild(tmp);
+                        return wrapper;
+                      })()
+                    );
+                  }}
                 />
               ) : (
-                <CatImage slug={slug} alt={ttl} />
+                <CategoryIcon slug={slug} alt={ttl} />
               )}
               <div className="ttl">{ttl}</div>
+              <div className="slug-note">{slug}</div>
             </Link>
           );
         })}
       </div>
 
-      {/* feedback panel (požadavek z projektu) */}
+      {/* feedback panel */}
       <section
         style={{
           marginTop: 24,
