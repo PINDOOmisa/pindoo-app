@@ -2,101 +2,110 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-import Link from "next/link";
 import { CATEGORIES } from "@/data/categories";
 
+/* ---- pomocné funkce (čisté, bez prohlížečových API) ---- */
+type Raw = any;
+const pick = (o: any, keys: string[], fb: any) => {
+  for (const k of keys) if (o && o[k] != null) return o[k];
+  return fb;
+};
+const slugify = (s: string) =>
+  (s || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
+const getTitle = (c: Raw) =>
+  String(pick(c, ["title","name","label","Title"], "") || "").trim();
+
+const getSlug = (c: Raw) => {
+  const explicit = String(pick(c, ["slug","Slug"], "") || "").trim();
+  return explicit || slugify(getTitle(c));
+};
+
 export default function Page() {
-  const list = Array.isArray(CATEGORIES) ? CATEGORIES : [];
+  const list: Raw[] = Array.isArray(CATEGORIES) ? (CATEGORIES as Raw[]) : [];
 
   return (
-    <main className="mx-auto max-w-[1140px] px-4 py-6">
-      <h1 className="text-3xl font-extrabold mb-4 text-slate-900">
+    <main style={{ maxWidth: 1140, margin: "0 auto", padding: "24px 16px" }}>
+      <h1 style={{ fontSize: "30px", fontWeight: 800, marginBottom: 8, color: "#0f172a" }}>
         Kategorie
       </h1>
+      <p style={{ color: "#475569", marginBottom: 16 }}>
+        Vyber si oblast a pojďme najít ověřené poskytovatele.
+      </p>
 
-      <style>{`
-        .cats { 
-          display:grid; 
-          gap:16px; 
-          grid-template-columns:repeat(2,minmax(0,1fr)); 
-        }
-        @media (min-width:640px){ 
-          .cats{ grid-template-columns:repeat(3,minmax(0,1fr)); } 
-        }
-        @media (min-width:1024px){ 
-          .cats{ grid-template-columns:repeat(4,minmax(0,1fr)); } 
-        }
+      {/* Mřížka dlaždic — čistý inline CSS kvůli 100% jistotě renderu */}
+      <div
+        style={{
+          display: "grid",
+          gap: 16,
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        }}
+      >
+        {/* breakpoints přes wrappery */}
+        <style>{`
+          @media (min-width:640px){ .cats-3 { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+          @media (min-width:1024px){ .cats-4 { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+        `}</style>
+      </div>
 
-        .tile {
-          display:flex; 
-          flex-direction:column; 
-          align-items:stretch; 
-          gap:10px; 
-          padding:16px; 
-          border:1px solid #e6eaf2; 
-          border-radius:16px; 
-          background:#fff; 
-          text-decoration:none; 
-          transition: box-shadow .15s ease, transform .15s ease;
-        }
-        .tile:hover { 
-          transform: translateY(-2px); 
-          box-shadow:0 8px 20px rgba(14,58,138,0.08); 
-        }
+      <div className="cats-4 cats-3" style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(2,minmax(0,1fr))" }}>
+        {list.map((c, i) => {
+          const slug = getSlug(c);
+          const title = getTitle(c) || "Kategorie";
+          if (!slug) return null;
 
-        .icon-box {
-          width:100%; 
-          height:120px; 
-          background:#f8fafc; 
-          border-radius:12px; 
-          display:flex; 
-          align-items:center; 
-          justify-content:center; 
-          overflow:hidden;
-        }
-        .icon-box img {
-          max-width:90%; 
-          max-height:90%; 
-          object-fit:contain;
-        }
-
-        .ttl {
-          font-weight:700; 
-          color:#0f172a;
-          line-height:1.25;
-        }
-      `}</style>
-
-      <div className="cats">
-        {list.map((cat: any, i: number) => {
-          const slug =
-            cat.slug ||
-            cat.Slug ||
-            cat.title?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-") ||
-            `cat-${i}`;
-          const title = cat.title || cat.name || cat.label || "Kategorie";
-
+          // absolutní minimální a nejstabilnější render: <a> + <div> + <img>
           return (
-            <Link key={slug} href={`/kategorie/${slug}`} className="tile">
-              <div className="icon-box">
+            <a
+              key={`${slug}-${i}`}
+              href={`/kategorie/${slug}`}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+                padding: 16,
+                textDecoration: "none",
+                background: "#fff",
+                border: "1px solid #e6eaf2",
+                borderRadius: 16,
+                boxShadow: "0 0 0 rgba(0,0,0,0)",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: 120,
+                  background: "#f8fafc",
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                }}
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`/img/categories/${slug}.jpg`}
                   alt={title}
                   loading="lazy"
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src =
-                      `/img/categories/${slug}.png`;
+                  style={{
+                    maxWidth: "90%",
+                    maxHeight: "90%",
+                    objectFit: "contain",
+                    display: "block",
                   }}
                 />
               </div>
-              <div className="ttl">{title}</div>
-            </Link>
+              <div style={{ fontWeight: 700, color: "#0f172a" }}>{title}</div>
+            </a>
           );
         })}
       </div>
 
-      {/* feedback panel */}
+      {/* feedback panel (projektová konstanta) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <section
         style={{
           marginTop: 24,
@@ -106,7 +115,6 @@ export default function Page() {
           background: "#fff",
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png"
           alt=""
