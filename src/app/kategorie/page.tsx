@@ -1,14 +1,12 @@
 // src/app/kategorie/page.tsx
-'use client';
-
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-import Link from 'next/link';
-import { useMemo, useState } from 'react';
-import { CATEGORIES } from '@/data/categories';
+import Link from "next/link";
+import type { Metadata } from "next";
+import { CATEGORIES } from "@/data/categories";
 
-/** ---- Typy + helpery shodné s detailem kategorie ---- */
+/** ---- Typy + helpery ---- */
 type MaybeString = string | null | undefined;
 type RawCategory = {
   slug?: MaybeString; Slug?: MaybeString;
@@ -21,82 +19,60 @@ function pick<T = any>(obj: Record<string, any>, keys: string[], fallback: T): T
   return fallback;
 }
 function slugify(input: string): string {
-  return (input || '')
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+  return (input || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 }
 function catTitle(c: RawCategory): string {
-  return String(pick<string>(c as any, ['title','name','label','Title'], '') || '').trim();
+  return String(pick<string>(c as any, ["title","name","label","Title"], "") || "").trim();
 }
 function catSlug(c: RawCategory): string {
-  const explicit = String(pick<string>(c as any, ['slug','Slug'], '') || '').trim();
+  const explicit = String(pick<string>(c as any, ["slug","Slug"], "") || "").trim();
   return explicit || slugify(catTitle(c));
 }
 function catImageFromData(c: RawCategory): string | null {
-  return pick<string | null>(c as any, ['image','img','icon','coverImage','thumbnailUrl'], null) || null;
+  return pick<string | null>(c as any, ["image","img","icon","coverImage","thumbnailUrl"], null) || null;
 }
 
-/** ---- Komponenta obrázku kategorie s fallbackem podle existující přípony ----
- * Zkouší postupně: .webp → .png → .jpg → .jpeg → .svg
- * Pokud nic nevyjde, zobrazí nenápadný placeholder.
+/** Jednoduchý obrázek kategorie.
+ * V tuto chvíli počítáme s .jpg v /public/img/categories/<slug>.jpg
+ * (když chceš, změň níže příponu na .png/.webp).
  */
-function CatIcon({ slug, alt }: { slug: string; alt: string }) {
-  const candidates = useMemo(
-    () => [
-      `/img/categories/${slug}.webp`,
-      `/img/categories/${slug}.png`,
-      `/img/categories/${slug}.jpg`,
-      `/img/categories/${slug}.jpeg`,
-      `/img/categories/${slug}.svg`,
-    ],
-    [slug]
-  );
-
-  const [idx, setIdx] = useState(0);
-  const [failed, setFailed] = useState(false);
-
+function CatImage({ slug, alt }: { slug: string; alt: string }) {
+  // defaultně míříme na .jpg, které máš nahrané
+  const src = `/img/categories/${slug}.jpg`;
   // eslint-disable-next-line @next/next/no-img-element
-  return failed ? (
-    <div
-      aria-hidden="true"
-      style={{
-        width: '100%',
-        height: 120,
-        borderRadius: 12,
-        background: '#f1f5f9',
-      }}
-    />
-  ) : (
+  return (
     <img
-      src={candidates[idx]}
+      src={src}
       alt={alt}
       loading="lazy"
       style={{
-        width: '100%',
+        width: "100%",
         height: 120,
-        objectFit: 'contain',      // ikony nechceme ořezávat
-        background: '#f8fafc',
+        objectFit: "contain",
+        background: "#f8fafc",
         borderRadius: 12,
-        display: 'block',
-      }}
-      onError={() => {
-        if (idx < candidates.length - 1) setIdx(idx + 1);
-        else setFailed(true);
+        display: "block",
       }}
     />
   );
 }
+
+export const metadata: Metadata = {
+  title: "Kategorie | PINDOO",
+  description: "Vyber si oblast služeb a proklikni se do subkategorií.",
+};
 
 export default function Page() {
   const list = (CATEGORIES as RawCategory[]) || [];
 
   return (
-    <main style={{ maxWidth: 1140, margin: '0 auto', padding: '24px 16px' }}>
-      <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: 16, color: '#0f172a' }}>
+    <main style={{ maxWidth: 1140, margin: "0 auto", padding: "24px 16px" }}>
+      <h1 style={{ fontSize: "1.875rem", fontWeight: 800, marginBottom: 16, color: "#0f172a" }}>
         Kategorie
       </h1>
 
-      {/* grid */}
       <style>{`
         .cats { display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); }
         @media (min-width:640px){ .cats{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
@@ -108,14 +84,12 @@ export default function Page() {
       <div className="cats">
         {list.map((c, i) => {
           const slug = catSlug(c);
-          const ttl = catTitle(c) || 'Kategorie';
-          const imgFromData = catImageFromData(c); // kdyby v datech bylo přímo URL
-
+          const ttl = catTitle(c) || "Kategorie";
+          const imgFromData = catImageFromData(c);
           if (!slug) return null;
 
           return (
             <Link key={`${slug}-${i}`} href={`/kategorie/${slug}`} className="card" prefetch>
-              {/* Pokud v datech existuje explicitní URL obrázku, použij ji; jinak fallback podle souborů v /public/img/categories */}
               {imgFromData ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -123,16 +97,16 @@ export default function Page() {
                   alt={ttl}
                   loading="lazy"
                   style={{
-                    width: '100%',
+                    width: "100%",
                     height: 120,
-                    objectFit: 'contain',
-                    background: '#f8fafc',
+                    objectFit: "contain",
+                    background: "#f8fafc",
                     borderRadius: 12,
-                    display: 'block',
+                    display: "block",
                   }}
                 />
               ) : (
-                <CatIcon slug={slug} alt={ttl} />
+                <CatImage slug={slug} alt={ttl} />
               )}
               <div className="ttl">{ttl}</div>
             </Link>
@@ -140,21 +114,21 @@ export default function Page() {
         })}
       </div>
 
-      {/* feedback panel (ponecháno) */}
+      {/* feedback panel */}
       <section
         style={{
           marginTop: 24,
-          border: '1px solid #e6eaf2',
+          border: "1px solid #e6eaf2",
           borderRadius: 16,
-          overflow: 'hidden',
-          background: '#fff',
+          overflow: "hidden",
+          background: "#fff",
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png"
           alt=""
-          style={{ width: '100%', height: 'auto', display: 'block' }}
+          style={{ width: "100%", height: "auto", display: "block" }}
         />
       </section>
     </main>
