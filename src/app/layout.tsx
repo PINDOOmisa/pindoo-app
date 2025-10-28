@@ -1,19 +1,16 @@
-// src/app/layout.tsx
-import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+// src/app/napoveda/page.tsx
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "PINDOO",
-  description: "Portál pro služby",
+  title: "Nápověda | PINDOO",
+  description: "Jak PINDOO funguje a kde hledat pomoc.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function Page() {
   return (
-    <ClerkProvider>
-      <html lang="cs">
-        <body>{children}</body>
-      </html>
-    </ClerkProvider>
+    <main style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px" }}>
+      <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>Nápověda</h1>
+      <p>Na této stránce brzy přidáme nápovědu. Zatím se můžeš přihlásit/registrovat a pokračovat v testování.</p>
+    </main>
   );
 }
