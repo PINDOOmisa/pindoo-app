@@ -1,10 +1,11 @@
-// middleware.ts (v KOŘENI projektu)
-import { authMiddleware } from "@clerk/nextjs";
+// middleware.ts (v kořeni projektu)
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-export default authMiddleware({
+export default clerkMiddleware({
   publicRoutes: ["/", "/kategorie(.*)", "/prihlaseni", "/registrace", "/faq(.*)", "/napoveda(.*)"],
 });
 
 export const config = {
   matcher: ["/((?!_next|.*\\..*).*)"],
 };
+
