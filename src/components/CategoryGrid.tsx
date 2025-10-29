@@ -1,22 +1,9 @@
 // src/components/CategoryGrid.tsx
-"use client";
-
 import Link from "next/link";
 import styles from "./CategoryGrid.module.css";
 import * as CatMod from "@/data/categories";
 
 type Raw = Record<string, any>;
-
-function extractRaw(mod: any): Raw[] {
-  const cands: any[] = [];
-  if (Array.isArray(mod)) cands.push(mod);
-  if (Array.isArray(mod?.default)) cands.push(mod.default);
-  if (Array.isArray(mod?.categories)) cands.push(mod.categories);
-  if (Array.isArray(mod?.default?.categories)) cands.push(mod.default.categories);
-  if (Array.isArray(mod?.data)) cands.push(mod.data);
-  if (Array.isArray(mod?.default?.data)) cands.push(mod.default.data);
-  return (cands.find(Array.isArray) as Raw[]) || [];
-}
 
 function pick<T = string>(obj: Raw, keys: string[], fallback?: T): T {
   for (const k of keys) {
@@ -35,41 +22,74 @@ function slugify(input: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-export default function CategoryGrid() {
-  const raw = extractRaw(CatMod);
+function getCategoriesFromModule(mod: any): Raw[] {
+  // vyzkoušíme několik běžných tvarů exportů
+  const candidates = [
+    mod?.CATEGORIES,
+    mod?.default,
+    mod?.categories,
+    mod?.default?.categories,
+    mod?.data,
+    mod?.default?.data,
+    Array.isArray(mod) ? mod : undefined,
+  ].filter(Boolean);
 
-  if (!raw?.length) {
-    return <div style={{ padding: 24 }}>Nenalezeny kategorie.</div>;
-  }
+  const firstArray = candidates.find((v) => Array.isArray(v));
+  if (Array.isArray(firstArray)) return firstArray as Raw[];
+
+  return [];
+}
+
+// Nouzový fallback – kdyby import vrátil prázdno, ať se aspoň něco ukáže
+const FALLBACK: Raw[] = [
+  { title: "Domácnost & úklid" },
+  { title: "Řemesla & stavební práce" },
+  { title: "Zahrada & exteriér" },
+  { title: "Krása" },
+  { title: "Zdraví & wellness" },
+  { title: "Péče o děti" },
+  { title: "Péče o zvířata" },
+  { title: "Auto, moto & doprava" },
+  { title: "Události & svatby" },
+  { title: "Foto & video & audio" },
+  { title: "IT & digitální tvorba" },
+  { title: "Podnikání & administrativa" },
+  { title: "Učení & hobby & volný čas" },
+  { title: "Péče o seniory" },
+];
+
+export default function CategoryGrid() {
+  const raw = getCategoriesFromModule(CatMod);
+  const list = raw?.length ? raw : FALLBACK;
 
   return (
     <section className={styles.gridWrap}>
       <div className={styles.grid}>
-        {raw.map((c: Raw, i: number) => {
+        {list.map((c: Raw, i: number) => {
           const title =
             pick(c, ["title", "name", "label", "Title"], "Kategorie");
           const givenSlug = pick<string | undefined>(c, ["slug", "Slug"]);
           const slug = givenSlug ? slugify(givenSlug) : slugify(title);
 
-          // Ikona z dat nebo fallback do /icons/<slug>.svg|png
-          const fromData =
-            pick<string | undefined>(c, ["icon", "image", "coverImage", "thumbnailUrl"]);
+          // ikona z dat nebo fallback do /icons/<slug>.svg|png
+          const fromData = pick<string | undefined>(c, [
+            "icon",
+            "image",
+            "coverImage",
+            "thumbnailUrl",
+          ]);
           const iconSvg = `/icons/${slug}.svg`;
           const iconPng = `/icons/${slug}.png`;
-          const icon = fromData || iconSvg;
 
           return (
             <Link key={slug || i} href={`/kategorie/${slug}`} className={styles.tile} aria-label={title}>
               <span className={styles.iconSlot}>
-                {/* 1) zkus datovou ikonku */}
-                {fromData ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={fromData} alt="" />
-                ) : (
-                  // 2) fallback: zkus svg -> když nenajde, prohlížeč tiše nic nevykreslí; uživatel nic nepocítí
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={icon} onError={(e) => ((e.currentTarget.src = iconPng))} alt="" />
-                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={fromData || iconSvg}
+                  onError={(e) => ((e.currentTarget.src = iconPng))}
+                  alt=""
+                />
               </span>
               <span className={styles.title}>{title}</span>
             </Link>
