@@ -23,7 +23,6 @@ function slugify(input: string) {
 }
 
 function getCategoriesFromModule(mod: any): Raw[] {
-  // vyzkoušíme několik běžných tvarů exportů
   const candidates = [
     mod?.CATEGORIES,
     mod?.default,
@@ -35,12 +34,9 @@ function getCategoriesFromModule(mod: any): Raw[] {
   ].filter(Boolean);
 
   const firstArray = candidates.find((v) => Array.isArray(v));
-  if (Array.isArray(firstArray)) return firstArray as Raw[];
-
-  return [];
+  return Array.isArray(firstArray) ? (firstArray as Raw[]) : [];
 }
 
-// Nouzový fallback – kdyby import vrátil prázdno, ať se aspoň něco ukáže
 const FALLBACK: Raw[] = [
   { title: "Domácnost & úklid" },
   { title: "Řemesla & stavební práce" },
@@ -66,12 +62,10 @@ export default function CategoryGrid() {
     <section className={styles.gridWrap}>
       <div className={styles.grid}>
         {list.map((c: Raw, i: number) => {
-          const title =
-            pick(c, ["title", "name", "label", "Title"], "Kategorie");
+          const title = pick(c, ["title", "name", "label", "Title"], "Kategorie");
           const givenSlug = pick<string | undefined>(c, ["slug", "Slug"]);
           const slug = givenSlug ? slugify(givenSlug) : slugify(title);
 
-          // ikona z dat nebo fallback do /icons/<slug>.svg|png
           const fromData = pick<string | undefined>(c, [
             "icon",
             "image",
@@ -79,17 +73,12 @@ export default function CategoryGrid() {
             "thumbnailUrl",
           ]);
           const iconSvg = `/icons/${slug}.svg`;
-          const iconPng = `/icons/${slug}.png`;
 
           return (
             <Link key={slug || i} href={`/kategorie/${slug}`} className={styles.tile} aria-label={title}>
               <span className={styles.iconSlot}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={fromData || iconSvg}
-                  onError={(e) => ((e.currentTarget.src = iconPng))}
-                  alt=""
-                />
+                <img src={fromData || iconSvg} alt="" />
               </span>
               <span className={styles.title}>{title}</span>
             </Link>
