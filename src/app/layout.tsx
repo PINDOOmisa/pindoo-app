@@ -1,8 +1,22 @@
-// src/app/napoveda/page.tsx
-export default function Page() {
+// src/app/layout.tsx
+import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
+
+export const metadata = {
+  title: "PINDOO",
+  description: "Portál pro služby",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <main style={{ padding: 24 }}>
-      Nápověda – obsah doplníme.
-    </main>
+    <ClerkProvider>
+      <html lang="cs">
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }

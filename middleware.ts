@@ -2,10 +2,16 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
 export default clerkMiddleware({
-  publicRoutes: ["/", "/kategorie(.*)", "/prihlaseni", "/registrace", "/faq(.*)", "/napoveda(.*)"],
+  publicRoutes: [
+    "/",
+    "/kategorie(.*)",
+    "/faq(.*)",
+    "/napoveda(.*)",
+    "/prihlaseni",
+    "/registrace",
+  ],
 });
 
 export const config = {
-  matcher: ["/((?!_next|.*\\..*).*)"],
+  matcher: ["/((?!_next|.*\\..*).*)"], // ignoruje _next a statické soubory
 };
-
