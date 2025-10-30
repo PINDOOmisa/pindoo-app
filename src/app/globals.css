@@ -1,11 +1,9 @@
 /* src/app/globals.css */
+/* ======================================
+   PINDOO – globální styly (bez Tailwindu)
+   ====================================== */
 
-/* Tailwind directives – necháme je tady, Next je zkousne */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* základ stránky */
+/* --- proměnné --- */
 :root {
   --pindo-bg: #F7F7F9;
   --pindo-card: #FFFFFF;
@@ -14,29 +12,312 @@
   --pindo-text: #1F2937;
   --pindo-muted: #6B7280;
   --pindo-blue: #0E3A8A;
+  --pindo-blue-dark: #0b2d6a;
   --pindo-yellow: #F5B301;
+  --pindo-radius: 16px;
+  --pindo-shadow: 0 10px 24px rgba(14, 58, 138, .06),
+    0 2px 6px rgba(14, 58, 138, .04);
 }
 
+/* --- reset --- */
 * {
   box-sizing: border-box;
 }
-
 body {
   margin: 0;
+  min-height: 100vh;
   background: var(--pindo-bg);
   color: var(--pindo-ink);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.4;
+}
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-/* header (světlý) */
-header.site-header {
-  background: #fff;
-  border-bottom: 1px solid #E6EAF2;
-}
-
-/* utility */
+/* --- helper container --- */
 .container {
   max-width: 1180px;
   margin: 0 auto;
   padding: 0 16px;
+}
+
+/* ======================================
+   HEADER (světlý jako na Kreezalidu)
+   ====================================== */
+.site-header {
+  background: #fff;
+  border-bottom: 1px solid #E6EAF2;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.site-header .bar {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
+.site-header .brand {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--pindo-blue);
+}
+.site-header nav a {
+  margin: 0 10px;
+  font-weight: 600;
+  color: #0E3A8A;
+}
+
+/* ======================================
+   HERO (zkrácený, bez modrého pruhu)
+   ====================================== */
+.hero-block {
+  background: transparent;
+  margin: 0 0 26px;
+}
+.hero-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 18px;
+  min-height: 180px;
+  padding: 26px 22px 22px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .02);
+}
+.hero-inner h1 {
+  font-size: 2.2rem;
+  margin: 0 0 8px;
+  color: #0E3A8A;
+}
+.hero-inner p {
+  margin: 0 0 14px;
+  color: #4b5563;
+}
+.hero-cta .hero-btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--pindo-yellow);
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+/* ======================================
+   HOMEPAGE – GRID KATEGORIÍ
+   ====================================== */
+
+.home-cats {
+  max-width: 1180px;
+  margin: 0 auto 46px;
+  padding: 0 16px;
+}
+.home-cats-head {
+  margin-bottom: 14px;
+}
+.home-cats-tag {
+  font-size: 0.7rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 600;
+}
+.home-cats-head h2 {
+  font-size: 1.5rem;
+  margin: 4px 0 0;
+  color: #0f172a;
+}
+
+.home-cats-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(120px, 1fr));
+  gap: 14px;
+}
+@media (max-width: 1100px) {
+  .home-cats-grid {
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
+  }
+}
+@media (max-width: 720px) {
+  .home-cats-grid {
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+  }
+}
+
+.home-cat {
+  background: #fff;
+  border: 1px solid #E6EAF2;
+  border-radius: 16px;
+  min-height: 120px;
+  padding: 14px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, .01);
+  transition: transform .12s ease, box-shadow .12s ease,
+    border-color .12s ease;
+}
+.home-cat:hover {
+  transform: translateY(-2px);
+  border-color: rgba(14, 58, 138, .25);
+  box-shadow: 0 10px 24px rgba(14, 58, 138, .06);
+}
+.home-cat-icon {
+  width: 34px;
+  height: 34px;
+  background: #EEF2FB;
+  border: 1px solid #DFE6F5;
+  border-radius: 12px;
+}
+.home-cat-title {
+  font-weight: 700;
+  color: #0E3A8A;
+  font-size: 0.9rem;
+}
+.home-cat-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* ======================================
+   DETAIL KATEGORIE – HLAVIČKA
+   ====================================== */
+.page-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 16px 44px;
+}
+.cat-head {
+  margin-bottom: 18px;
+}
+.cat-tag {
+  font-size: 0.7rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.cat-head h1 {
+  font-size: 2rem;
+  margin: 0 0 6px;
+  color: #0f172a;
+}
+.cat-sub {
+  color: #64748b;
+}
+
+/* ======================================
+   SUBCATEGORY GRID (modré kartičky s fotkou)
+   ====================================== */
+.subgrid-wrap {
+  background: #f5f6fb;
+  border: 1px solid rgba(226, 232, 240, .9);
+  border-radius: 22px;
+  padding: 16px 0 18px;
+}
+.subgrid {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
+}
+@media (max-width: 1050px) {
+  .subgrid {
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .subgrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.subcard {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e6eaf2;
+  text-decoration: none;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, .01);
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.subcard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(14, 58, 138, .05);
+  border-color: #dfe4ef;
+}
+.subcard-head {
+  background: #0E3A8A;
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 14px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.subcard-img-wrap {
+  width: 100%;
+  height: 150px;
+  background: #E7EEF9;
+}
+.subcard-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.subcard-img--placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #eef2ff, #dbeafe);
+}
+
+/* ======================================
+   FEEDBACK PANEL – povinný doplněk
+   ====================================== */
+.feedback-panel {
+  margin-top: 36px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #E6EAF2;
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+.feedback-panel img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+.feedback-panel h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+.feedback-panel p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.78rem;
+}
+@media (max-width: 650px) {
+  .feedback-panel {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .feedback-panel img {
+    width: 100%;
+    height: auto;
+    max-width: 320px;
+  }
 }
