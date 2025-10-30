@@ -1,12 +1,15 @@
-/* AUTO-GENERATED from Kreezalid categories CSV (id/parent_id). Do not edit by hand. */
+/* AUTO-GENERATED from Kreezalid categories CSV (id/parent_id). Upraveno pro Next.js routy. */
 import type { Category } from "../types/taxonomy";
 
-export const CATEGORIES: Category[] = [
+/* 
+  1) Tohle jsou TVOJE původní kategorie z Kreezalidu.
+  Nechávám je beze změny, jen jsem to obalil do RAW_CATEGORIES.
+*/
+const RAW_CATEGORIES: Category[] = [
   {
     "title": "Domácnost & úklid",
     "subtitle": "Domácnost & úklid",
     "slug": "domacnost-uklid",
-  
     "subcategories": [
       {
         "title": "Generální jednorázový úklid",
@@ -497,3 +500,78 @@ export const CATEGORIES: Category[] = [
     ]
   }
 ];
+
+/* 
+  2) Helpery – ty dělají to, že když někde chybí slug / obrázek / název, dopočítáme to.
+  Tohle teď budou používat všechny stránky.
+*/
+function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/\s+&\s+/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+type NormalizedSubcategory = {
+  title: string;
+  slug: string;
+  attributes?: any[];
+};
+
+export type NormalizedCategory = {
+  title: string;
+  slug: string;
+  subtitle?: string;
+  description?: string;
+  image?: string;
+  subcategories: NormalizedSubcategory[];
+};
+
+/* 
+  normalizace subkategorie: vždycky bude mít title + slug
+*/
+function normalizeSubcategory(sub: any): NormalizedSubcategory {
+  const title = sub?.title || sub?.name || "Bez názvu";
+  const slug = sub?.slug ? sub.slug : slugify(title);
+  return {
+    title,
+    slug,
+    attributes: Array.isArray(sub?.attributes) ? sub.attributes : [],
+  };
+}
+
+/* 
+  normalizace kategorie: vždycky bude mít title + slug + pole subkategorií
+*/
+function normalizeCategory(cat: any): NormalizedCategory {
+  const title = cat?.title || cat?.name || "Bez názvu";
+  const slug = cat?.slug ? cat.slug : slugify(title);
+  const subsRaw = Array.isArray(cat?.subcategories) ? cat.subcategories : [];
+  const subcategories = subsRaw.map((s: any) => normalizeSubcategory(s));
+
+  return {
+    title,
+    slug,
+    subtitle: cat?.subtitle || cat?.description || undefined,
+    description: cat?.description || undefined,
+    image: cat?.image || cat?.icon || undefined,
+    subcategories,
+  };
+}
+
+/* 
+  3) Tohle je to, co budeš reálně importovat v komponentách:
+     import { NORMALIZED_CATEGORIES } from "@/data/categories";
+*/
+export const NORMALIZED_CATEGORIES: NormalizedCategory[] = RAW_CATEGORIES.map((c) =>
+  normalizeCategory(c)
+);
+
+/* 
+  4) Původní export 'CATEGORIES' nechávám, aby se ti jinde nic nerozbilo.
+     Když někde používáš původní typ z "../types/taxonomy", zůstane to fungovat.
+*/
+export const CATEGORIES = RAW_CATEGORIES;
