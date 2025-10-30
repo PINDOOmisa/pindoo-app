@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import Link from "next/link";
-import { NORMALIZED_CATEGORIES } from "@/data/categories";
+import { NORMALIZED_CATEGORIES } from "../../../data/categories"; // ⬅︎ ZMĚNA: relativně
 
 type PageProps = {
   params: {
@@ -41,7 +41,6 @@ export default function CategoryDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-[#F7F7F9]">
-      {/* HLAVIČKA */}
       <div className="max-w-6xl mx-auto px-4 pt-10 pb-6 flex items-center justify-between gap-4">
         <div>
           <p className="text-xs uppercase text-slate-400 tracking-wide mb-1">Kategorie</p>
@@ -60,7 +59,6 @@ export default function CategoryDetailPage({ params }: PageProps) {
         </Link>
       </div>
 
-      {/* PODKATEGORIE */}
       <div className="max-w-6xl mx-auto px-4 pb-14">
         {category.subcategories && category.subcategories.length > 0 ? (
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -90,7 +88,6 @@ export default function CategoryDetailPage({ params }: PageProps) {
         )}
       </div>
 
-      {/* FEEDBACK PANEL */}
       <div className="max-w-6xl mx-auto px-4 pb-16">
         <div className="bg-white rounded-2xl border border-slate-100 p-5 flex flex-col md:flex-row gap-5 items-center">
           <img
@@ -99,9 +96,7 @@ export default function CategoryDetailPage({ params }: PageProps) {
             className="w-20 h-20 object-contain"
           />
           <div className="flex-1">
-            <p className="text-slate-800 font-medium">
-              Chceš, aby tahle kategorie vypadala jinak?
-            </p>
+            <p className="text-slate-800 font-medium">Chceš, aby tahle kategorie vypadala jinak?</p>
             <p className="text-slate-500 text-sm">
               Napiš mi, jak si ji představuješ – přidáme ikonky nebo popisy.
             </p>
