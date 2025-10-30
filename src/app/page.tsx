@@ -16,17 +16,15 @@ export default function HomePage() {
           loop
           playsInline
         />
-        {/* tmavé zjemnění */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/15 to-transparent" />
         <div className="relative max-w-6xl mx-auto px-4 pt-16 pb-14 md:pt-20 md:pb-16">
           <h1 className="text-3xl md:text-4xl font-bold text-white max-w-3xl mb-4">
             Tvůj portál pro všechny služby na jednom místě
           </h1>
-          <p className="text-white/85 mb-6 max-w-2xl">
+          <p className="text-white/80 mb-6 max-w-2xl">
             Nechce se ti hledat? Zadej poptávku a my oslovíme profíky ve tvém okolí za tebe.
           </p>
 
-          {/* vyhledávání */}
           <div className="bg-white/95 backdrop-blur rounded-2xl p-3 flex flex-col md:flex-row gap-3 shadow-lg max-w-3xl">
             <input
               className="flex-1 bg-white rounded-xl px-3 py-2 outline-none text-sm text-slate-800"
@@ -43,15 +41,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* HLAVNÍ OBSAH */}
+      {/* KATEGORIE */}
       <div className="max-w-6xl mx-auto px-4 py-10 space-y-6">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Kategorie</p>
-            <h2 className="text-xl font-semibold text-slate-900">
-              Vyber si oblast, kterou chceš řešit
-            </h2>
-          </div>
+        <div>
+          <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">
+            Kategorie
+          </p>
+          <h2 className="text-xl font-semibold text-slate-900">
+            Vyber si oblast, kterou chceš řešit
+          </h2>
         </div>
 
         <CategoryGrid />
