@@ -1,10 +1,11 @@
+/* src/app/globals.css */
+
+/* Tailwind directives – necháme je tady, Next je zkousne */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* =========================
-   PINDOO – globální proměnné
-   ========================= */
+/* základ stránky */
 :root {
   --pindo-bg: #F7F7F9;
   --pindo-card: #FFFFFF;
@@ -12,239 +13,30 @@
   --pindo-ink: #0f172a;
   --pindo-text: #1F2937;
   --pindo-muted: #6B7280;
-
   --pindo-blue: #0E3A8A;
-  --pindo-blue-700: #0c2f6d;
   --pindo-yellow: #F5B301;
-
-  --radius: 18px;
-  --shadow: 0 12px 28px rgba(2, 21, 72, .08), 0 2px 6px rgba(2, 21, 72, .06);
 }
 
-/* =========================
-   Base / reset
-   ========================= */
 * {
   box-sizing: border-box;
 }
 
-html, body {
+body {
   margin: 0;
-  padding: 0;
   background: var(--pindo-bg);
   color: var(--pindo-ink);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  min-height: 100%;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* header (světlý) */
+header.site-header {
+  background: #fff;
+  border-bottom: 1px solid #E6EAF2;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* Utility container pro starší části */
+/* utility */
 .container {
   max-width: 1180px;
-  margin-inline: auto;
-  padding-inline: 16px;
-}
-
-/* =========================
-   HEADER – světlý jako v Kreezalidu
-   ========================= */
-.header {
-  background: #fff;
-  color: var(--pindo-blue);
-  border-bottom: 1px solid #E6EAF2;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-.header .bar {
-  max-width: 1180px;
   margin: 0 auto;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.header .brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  letter-spacing: .2px;
-}
-
-.header .nav-links {
-  display: flex;
-  gap: 18px;
-}
-
-.header .nav-links a {
-  font-weight: 600;
-  color: var(--pindo-blue);
-  font-size: .9rem;
-  white-space: nowrap;
-}
-
-.header .cta {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-soft {
-  background: #E7EEF9;
-  color: var(--pindo-blue);
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-weight: 700;
-}
-
-.btn-accent {
-  background: var(--pindo-yellow);
-  color: #111;
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-weight: 700;
-}
-
-@media (max-width: 900px) {
-  .header .nav-links,
-  .header .cta {
-    display: none;
-  }
-}
-
-/* =========================
-   HERO – jen kosmetika
-   (hlavní layout dělá React + Tailwind)
-   ========================= */
-.hero-clean {
-  background: #fff;
-  border-bottom: 1px solid #E6EAF2;
-}
-
-.hero-clean-inner {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 26px 16px 32px;
-}
-
-/* =========================
-   BLOK KATEGORIÍ – světle šedé pozadí
-   ========================= */
-.section-grey {
-  background: #F9FAFB;
-  padding: 32px 0 50px;
-}
-
-.section-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 14px;
-}
-
-.section-sub {
-  font-size: .875rem;
-  color: #6b7280;
-}
-
-/* =========================
-   Subcategory grid (scg-*)
-   ========================= */
-.scg-wrap {
-  background: #f6f7fb;
-  border: 1px solid rgba(226, 232, 240, .7);
-  border-radius: 24px;
-  padding: 18px 0;
-}
-
-.scg-grid {
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 0 16px 6px;
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(2, 1fr);
-}
-
-@media (min-width: 768px) {
-  .scg-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .scg-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (min-width: 1280px) {
-  .scg-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-.scg-card {
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  border: 1px solid #e6eaf2;
-  border-radius: 16px;
-  overflow: hidden;
-  text-decoration: none;
-  color: inherit;
-  box-shadow: 0 1px 0 rgba(2, 8, 23, .04);
-  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
-}
-
-.scg-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(14, 58, 138, .06), 0 2px 6px rgba(14, 58, 138, .05);
-  border-color: #dfe5f0;
-}
-
-.scg-head {
-  background: #0E3A8A;
-  color: #fff;
-  font-weight: 800;
-  font-size: 0.98rem;
-  line-height: 1.2;
-  padding: 12px 14px;
-  text-align: center;
-}
-
-.scg-img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  display: block;
-}
-
-/* =========================
-   Pomocné
-   ========================= */
-.bg-pindo {
-  background: var(--pindo-blue);
-}
-.text-pindo {
-  color: var(--pindo-blue);
-}
-.card {
-  background: #fff;
-  border: 1px solid #E6EAF2;
-  border-radius: 16px;
-  box-shadow: 0 1px 0 rgba(16, 24, 40, .02);
+  padding: 0 16px;
 }

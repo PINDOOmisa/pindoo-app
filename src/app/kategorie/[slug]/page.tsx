@@ -1,91 +1,58 @@
 // src/app/kategorie/[slug]/page.tsx
-import { CATEGORIES, findCategoryBySlug } from "@/data/categories";
-import Link from "next/link";
+import { notFound } from "next/navigation";
+import { NORMALIZED_CATEGORIES } from "@/data/categories";
+import FeedbackPanel from "@/components/FeedbackPanel";
 
 type PageProps = {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
 };
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default function CategoryDetailPage({ params }: PageProps) {
-  const cat =
-    findCategoryBySlug(params.slug) ||
-    CATEGORIES.find((c) => c.slug === params.slug);
+  const cats = NORMALIZED_CATEGORIES || [];
+  const cat = cats.find((c) => c.slug === params.slug);
 
   if (!cat) {
-    return (
-      <div className="max-w-3xl mx-auto py-16 px-4">
-        <h1 className="text-2xl font-semibold mb-3">Kategorie nenalezena</h1>
-        <p className="text-slate-500">
-          Zkus se vrátit zpět na přehled kategorií.
-        </p>
-        <Link
-          href="/kategorie"
-          className="inline-block mt-4 text-[#0E3A8A] font-medium"
-        >
-          ← Zpět na kategorie
-        </Link>
-      </div>
-    );
+    return notFound();
   }
 
   const subs = cat.subcategories || [];
 
   return (
-    <div className="min-h-screen bg-[#F7F7F9]">
-      <div className="max-w-6xl mx-auto px-4 py-10 space-y-6">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">
-            Kategorie
-          </p>
-          <h1 className="text-2xl font-semibold text-slate-900 mb-1">
-            {cat.title}
-          </h1>
-          {cat.subtitle ? (
-            <p className="text-slate-500">{cat.subtitle}</p>
-          ) : null}
-        </div>
+    <main className="max-w-6xl mx-auto px-4 py-10">
+      <p className="text-xs uppercase tracking-wide text-slate-400 mb-2">
+        Kategorie
+      </p>
+      <h1 className="text-3xl font-bold text-slate-900 mb-3">{cat.title}</h1>
+      <p className="text-slate-500 mb-8">
+        Vyber si konkrétní službu v této oblasti.
+      </p>
 
-        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {subs.map((sub) => (
+      {subs.length === 0 ? (
+        <p className="text-slate-500 text-sm">
+          Tato kategorie zatím nemá podkategorie.
+        </p>
+      ) : (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {subs.map((sc) => (
             <div
-              key={sub.slug}
-              className="bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition flex flex-col"
+              key={sc.slug}
+              className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col"
             >
-              <div className="bg-[#0E3A8A] text-white text-sm font-semibold px-4 py-3 rounded-t-xl">
-                {sub.title}
+              <div className="h-28 bg-gradient-to-br from-[#E7EEF9] to-white flex items-center justify-center text-[#0E3A8A] text-sm font-semibold">
+                {sc.title}
               </div>
-              <div className="p-4 text-sm text-slate-500">
-                Podkategorie služby v rámci {cat.title}.
+              <div className="p-4 text-slate-500 text-sm">
+                Poptávka pro: {sc.title}
               </div>
             </div>
           ))}
-
-          <div className="bg-white rounded-xl border border-dashed border-slate-200 flex flex-col items-center justify-center gap-2 p-5 text-center">
-            <p className="text-sm font-semibold text-slate-900">
-              Chybí ti podkategorie?
-            </p>
-            <p className="text-xs text-slate-500">
-              Napiš mi a přidáme ji.
-            </p>
-            <img
-              src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png"
-              alt="PINDOO"
-              className="w-20 h-20 object-contain"
-            />
-          </div>
         </div>
+      )}
 
-        <Link
-          href="/kategorie"
-          className="inline-block text-sm text-[#0E3A8A] font-medium"
-        >
-          ← Zpět na kategorie
-        </Link>
-      </div>
-    </div>
+      <FeedbackPanel />
+    </main>
   );
 }
