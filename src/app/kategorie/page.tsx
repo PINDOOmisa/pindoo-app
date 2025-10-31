@@ -4,49 +4,24 @@ export const revalidate = 0;
 
 import Link from "next/link";
 import * as CatMod from "@/data/categories";
-import SubcategoryGrid from "@/components/SubcategoryGrid";
 
-// 1) pomocné typy
-type MaybeString = string | null | undefined;
-type RawCategory = {
-  slug?: MaybeString;
-  Slug?: MaybeString;
-  title?: MaybeString;
-  name?: MaybeString;
-  label?: MaybeString;
-  Title?: MaybeString;
-  image?: MaybeString;
-  img?: MaybeString;
-  icon?: MaybeString;
-  coverImage?: MaybeString;
-  thumbnailUrl?: MaybeString;
-  subcategories?: any[];
-  subCats?: any[];
-  children?: any[];
-};
-
-// 2) vytáhneme z importu to, co tam je
-function extractAllCategories(mod: any): RawCategory[] {
+// 1) vytáhneme z importu všechny možné pole
+function extractAll(mod: any): any[] {
   const buckets: any[] = [];
-
   if (Array.isArray(mod)) buckets.push(mod);
   if (Array.isArray(mod?.default)) buckets.push(mod.default);
   if (Array.isArray(mod?.categories)) buckets.push(mod.categories);
   if (Array.isArray(mod?.data)) buckets.push(mod.data);
   if (Array.isArray(mod?.default?.categories)) buckets.push(mod.default.categories);
-  if (Array.isArray(mod?.default?.data)) buckets.push(mod.default.data);
-
-  // některé naše předchozí verze měly NORMALIZED_CATEGORIES
   if (Array.isArray((mod as any).NORMALIZED_CATEGORIES)) {
     buckets.push((mod as any).NORMALIZED_CATEGORIES);
   }
-
-  const firstArray = buckets.find((b) => Array.isArray(b));
-  return (firstArray as RawCategory[]) || [];
+  const arr = buckets.find((b) => Array.isArray(b));
+  return arr || [];
 }
 
-// 3) normalizace stringu (domácnost & úklid -> domacnost-uklid)
-function norm(v: MaybeString): string {
+// 2) normalizace
+function norm(v: string | null | undefined): string {
   if (!v) return "";
   return v
     .toString()
@@ -58,8 +33,8 @@ function norm(v: MaybeString): string {
     .replace(/^-+|-+$/g, "");
 }
 
-// 4) z jedné kategorie uděláme "hromadu možných slugů"
-function candidatesFromCat(cat: RawCategory): string[] {
+// 3) uděláme z kategorie všechny možné slugs
+function slugsFrom(cat: any): string[] {
   const c: string[] = [];
   c.push(norm(cat.slug));
   c.push(norm(cat.Slug));
@@ -70,70 +45,46 @@ function candidatesFromCat(cat: RawCategory): string[] {
   return Array.from(new Set(c.filter(Boolean)));
 }
 
-// 5) najdeme kategorii podle url slugu
-function findCategoryBySlug(all: RawCategory[], slugFromUrl: string): RawCategory | null {
-  const target = norm(slugFromUrl);
+export default async function Page({ params }: { params: { slug: string } }) {
+  const all = extractAll(CatMod);
+  const wanted = norm(params.slug);
 
+  // zkusíme najít
+  let found: any = null;
   for (const cat of all) {
-    const cands = candidatesFromCat(cat);
-    if (cands.includes(target)) {
-      return cat;
+    const cands = slugsFrom(cat);
+    if (cands.includes(wanted)) {
+      found = cat;
+      break;
     }
   }
-  return null;
-}
 
-// 6) z kategorie vytáhneme podkategorie, ať už jsou pojmenované jakkoliv
-function extractSubcategories(cat: RawCategory | null): any[] {
-  if (!cat) return [];
-  return (
-    cat.subcategories ||
-    cat.subCats ||
-    cat.children ||
-    []
-  );
-}
-
-// 7) samotná stránka
-export default async function CategoryDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  // všechny kategorie z importu
-  const ALL = extractAllCategories(CatMod);
-  // zkusíme najít podle url
-  const active = findCategoryBySlug(ALL, params.slug);
-  const subs = extractSubcategories(active);
-
-  // DEBUG VARIANTA: když nenašlo, ukážeme, jaké slugs vlastně existují
-  if (!active) {
+  // 🔴 KDYŽ TO NENAŠLO → ukážeme všechny slugs, které fakt máme
+  if (!found) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold mb-4">Kategorie nenalezena</h1>
-        <p className="mb-6">
-          Hledal jsem slug: <code>{params.slug}</code>
-        </p>
-        <p className="mb-4">
-          Tyhle kategorie ale v datech opravdu jsou (podle všeho, co jsme importovali):
-        </p>
-        <ul className="list-disc pl-6 space-y-1">
-          {ALL.map((c, i) => {
-            const cand = candidatesFromCat(c)[0] || "(bez názvu)";
+      <div className="max-w-4xl mx-auto px-4 py-10 space-y-4">
+        <h1 className="text-3xl font-bold">Kategorie nenalezena (debug)</h1>
+        <p>Hledal jsem slug z URL: <code>{params.slug}</code></p>
+        <p>Takhle vypadají kategorie, které ve skutečnosti máme:</p>
+        <div className="bg-slate-50 border rounded-lg p-4 space-y-2">
+          {all.map((cat, i) => {
             const label =
-              c.title ||
-              c.name ||
-              c.label ||
-              c.Title ||
-              cand;
+              cat.title ||
+              cat.name ||
+              cat.label ||
+              cat.Title ||
+              "(bez názvu)";
+            const firstSlug = slugsFrom(cat)[0] || "–";
             return (
-              <li key={i}>
-                {label} <span className="text-slate-500">({cand})</span>
-              </li>
+              <div key={i} className="flex gap-2 items-center">
+                <span className="w-8 text-slate-400">{i + 1}.</span>
+                <span className="font-semibold">{label}</span>
+                <span className="text-slate-500 text-sm">({firstSlug})</span>
+              </div>
             );
           })}
-        </ul>
-        <p className="mt-8">
+        </div>
+        <p className="pt-4">
           <Link href="/" className="text-blue-700 underline">
             Zpět na hlavní stránku
           </Link>
@@ -142,42 +93,40 @@ export default async function CategoryDetailPage({
     );
   }
 
-  // Když kategorie existuje, ale nemá subkategorie – dáme hlášku
-  const title =
-    active.title || active.name || active.label || active.Title || "Kategorie";
+  // 🟢 KDYŽ TO NAŠLO → zkusíme z ní vytáhnout podkategorie a ukázat je
+  const subs =
+    found.subcategories ||
+    found.subCats ||
+    found.children ||
+    [];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* breadcrumb */}
-      <div className="text-sm text-slate-500 mb-4">
-        <Link href="/" className="underline">
-          Domů
-        </Link>{" "}
-        / <span className="text-slate-900">{title}</span>
+    <div className="max-w-5xl mx-auto px-4 py-10 space-y-6">
+      <div className="text-sm text-slate-500">
+        <Link href="/" className="underline">Domů</Link> /{" "}
+        <span className="text-slate-900">
+          {found.title || found.name || found.label || found.Title || "Kategorie"}
+        </span>
       </div>
 
-      <h1 className="text-3xl font-bold mb-2">{title}</h1>
-      <p className="text-slate-600 mb-6">
-        Vyber si z podkategorií v této oblasti.
-      </p>
+      <h1 className="text-3xl font-bold">
+        {found.title || found.name || found.label || found.Title || "Kategorie"}
+      </h1>
+      <p className="text-slate-600">Vyber si z podkategorií:</p>
 
-      {/* pokud máme subkategorie, zobrazíme náš grid */}
-      {subs && subs.length > 0 ? (
-        <SubcategoryGrid items={subs} parentSlug={params.slug} />
+      {subs.length === 0 ? (
+        <p className="text-slate-500">Tahle kategorie zatím nemá podkategorie.</p>
       ) : (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
-          <h2 className="text-lg font-semibold mb-2">
-            V této kategorii zatím nejsou podkategorie.
-          </h2>
-          <p className="text-slate-600 mb-4">
-            Dej mi vědět a doplníme ji do PINDOO. 💛
-          </p>
-          <Link href="/" className="text-blue-700 underline">
-            Zpět na hlavní stránku
-          </Link>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {subs.map((s: any, i: number) => (
+            <div key={i} className="bg-white border rounded-lg p-4">
+              <div className="font-semibold">
+                {s.title || s.name || s.label || s.Title || `Podkategorie ${i + 1}`}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
   );
 }
-
