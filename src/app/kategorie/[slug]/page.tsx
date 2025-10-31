@@ -1,28 +1,36 @@
 // src/app/kategorie/[slug]/page.tsx
 import Link from "next/link";
-import { CATEGORIES } from "@/data/categories";
+import catsData, { CATEGORIES } from "@/data/categories";
 import SubcategoryGrid from "@/components/SubcategoryGrid";
 import FeedbackPanel from "@/components/FeedbackPanel";
 
 type PageProps = {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
 };
 
-// malý helper – v tvém CSV jsou názvy konzistentní, ale pojďme být tolerantní
-function normalizeSlug(v: string | null | undefined): string {
+function norm(v: string | null | undefined) {
   return (v || "").trim().toLowerCase();
 }
 
+function toArray(raw: any): any[] {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw;
+  if (Array.isArray(raw?.categories)) return raw.categories;
+  if (Array.isArray(raw?.data)) return raw.data;
+  return [];
+}
+
 export default function CategoryDetailPage({ params }: PageProps) {
-  const wanted = normalizeSlug(params.slug);
+  const wanted = norm(params.slug);
 
-  // 1) najdi kategorii podle slugu
+  // máme dva možné zdroje (kvůli tomu, jak se to v projektu vyvíjelo)
+  const allCats = toArray(catsData).length ? toArray(catsData) : CATEGORIES;
+
   const category =
-    CATEGORIES.find((cat) => normalizeSlug(cat.slug) === wanted) || null;
+    allCats.find((c: any) => norm(c.slug) === wanted) ||
+    allCats.find((c: any) => norm(c.Slug) === wanted) ||
+    null;
 
-  // 2) když kategorie není → ukaž “nenalezena”
   if (!category) {
     return (
       <main className="max-w-5xl mx-auto px-4 py-10">
@@ -30,63 +38,71 @@ export default function CategoryDetailPage({ params }: PageProps) {
           <Link href="/" className="text-pindo-blue font-semibold">
             Domů
           </Link>{" "}
-          / Kategorie
+          / <Link href="/kategorie">Kategorie</Link>
         </p>
         <h1 className="text-3xl font-bold mb-3">Kategorie nenalezena</h1>
-        <p className="text-slate-600">
+        <p className="text-slate-600 mb-4">
           Zkus se vrátit na výpis kategorií a vybrat jinou oblast.
         </p>
-        <div className="mt-6">
-          <Link
-            href="/"
-            className="inline-flex px-4 py-2 rounded-lg bg-pindo-blue text-white font-semibold"
-          >
-            Zpět na hlavní stránku
-          </Link>
+        <Link
+          href="/kategorie"
+          className="inline-flex items-center gap-2 rounded-lg bg-pindo-blue text-white px-4 py-2 text-sm font-semibold"
+        >
+          Zpět na výpis kategorií
+        </Link>
+
+        <div className="mt-10">
+          <FeedbackPanel />
         </div>
-        <FeedbackPanel />
       </main>
     );
   }
 
-  // 3) máme kategorii → vytáhni podkategorie (může být i prázdné pole)
-  const subcats = Array.isArray(category.subcategories)
-    ? category.subcategories
-    : [];
+  const subs =
+    category.subcategories ||
+    category.Subcategories ||
+    category.children ||
+    category.Children ||
+    [];
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-10">
-      {/* breadcrumb */}
-      <div className="text-sm text-slate-500 mb-5 flex gap-2 items-center">
+      <p className="text-sm text-slate-500 mb-4 flex gap-2 items-center">
         <Link href="/" className="text-pindo-blue font-semibold">
           Domů
         </Link>
         <span>/</span>
-        <span className="text-slate-400">Kategorie</span>
+        <Link href="/kategorie" className="text-slate-500">
+          Kategorie
+        </Link>
         <span>/</span>
-        <span className="font-semibold text-slate-700">
-          {category.title || category.subtitle || "Kategorie"}
+        <span className="text-slate-800 font-medium">
+          {category.title || category.name || category.label}
         </span>
-      </div>
+      </p>
 
-      {/* hlavička kategorie */}
-      <header className="mb-6">
-        <h1 className="text-4xl font-bold text-slate-900 mb-2">
-          {category.title || category.subtitle}
-        </h1>
-        <p className="text-slate-600">
-          Vyber si z podkategorií v této oblasti.
+      <h1 className="text-3xl font-bold mb-2">
+        {category.title || category.name || category.label}
+      </h1>
+      <p className="text-slate-600 mb-6">
+        Vyber si z podkategorií v této oblasti.
+      </p>
+
+      {Array.isArray(subs) && subs.length > 0 ? (
+        <SubcategoryGrid
+          title="Podkategorie"
+          description="Upřesni, co přesně potřebuješ – zobrazíme ti vhodné profíky."
+          subcategories={subs}
+        />
+      ) : (
+        <p className="text-slate-400 text-sm">
+          Tahle kategorie zatím nemá podkategorie.
         </p>
-      </header>
+      )}
 
-      {/* vlastní mřížka podkategorií */}
-      <SubcategoryGrid
-        title="Podkategorie"
-        description="Zvol přesněji, co potřebuješ. Podle toho ti pak zobrazíme vhodné profíky."
-        subcategories={subcats}
-      />
-
-      <FeedbackPanel />
+      <div className="mt-10">
+        <FeedbackPanel />
+      </div>
     </main>
   );
 }
