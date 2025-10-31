@@ -23,7 +23,7 @@ function toArray(raw: any): any[] {
 export default function CategoryDetailPage({ params }: PageProps) {
   const wanted = norm(params.slug);
 
-  // máme dva možné zdroje (kvůli tomu, jak se to v projektu vyvíjelo)
+  // máme dvě možnosti importu (default a pojmenovaný)
   const allCats = toArray(catsData).length ? toArray(catsData) : CATEGORIES;
 
   const category =
@@ -58,7 +58,8 @@ export default function CategoryDetailPage({ params }: PageProps) {
     );
   }
 
-  const subs =
+  // tady vytáhneme podkategorie v různých zápisech z Kreezalidu
+  const subs: any[] =
     category.subcategories ||
     category.Subcategories ||
     category.children ||
@@ -67,6 +68,7 @@ export default function CategoryDetailPage({ params }: PageProps) {
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-10">
+      {/* breadcrumbs */}
       <p className="text-sm text-slate-500 mb-4 flex gap-2 items-center">
         <Link href="/" className="text-pindo-blue font-semibold">
           Domů
@@ -89,14 +91,11 @@ export default function CategoryDetailPage({ params }: PageProps) {
       </p>
 
       {Array.isArray(subs) && subs.length > 0 ? (
-        <SubcategoryGrid
-          title="Podkategorie"
-          description="Upřesni, co přesně potřebuješ – zobrazíme ti vhodné profíky."
-          subcategories={subs}
-        />
+        // ⬇️ TADY JE TVŮJ TVAR
+        <SubcategoryGrid subs={subs} parentSlug={params.slug} />
       ) : (
         <p className="text-slate-400 text-sm">
-          Tahle kategorie zatím nemá podkategorie.
+          V této kategorii zatím nejsou podkategorie.
         </p>
       )}
 
@@ -106,3 +105,4 @@ export default function CategoryDetailPage({ params }: PageProps) {
     </main>
   );
 }
+
