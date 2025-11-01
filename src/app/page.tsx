@@ -6,8 +6,17 @@ import FeedbackPanel from "@/components/FeedbackPanel";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+// pomocná funkce – udělá hezký slug i z "Řemesla a stavební práce"
+function makeSlug(input: string): string {
+  return input
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // pryč diakritika
+    .replace(/[^a-z0-9]+/g, "-") // cokoliv jiného -> pomlčka
+    .replace(/^-+|-+$/g, ""); // pryč pomlčky na kraji
+}
+
 export default function HomePage() {
-  // jednoduchá mřížka bez Tailwindu
   const gridStyle: React.CSSProperties = {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
@@ -38,7 +47,7 @@ export default function HomePage() {
 
   return (
     <main style={{ background: "#F5F5F6", minHeight: "100vh" }}>
-      {/* HERO – necháme stejný obsah, jen trochu srovnáme */}
+      {/* HERO */}
       <section style={{ background: "#fff", borderBottom: "1px solid #E2E8F0" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "30px 16px" }}>
           <div
@@ -75,23 +84,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* KATEGORIE – TEĎ UŽ DLAŽDICE */}
+      {/* KATEGORIE */}
       <section style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 16px 50px" }}>
         <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 18, color: "#0f172a" }}>
           Kategorie
         </h2>
 
         <div style={gridStyle}>
-          {CATEGORIES.map((cat) => (
-            <Link key={cat.slug} href={`/kategorie/${cat.slug}`} style={cardStyle}>
-              <span style={titleStyle}>{cat.title}</span>
-              <span style={countStyle}>
-                {Array.isArray(cat.subcategories)
-                  ? `${cat.subcategories.length} podkategorií`
-                  : "Podkategorie se připravují"}
-              </span>
-            </Link>
-          ))}
+          {CATEGORIES.map((cat, idx) => {
+            const name =
+              cat.title || cat.name || cat.label || cat.Title || cat.Label || `Kategorie ${idx + 1}`;
+            const rawSlug = cat.slug || cat.Slug || "";
+            const finalSlug = rawSlug ? rawSlug : makeSlug(name);
+
+            return (
+              <Link key={finalSlug} href={`/kategorie/${finalSlug}`} style={cardStyle}>
+                <span style={titleStyle}>{name}</span>
+                <span style={countStyle}>
+                  {Array.isArray(cat.subcategories) ||
+                  Array.isArray(cat.Subcategories) ||
+                  Array.isArray(cat.children)
+                    ? `${
+                        (cat.subcategories || cat.Subcategories || cat.children).length
+                      } podkategorií`
+                    : "Podkategorie se připravují"}
+                </span>
+              </Link>
+            );
+          })}
         </div>
 
         <div style={{ marginTop: 40 }}>

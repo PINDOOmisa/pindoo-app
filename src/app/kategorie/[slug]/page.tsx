@@ -7,8 +7,20 @@ type PageProps = {
   params: { slug: string };
 };
 
-function norm(v: string | null | undefined) {
-  return (v || "").trim().toLowerCase();
+function norm(v: string | null | undefined): string {
+  return (v || "")
+    .toLowerCase()
+    .trim();
+}
+
+// stejná funkce jako na homepage
+function makeSlug(input: string): string {
+  return (input || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function toArray(raw: any): any[] {
@@ -19,14 +31,26 @@ function toArray(raw: any): any[] {
   return [];
 }
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default function CategoryDetailPage({ params }: PageProps) {
   const wanted = norm(params.slug);
 
   const allCats = toArray(catsData).length ? toArray(catsData) : CATEGORIES;
-  const category =
+
+  // 1) zkus podle slug
+  let category =
     allCats.find((c: any) => norm(c.slug) === wanted) ||
     allCats.find((c: any) => norm(c.Slug) === wanted) ||
     null;
+
+  // 2) když se nenašla, zkus podle SLUGU z TITLE
+  if (!category) {
+    category =
+      allCats.find((c: any) => makeSlug(c.title || c.name || c.label || c.Title || "") === wanted) ||
+      null;
+  }
 
   if (!category) {
     return (
@@ -41,22 +65,6 @@ export default function CategoryDetailPage({ params }: PageProps) {
         <p style={{ color: "#475569", marginBottom: 20 }}>
           Zkus se vrátit na výpis kategorií a vybrat jinou oblast.
         </p>
-        <Link
-          href="/kategorie"
-          style={{
-            display: "inline-flex",
-            gap: 6,
-            background: "#0E3A8A",
-            color: "#fff",
-            padding: "8px 16px",
-            borderRadius: 12,
-            fontSize: 13,
-            fontWeight: 600,
-            textDecoration: "none",
-          }}
-        >
-          Zpět na kategorie
-        </Link>
         <div style={{ marginTop: 30 }}>
           <FeedbackPanel />
         </div>
@@ -88,6 +96,9 @@ export default function CategoryDetailPage({ params }: PageProps) {
     gap: "3px",
   };
 
+  const catName =
+    category.title || category.name || category.label || category.Title || "Kategorie";
+
   return (
     <main style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 16px" }}>
       <p style={{ fontSize: 13, marginBottom: 12 }}>
@@ -95,14 +106,10 @@ export default function CategoryDetailPage({ params }: PageProps) {
           Domů
         </Link>{" "}
         / <Link href="/kategorie">Kategorie</Link> /{" "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>
-          {category.title || category.name || category.label}
-        </span>
+        <span style={{ color: "#0f172a", fontWeight: 600 }}>{catName}</span>
       </p>
 
-      <h1 style={{ fontSize: 30, fontWeight: 700, marginBottom: 8 }}>
-        {category.title || category.name || category.label}
-      </h1>
+      <h1 style={{ fontSize: 30, fontWeight: 700, marginBottom: 8 }}>{catName}</h1>
       <p style={{ color: "#475569", marginBottom: 26 }}>
         Vyber si z podkategorií v této oblasti.
       </p>
