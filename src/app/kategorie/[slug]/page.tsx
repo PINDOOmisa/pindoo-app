@@ -1,7 +1,6 @@
 // src/app/kategorie/[slug]/page.tsx
 import Link from "next/link";
 import catsData, { CATEGORIES } from "@/data/categories";
-import SubcategoryGrid from "@/components/SubcategoryGrid";
 import FeedbackPanel from "@/components/FeedbackPanel";
 
 type PageProps = {
@@ -23,7 +22,7 @@ function toArray(raw: any): any[] {
 export default function CategoryDetailPage({ params }: PageProps) {
   const wanted = norm(params.slug);
 
-  // máme dvě možnosti importu (default a pojmenovaný)
+  // zkusíme načíst data jak z defaultu, tak z pojmenovaného exportu
   const allCats = toArray(catsData).length ? toArray(catsData) : CATEGORIES;
 
   const category =
@@ -58,7 +57,7 @@ export default function CategoryDetailPage({ params }: PageProps) {
     );
   }
 
-  // tady vytáhneme podkategorie v různých zápisech z Kreezalidu
+  // vytáhneme podkategorie v různých možných názvech
   const subs: any[] =
     category.subcategories ||
     category.Subcategories ||
@@ -91,8 +90,21 @@ export default function CategoryDetailPage({ params }: PageProps) {
       </p>
 
       {Array.isArray(subs) && subs.length > 0 ? (
-        // ⬇️ TADY JE TVŮJ TVAR
-        <SubcategoryGrid subs={subs} parentSlug={params.slug} />
+        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+          {subs.map((sub: any, idx: number) => (
+            <div
+              key={sub.slug || sub.Slug || idx}
+              className="rounded-2xl bg-white border border-slate-100 shadow-sm p-5 flex flex-col gap-2"
+            >
+              <div className="text-sm font-semibold text-slate-900">
+                {sub.title || sub.name || sub.label}
+              </div>
+              <p className="text-xs text-slate-500">
+                Upřesni tohle v poptávce a ukážeme ti vhodné profíky.
+              </p>
+            </div>
+          ))}
+        </div>
       ) : (
         <p className="text-slate-400 text-sm">
           V této kategorii zatím nejsou podkategorie.
@@ -105,4 +117,3 @@ export default function CategoryDetailPage({ params }: PageProps) {
     </main>
   );
 }
-
