@@ -9,6 +9,11 @@ export const revalidate = 0;
 export default function CategoriesPage() {
   return (
     <main className="max-w-6xl mx-auto px-4 py-10">
+      {/* 💛 TEST LUMÍR: když tohle vidíš, máš správný soubor */}
+      <p className="text-[11px] text-slate-400 mb-2">
+        (PINDOO / kategorie – verze s dlaždicemi)
+      </p>
+
       <nav className="text-sm text-slate-500 mb-6 flex gap-2 items-center">
         <Link href="/" className="text-pindo-blue font-semibold">
           Domů
@@ -22,14 +27,15 @@ export default function CategoriesPage() {
         Vyber si oblast, kterou potřebuješ. Podle toho ti pak najdeme poskytovatele.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+      {/* GRID DLAŽDIC */}
+      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         {CATEGORIES.map((cat) => (
           <Link
             key={cat.slug}
             href={`/kategorie/${cat.slug}`}
-            className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm hover:shadow-md transition flex flex-col gap-2"
+            className="rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition p-5 flex flex-col gap-2"
           >
-            <div className="text-sm font-semibold text-slate-900 group-hover:text-pindo-blue">
+            <div className="text-base font-semibold text-slate-900">
               {cat.title}
             </div>
             <div className="text-xs text-slate-500">
