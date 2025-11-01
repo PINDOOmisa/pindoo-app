@@ -7,47 +7,68 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default function CategoriesPage() {
+  // jednoduché styly, aby to fungovalo i bez tailwindu
+  const gridStyle: React.CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+    gap: "18px",
+  };
+
+  const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    border: "1px solid rgba(15,23,42,0.05)",
+    borderRadius: "18px",
+    padding: "16px 16px 14px",
+    boxShadow: "0 12px 25px rgba(15,23,42,0.04)",
+    textDecoration: "none",
+    display: "flex",
+    flexDirection: "column",
+    gap: "4px",
+  };
+
+  const titleStyle: React.CSSProperties = {
+    fontWeight: 600,
+    color: "#0f172a",
+  };
+
+  const countStyle: React.CSSProperties = {
+    fontSize: "12px",
+    color: "#64748b",
+  };
+
   return (
-    <main className="max-w-6xl mx-auto px-4 py-10">
-      {/* 💛 TEST LUMÍR: když tohle vidíš, máš správný soubor */}
-      <p className="text-[11px] text-slate-400 mb-2">
-        (PINDOO / kategorie – verze s dlaždicemi)
+    <main style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 16px" }}>
+      <p style={{ fontSize: 11, color: "#94a3b8", marginBottom: 8 }}>
+        (PINDOO / kategorie – dlaždice, verze Lumír, bez Tailwindu)
       </p>
 
-      <nav className="text-sm text-slate-500 mb-6 flex gap-2 items-center">
-        <Link href="/" className="text-pindo-blue font-semibold">
+      {/* breadcrumb */}
+      <nav style={{ fontSize: 13, color: "#64748b", marginBottom: 18 }}>
+        <Link href="/" style={{ color: "#0E3A8A", fontWeight: 600 }}>
           Domů
-        </Link>
-        <span>/</span>
-        <span className="text-slate-400">Kategorie</span>
+        </Link>{" "}
+        / <span style={{ color: "#94a3b8" }}>Kategorie</span>
       </nav>
 
-      <h1 className="text-3xl font-bold mb-4">Kategorie</h1>
-      <p className="text-slate-600 mb-8">
+      <h1 style={{ fontSize: 34, fontWeight: 700, marginBottom: 10 }}>Kategorie</h1>
+      <p style={{ color: "#475569", marginBottom: 26, maxWidth: 420 }}>
         Vyber si oblast, kterou potřebuješ. Podle toho ti pak najdeme poskytovatele.
       </p>
 
-      {/* GRID DLAŽDIC */}
-      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      <div style={gridStyle}>
         {CATEGORIES.map((cat) => (
-          <Link
-            key={cat.slug}
-            href={`/kategorie/${cat.slug}`}
-            className="rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition p-5 flex flex-col gap-2"
-          >
-            <div className="text-base font-semibold text-slate-900">
-              {cat.title}
-            </div>
-            <div className="text-xs text-slate-500">
+          <Link key={cat.slug} href={`/kategorie/${cat.slug}`} style={cardStyle}>
+            <span style={titleStyle}>{cat.title}</span>
+            <span style={countStyle}>
               {Array.isArray(cat.subcategories)
                 ? `${cat.subcategories.length} podkategorií`
                 : "Podkategorie se připravují"}
-            </div>
+            </span>
           </Link>
         ))}
       </div>
 
-      <div className="mt-10">
+      <div style={{ marginTop: 40 }}>
         <FeedbackPanel />
       </div>
     </main>

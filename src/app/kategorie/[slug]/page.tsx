@@ -22,9 +22,7 @@ function toArray(raw: any): any[] {
 export default function CategoryDetailPage({ params }: PageProps) {
   const wanted = norm(params.slug);
 
-  // zkusíme načíst data jak z defaultu, tak z pojmenovaného exportu
   const allCats = toArray(catsData).length ? toArray(catsData) : CATEGORIES;
-
   const category =
     allCats.find((c: any) => norm(c.slug) === wanted) ||
     allCats.find((c: any) => norm(c.Slug) === wanted) ||
@@ -32,32 +30,40 @@ export default function CategoryDetailPage({ params }: PageProps) {
 
   if (!category) {
     return (
-      <main className="max-w-5xl mx-auto px-4 py-10">
-        <p className="text-sm text-slate-500 mb-4">
-          <Link href="/" className="text-pindo-blue font-semibold">
+      <main style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 16px" }}>
+        <p style={{ fontSize: 13, marginBottom: 12 }}>
+          <Link href="/" style={{ color: "#0E3A8A", fontWeight: 600 }}>
             Domů
           </Link>{" "}
           / <Link href="/kategorie">Kategorie</Link>
         </p>
-        <h1 className="text-3xl font-bold mb-3">Kategorie nenalezena</h1>
-        <p className="text-slate-600 mb-4">
+        <h1 style={{ fontSize: 30, fontWeight: 700, marginBottom: 8 }}>Kategorie nenalezena</h1>
+        <p style={{ color: "#475569", marginBottom: 20 }}>
           Zkus se vrátit na výpis kategorií a vybrat jinou oblast.
         </p>
         <Link
           href="/kategorie"
-          className="inline-flex items-center gap-2 rounded-lg bg-pindo-blue text-white px-4 py-2 text-sm font-semibold"
+          style={{
+            display: "inline-flex",
+            gap: 6,
+            background: "#0E3A8A",
+            color: "#fff",
+            padding: "8px 16px",
+            borderRadius: 12,
+            fontSize: 13,
+            fontWeight: 600,
+            textDecoration: "none",
+          }}
         >
-          Zpět na výpis kategorií
+          Zpět na kategorie
         </Link>
-
-        <div className="mt-10">
+        <div style={{ marginTop: 30 }}>
           <FeedbackPanel />
         </div>
       </main>
     );
   }
 
-  // vytáhneme podkategorie v různých možných názvech
   const subs: any[] =
     category.subcategories ||
     category.Subcategories ||
@@ -65,53 +71,62 @@ export default function CategoryDetailPage({ params }: PageProps) {
     category.Children ||
     [];
 
+  const gridStyle: React.CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+    gap: "18px",
+  };
+
+  const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    border: "1px solid rgba(15,23,42,0.05)",
+    borderRadius: "18px",
+    padding: "16px 16px 14px",
+    boxShadow: "0 12px 25px rgba(15,23,42,0.04)",
+    display: "flex",
+    flexDirection: "column",
+    gap: "3px",
+  };
+
   return (
-    <main className="max-w-6xl mx-auto px-4 py-10">
-      {/* breadcrumbs */}
-      <p className="text-sm text-slate-500 mb-4 flex gap-2 items-center">
-        <Link href="/" className="text-pindo-blue font-semibold">
+    <main style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 16px" }}>
+      <p style={{ fontSize: 13, marginBottom: 12 }}>
+        <Link href="/" style={{ color: "#0E3A8A", fontWeight: 600 }}>
           Domů
-        </Link>
-        <span>/</span>
-        <Link href="/kategorie" className="text-slate-500">
-          Kategorie
-        </Link>
-        <span>/</span>
-        <span className="text-slate-800 font-medium">
+        </Link>{" "}
+        / <Link href="/kategorie">Kategorie</Link> /{" "}
+        <span style={{ color: "#0f172a", fontWeight: 600 }}>
           {category.title || category.name || category.label}
         </span>
       </p>
 
-      <h1 className="text-3xl font-bold mb-2">
+      <h1 style={{ fontSize: 30, fontWeight: 700, marginBottom: 8 }}>
         {category.title || category.name || category.label}
       </h1>
-      <p className="text-slate-600 mb-6">
+      <p style={{ color: "#475569", marginBottom: 26 }}>
         Vyber si z podkategorií v této oblasti.
       </p>
 
       {Array.isArray(subs) && subs.length > 0 ? (
-        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+        <div style={gridStyle}>
           {subs.map((sub: any, idx: number) => (
-            <div
-              key={sub.slug || sub.Slug || idx}
-              className="rounded-2xl bg-white border border-slate-100 shadow-sm p-5 flex flex-col gap-2"
-            >
-              <div className="text-sm font-semibold text-slate-900">
+            <div key={sub.slug || sub.Slug || idx} style={cardStyle}>
+              <div style={{ fontWeight: 600, color: "#0f172a" }}>
                 {sub.title || sub.name || sub.label}
               </div>
-              <p className="text-xs text-slate-500">
+              <div style={{ fontSize: 12, color: "#64748b" }}>
                 Upřesni tohle v poptávce a ukážeme ti vhodné profíky.
-              </p>
+              </div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-slate-400 text-sm">
+        <p style={{ color: "#94a3b8", fontSize: 13 }}>
           V této kategorii zatím nejsou podkategorie.
         </p>
       )}
 
-      <div className="mt-10">
+      <div style={{ marginTop: 40 }}>
         <FeedbackPanel />
       </div>
     </main>
