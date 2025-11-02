@@ -7,13 +7,6 @@ type PageProps = {
   params: { slug: string };
 };
 
-function norm(v: string | null | undefined): string {
-  return (v || "")
-    .toLowerCase()
-    .trim();
-}
-
-// stejná funkce jako na homepage
 function makeSlug(input: string): string {
   return (input || "")
     .toLowerCase()
@@ -35,22 +28,14 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default function CategoryDetailPage({ params }: PageProps) {
-  const wanted = norm(params.slug);
+  const wanted = (params.slug || "").toLowerCase();
 
   const allCats = toArray(catsData).length ? toArray(catsData) : CATEGORIES;
 
-  // 1) zkus podle slug
-  let category =
-    allCats.find((c: any) => norm(c.slug) === wanted) ||
-    allCats.find((c: any) => norm(c.Slug) === wanted) ||
+  // hledáme jen podle názvu → slug z názvu
+  const category =
+    allCats.find((c: any) => makeSlug(c.title || c.name || c.label || c.Title || "") === wanted) ||
     null;
-
-  // 2) když se nenašla, zkus podle SLUGU z TITLE
-  if (!category) {
-    category =
-      allCats.find((c: any) => makeSlug(c.title || c.name || c.label || c.Title || "") === wanted) ||
-      null;
-  }
 
   if (!category) {
     return (

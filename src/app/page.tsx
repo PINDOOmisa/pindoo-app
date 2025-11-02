@@ -6,14 +6,14 @@ import FeedbackPanel from "@/components/FeedbackPanel";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-// pomocná funkce – udělá hezký slug i z "Řemesla a stavební práce"
+// vždycky slug z názvu
 function makeSlug(input: string): string {
-  return input
+  return (input || "")
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // pryč diakritika
-    .replace(/[^a-z0-9]+/g, "-") // cokoliv jiného -> pomlčka
-    .replace(/^-+|-+$/g, ""); // pryč pomlčky na kraji
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 export default function HomePage() {
@@ -91,23 +91,26 @@ export default function HomePage() {
         </h2>
 
         <div style={gridStyle}>
-          {CATEGORIES.map((cat, idx) => {
+          {CATEGORIES.map((cat: any, idx: number) => {
             const name =
-              cat.title || cat.name || cat.label || cat.Title || cat.Label || `Kategorie ${idx + 1}`;
-            const rawSlug = cat.slug || cat.Slug || "";
-            const finalSlug = rawSlug ? rawSlug : makeSlug(name);
+              cat.title ||
+              cat.name ||
+              cat.label ||
+              cat.Title ||
+              cat.Label ||
+              `Kategorie ${idx + 1}`;
+
+            // 👉 IGNORUJEME cat.slug z dat
+            const finalSlug = makeSlug(name);
+
+            const subs =
+              cat.subcategories || cat.Subcategories || cat.children || cat.Children || [];
 
             return (
               <Link key={finalSlug} href={`/kategorie/${finalSlug}`} style={cardStyle}>
                 <span style={titleStyle}>{name}</span>
                 <span style={countStyle}>
-                  {Array.isArray(cat.subcategories) ||
-                  Array.isArray(cat.Subcategories) ||
-                  Array.isArray(cat.children)
-                    ? `${
-                        (cat.subcategories || cat.Subcategories || cat.children).length
-                      } podkategorií`
-                    : "Podkategorie se připravují"}
+                  {Array.isArray(subs) ? `${subs.length} podkategorií` : "Podkategorie se připravují"}
                 </span>
               </Link>
             );
