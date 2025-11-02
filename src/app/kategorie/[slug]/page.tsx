@@ -1,28 +1,11 @@
 // src/app/kategorie/[slug]/page.tsx
 import Link from "next/link";
-import catsData, { CATEGORIES } from "@/data/categories";
+import { CATEGORIES } from "@/data/categories";
 import FeedbackPanel from "@/components/FeedbackPanel";
 
 type PageProps = {
   params: { slug: string };
 };
-
-function makeSlug(input: string): string {
-  return (input || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-function toArray(raw: any): any[] {
-  if (!raw) return [];
-  if (Array.isArray(raw)) return raw;
-  if (Array.isArray(raw?.categories)) return raw.categories;
-  if (Array.isArray(raw?.data)) return raw.data;
-  return [];
-}
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -30,12 +13,8 @@ export const revalidate = 0;
 export default function CategoryDetailPage({ params }: PageProps) {
   const wanted = (params.slug || "").toLowerCase();
 
-  const allCats = toArray(catsData).length ? toArray(catsData) : CATEGORIES;
-
-  // hledáme jen podle názvu → slug z názvu
   const category =
-    allCats.find((c: any) => makeSlug(c.title || c.name || c.label || c.Title || "") === wanted) ||
-    null;
+    CATEGORIES.find((c) => (c.slug || "").toLowerCase() === wanted) || null;
 
   if (!category) {
     return (
@@ -57,12 +36,9 @@ export default function CategoryDetailPage({ params }: PageProps) {
     );
   }
 
-  const subs: any[] =
-    category.subcategories ||
-    category.Subcategories ||
-    category.children ||
-    category.Children ||
-    [];
+  const subs: any[] = Array.isArray(category.subcategories)
+    ? category.subcategories
+    : [];
 
   const gridStyle: React.CSSProperties = {
     display: "grid",
@@ -81,9 +57,6 @@ export default function CategoryDetailPage({ params }: PageProps) {
     gap: "3px",
   };
 
-  const catName =
-    category.title || category.name || category.label || category.Title || "Kategorie";
-
   return (
     <main style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 16px" }}>
       <p style={{ fontSize: 13, marginBottom: 12 }}>
@@ -91,20 +64,22 @@ export default function CategoryDetailPage({ params }: PageProps) {
           Domů
         </Link>{" "}
         / <Link href="/kategorie">Kategorie</Link> /{" "}
-        <span style={{ color: "#0f172a", fontWeight: 600 }}>{catName}</span>
+        <span style={{ color: "#0f172a", fontWeight: 600 }}>{category.title}</span>
       </p>
 
-      <h1 style={{ fontSize: 30, fontWeight: 700, marginBottom: 8 }}>{catName}</h1>
+      <h1 style={{ fontSize: 30, fontWeight: 700, marginBottom: 8 }}>
+        {category.title}
+      </h1>
       <p style={{ color: "#475569", marginBottom: 26 }}>
         Vyber si z podkategorií v této oblasti.
       </p>
 
-      {Array.isArray(subs) && subs.length > 0 ? (
+      {subs.length > 0 ? (
         <div style={gridStyle}>
-          {subs.map((sub: any, idx: number) => (
-            <div key={sub.slug || sub.Slug || idx} style={cardStyle}>
+          {subs.map((sub, idx) => (
+            <div key={sub.slug || idx} style={cardStyle}>
               <div style={{ fontWeight: 600, color: "#0f172a" }}>
-                {sub.title || sub.name || sub.label}
+                {sub.title}
               </div>
               <div style={{ fontSize: 12, color: "#64748b" }}>
                 Upřesni tohle v poptávce a ukážeme ti vhodné profíky.

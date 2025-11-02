@@ -6,16 +6,6 @@ import FeedbackPanel from "@/components/FeedbackPanel";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-// vždycky slug z názvu
-function makeSlug(input: string): string {
-  return (input || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
 export default function HomePage() {
   const gridStyle: React.CSSProperties = {
     display: "grid",
@@ -91,30 +81,16 @@ export default function HomePage() {
         </h2>
 
         <div style={gridStyle}>
-          {CATEGORIES.map((cat: any, idx: number) => {
-            const name =
-              cat.title ||
-              cat.name ||
-              cat.label ||
-              cat.Title ||
-              cat.Label ||
-              `Kategorie ${idx + 1}`;
-
-            // 👉 IGNORUJEME cat.slug z dat
-            const finalSlug = makeSlug(name);
-
-            const subs =
-              cat.subcategories || cat.Subcategories || cat.children || cat.Children || [];
-
-            return (
-              <Link key={finalSlug} href={`/kategorie/${finalSlug}`} style={cardStyle}>
-                <span style={titleStyle}>{name}</span>
-                <span style={countStyle}>
-                  {Array.isArray(subs) ? `${subs.length} podkategorií` : "Podkategorie se připravují"}
-                </span>
-              </Link>
-            );
-          })}
+          {CATEGORIES.map((cat) => (
+            <Link key={cat.slug} href={`/kategorie/${cat.slug}`} style={cardStyle}>
+              <span style={titleStyle}>{cat.title}</span>
+              <span style={countStyle}>
+                {Array.isArray(cat.subcategories)
+                  ? `${cat.subcategories.length} podkategorií`
+                  : "Podkategorie se připravují"}
+              </span>
+            </Link>
+          ))}
         </div>
 
         <div style={{ marginTop: 40 }}>
