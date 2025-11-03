@@ -2,17 +2,17 @@
 
 export default function FeedbackPanel() {
   return (
-    <div className="mt-16 mb-10 flex items-center gap-6 rounded-2xl bg-white/90 p-6 shadow-sm border border-slate-100 max-w-5xl mx-auto">
+    <div className="mt-10 rounded-2xl bg-white border border-slate-100 p-6 flex gap-4 items-center">
       <img
         src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png"
-        alt="PINDOO feedback"
-        className="w-28 h-28 object-contain flex-shrink-0"
+        alt="PINDOO mascot"
+        className="w-20 h-20 object-contain"
       />
       <div>
-        <h3 className="text-slate-900 font-semibold text-lg mb-1">
+        <h3 className="text-base font-semibold text-slate-900">
           Chybí ti tu nějaká kategorie nebo podkategorie?
         </h3>
-        <p className="text-slate-500 text-sm">
+        <p className="text-sm text-slate-500">
           Dej mi vědět a doplním ji do PINDOO. Tvoříme to pro tebe. 💛
         </p>
       </div>

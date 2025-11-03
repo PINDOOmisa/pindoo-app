@@ -1,9 +1,17 @@
 // src/data/categories.ts
 
-// Jeden společný zdroj pravdy pro PINDOO kategorie.
-// Když budeš později importovat z Kreezalidu, uprav jen tohle místo.
+export type Subcategory = {
+  slug: string;
+  title: string;
+};
 
-export const CATEGORIES = [
+export type Category = {
+  slug: string;
+  title: string;
+  subcategories: Subcategory[];
+};
+
+export const CATEGORIES: Category[] = [
   {
     slug: "domacnost-a-uklid",
     title: "Domácnost & úklid",
@@ -22,8 +30,8 @@ export const CATEGORIES = [
     slug: "remesla-a-stavebni-prace",
     title: "Řemesla a stavební práce",
     subcategories: [
-      { slug: "elektrikar", title: "Elektro / elektrikář" },
-      { slug: "voda-topeni", title: "Voda / topení / plyn" },
+      { slug: "elektro", title: "Elektro / elektrikář" },
+      { slug: "voda-topeni-plyn", title: "Voda / topení / plyn" },
       { slug: "rekonstrukce", title: "Rekonstrukce a stavební práce" },
     ],
   },
@@ -42,7 +50,7 @@ export const CATEGORIES = [
     subcategories: [
       { slug: "permanentni-makeup", title: "Permanentní make-up" },
       { slug: "rasy-a-oboci", title: "Řasy & obočí" },
-      { slug: "kosmetika", title: "Kosmetická péče" },
+      { slug: "kosmeticka-pece", title: "Kosmetická péče" },
     ],
   },
   {
@@ -68,7 +76,7 @@ export const CATEGORIES = [
     title: "Péče o zvířata",
     subcategories: [
       { slug: "hlidani-psu", title: "Hlídání psů / koček" },
-      { slug: "venic-psu", title: "Venčení psů" },
+      { slug: "venceni-psu", title: "Venčení psů" },
       { slug: "psi-salon", title: "Psí salon / úprava" },
     ],
   },
@@ -87,7 +95,7 @@ export const CATEGORIES = [
     subcategories: [
       { slug: "svatebni-koordinace", title: "Svatební koordinace" },
       { slug: "catering", title: "Catering" },
-      { slug: "foto-video", title: "Foto / video na akci" },
+      { slug: "akce-foto-video", title: "Foto / video na akci" },
     ],
   },
   {
@@ -122,7 +130,7 @@ export const CATEGORIES = [
     title: "Péče o seniory",
     subcategories: [
       { slug: "domaci-pece", title: "Domácí péče" },
-      { slug: "doprovod", title: "Doprovod k lékaři" },
+      { slug: "doprovod-k-lekari", title: "Doprovod k lékaři" },
     ],
   },
   {
