@@ -9,7 +9,7 @@ export const revalidate = 0;
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#F5F5F6]">
-      {/* hero */}
+      {/* HERO */}
       <section className="bg-white border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="bg-[#F2F5FA] rounded-3xl p-6">
@@ -29,11 +29,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* kategorie */}
+      {/* KATEGORIE */}
       <section className="max-w-6xl mx-auto px-4 py-10">
-        <h2 className="text-xl font-semibold text-slate-900 mb-5">
-          Kategorie
-        </h2>
+        <h2 className="text-xl font-semibold text-slate-900 mb-5">Kategorie</h2>
 
         <CategoryGrid />
 

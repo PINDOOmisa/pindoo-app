@@ -10,7 +10,7 @@ export default function CategoryGrid() {
       {CATEGORIES.map((cat) => (
         <Link
           key={cat.slug}
-          href={`/kategorie/${cat.slug}`}
+          href={`/oblasti/${cat.slug}`}
           className="rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition p-5 flex flex-col gap-2"
         >
           <div className="text-base font-semibold text-slate-900">

@@ -5,7 +5,7 @@ export default function FeedbackPanel() {
     <div className="mt-10 rounded-2xl bg-white border border-slate-100 p-6 flex gap-4 items-center">
       <img
         src="https://cdn.kreezalid.com/kreezalid/564286/files/1006523/kopie_navrhu_p_2000_x_2000_px_34.png"
-        alt="PINDOO mascot"
+        alt="PINDOO ptáček"
         className="w-20 h-20 object-contain"
       />
       <div>
